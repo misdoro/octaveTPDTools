@@ -81,9 +81,15 @@ endif;
 	
 #Log(i) over 1/T plot
 function result=plotInvT(mytpd,param,result);
-	plot(1./mytpd.T,log(mytpd.i),"linewidth",2,"color",mytpd.color);
-	txtx=1./mytpd.T(1);
-	txty=log(mytpd.i(1));
+	invT=1./mytpd.T;
+	logi=log(mytpd.i);
+	
+	plot(invT,logi,"linewidth",2,"color",mytpd.color);
+	txtx=invT(1);
+	txty=logi(1);
+	
+
+	
 	text(txtx,txty,strcat("<",num2str(mytpd.idx)));
 	
 endfunction
