@@ -1,2 +1,15 @@
 TPD structure format:
 
+data: raw data from ascii file
+mids: list of mass ids
+t: timepoints
+i: current of the first mass id
+iN: currents for all mids
+rate: ramp rate for TPD
+T: temperature points
+pi: interpolated pressure points
+integral: integral value of TPD
+
+Dose structure format:
+integral: integral value of the dose
+T: average temperature during the dose
