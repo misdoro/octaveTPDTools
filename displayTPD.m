@@ -86,11 +86,9 @@ function result=plotInvT(mytpd,param,result);
 	mytpd.invT=1./mytpd.T;
 	mytpd.logi=log(mytpd.i);
 	
-	
 	plot(mytpd.invT,mytpd.logi,"linewidth",2,"color",mytpd.color);
-	
+
 	eads=findLogEAds(mytpd);
-	
 	eVKcalmul=23.0609;
 	printf("Eads = %f eV, %f kcal/mol\n",eads,eads*eVKcalmul);
 	
