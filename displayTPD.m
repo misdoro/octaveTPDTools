@@ -37,10 +37,11 @@ param.mass=useArgument(argv(),1,130);
 
 param.tools=useArgument(argv(),4,"d");
 
-
 pkg load optim;
 
-#plot TPD
+#################################################
+# Plot TPD
+#################################################
 function result=plotTPD(mytpd,param,result);
 	
 	mytpd.i_sm=supsmu(mytpd.T,mytpd.i,'spa',0.005);
@@ -78,18 +79,23 @@ if (index(param.tools,'d'))
 endif;
 
 
-	
-#Log(i) over 1/T plot
+##################################################
+# Log(i) over 1/T plot + linear Eads extraction  #
+##################################################
 function result=plotInvT(mytpd,param,result);
-	invT=1./mytpd.T;
-	logi=log(mytpd.i);
+	mytpd.invT=1./mytpd.T;
+	mytpd.logi=log(mytpd.i);
 	
-	plot(invT,logi,"linewidth",2,"color",mytpd.color);
-	txtx=invT(1);
-	txty=logi(1);
 	
-
+	plot(mytpd.invT,mytpd.logi,"linewidth",2,"color",mytpd.color);
 	
+	eads=findLogEAds(mytpd);
+	
+	eVKcalmul=23.0609;
+	printf("Eads = %f eV, %f kcal/mol\n",eads,eads*eVKcalmul);
+	
+	txtx=mytpd.invT(1);
+	txty=mytpd.logi(1);
 	text(txtx,txty,strcat("<",num2str(mytpd.idx)));
 	
 endfunction
@@ -103,6 +109,10 @@ if (index(param.tools,'l'))
 	print(3,"logplot.png","-dpng","-r300");
 endif;
 
+
+##################################################
+#Stupid Eads inversion				 #
+##################################################
 
 function result=plotEAds(mytpd,param,result);
 	#tpd.a=[1e10, 1e11, 1e12, 1e13, 1e14, 1e15];
@@ -125,12 +135,17 @@ if (index(param.tools,'e'))
 	xlabel("Coverage")
 endif
 
-
+#####################################################
+# Basic TPD modeling, should use log fit parameters #
+#####################################################
 
 function result=drawModel(mytpd,param,result);
 	result=plotTPD(mytpd,param,result);
-	[Tode,theta, p]=modelTPD1(mytpd.T,mytpd.intg/param.monolayer,2e13,0.156);
-	plot(Tode,0.9*p*param.monolayer*mytpd.rate,"color",mytpd.color);
+	isc=mytpd.intg/param.monolayer
+	[Tode,theta, p]=modelTPD1(mytpd.T,isc,0.8e14,0.416);
+	sig=0.9*p*param.monolayer*mytpd.rate;
+	plot(Tode,sig,"color",mytpd.color);
+	plot(Tode,(mytpd.i-sig));
 endfunction
 
 if (index(param.tools,'m'));
