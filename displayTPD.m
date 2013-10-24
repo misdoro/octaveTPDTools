@@ -12,8 +12,8 @@ if (nargin==0)
 	#\n\
 	#\n\
 	#\n\
-	#Usage: display.m mass startTemp endTemp processings monolayer \n\
-	#Processings:\n\
+	#Usage: display.m actions mass startTemp endTemp monolayer \n\
+	#Actions:\n\
 	#d = plot TPDs\n\
 	#p = plot pressure\n\
 	#c = plot pressure-corrected TPDs\n\
@@ -21,7 +21,7 @@ if (nargin==0)
 	#l = log plot of i over 1/T\n\
 	#e = energy estimation using inversion plot over coverage\n\
 	#m = try to model TPD with 1-st order process\n\
-	#\n\
+	#i = print files info: available masses and T range\n\
 	#\n\
 	")
 endif
@@ -31,11 +31,11 @@ param.monolayer=useArgument(argv(),5,3.2e-09);
 #param.monolayer=2e-08;#Xe /amorph 1,2e-6 A*s 100K
 #param.monolayer=1e-5;#H2O
 
-param.displayT.min=useArgument(argv(),2,45);
-param.displayT.max=useArgument(argv(),3,70);
-param.mass=useArgument(argv(),1,130);
+param.displayT.min=useArgument(argv(),3,45);
+param.displayT.max=useArgument(argv(),4,70);
+param.mass=useArgument(argv(),2,130);
 
-param.tools=useArgument(argv(),4,"d");
+param.tools=useArgument(argv(),1,"d");
 
 pkg load optim;
 
@@ -147,13 +147,23 @@ function result=drawModel(mytpd,param,result);
 endfunction
 
 if (index(param.tools,'m'));
-figure(5);
-hold on;
-pkg load odepkg;
-iterateTpd(input,param,@drawModel);
-xlabel("Temperature (K)")
-ylabel("Desorption signal");
+	figure(5);
+	hold on;
+	pkg load odepkg;
+	iterateTpd(input,param,@drawModel);
+	xlabel("Temperature (K)")
+	ylabel("Desorption signal");
 endif
 
+
+function result=getInfo(mytpd,param,result);
+	load(mytpd.filename);
+	printf("Temperature range: %f to %f K\n",min(tpd.T),max(tpd.T));
+	printf("Ramp rate: %f K/min\n",tpd.rate*60);
+	printf("MIDs: %f+\n",sort(tpd.mids))
+endfunction
+if (index(param.tools,'i'));
+	printInfo(input);
+endif
 drawnow();
 

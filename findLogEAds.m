@@ -10,8 +10,9 @@ function eads=findLogEAds(mytpd)
 	win.iendmax=maxdi;
 	win.np=maxdi;
 	win.bstep=10;
-	win.minw=200;
+	win.minw=100;
 	delta=0.0001;
+	pf=[0,0];
 	rmsv=1;
 	spvec=[];
 	% Find the max error point, use it to cut the fit window

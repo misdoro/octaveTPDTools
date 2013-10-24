@@ -11,8 +11,8 @@ function result=iterateTpd(input,param,funcName);
 	result.idx=[];
 	counter=0;
 	for idx=1:rows(input.sorted);
-		
-		filename=input.filenames{input.sorted(idx,1)}
+		filename=input.filenames{input.sorted(idx,1)};
+		printf("\n-----------------\n%s\n",filename);
 		load(filename);
 		if (isfield(tpd,"iN"))
 			cutdat=getMassData(tpd,param.displayT,param.mass);

@@ -1,6 +1,5 @@
 #Extract from the tpd structure data about requested mass in a specified temperature range
 function result = getMassData(tpd,Trange,mass);
-	mass
 	massidx=find(tpd.mids==mass);
 	if (massidx>1)
 		result=tpd;
