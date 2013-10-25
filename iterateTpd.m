@@ -21,7 +21,11 @@ function result=iterateTpd(input,param,funcName);
 			if (length(cutdat.i)>0)
 				cutdat.color=getLineColor(cutdat.intg,param.monolayer);
 				cutdat.idx=++counter;
-				result=feval(funcName,cutdat,param,result);
+				if (isfield(tpd,"version") && tpd.version>=20131025);
+					result=feval(funcName,cutdat,param,result,press);
+				else
+					result=feval(funcName,cutdat,param,result);
+				endif;
 			else
 				printf("No appropriate data in this file.\n");
 			endif

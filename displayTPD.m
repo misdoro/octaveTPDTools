@@ -35,7 +35,7 @@ param.displayT.min=useArgument(argv(),3,45);
 param.displayT.max=useArgument(argv(),4,70);
 param.mass=useArgument(argv(),2,130);
 
-param.tools=useArgument(argv(),1,"d");
+param.tools=useArgument(argv(),1,"i");
 
 pkg load optim;
 
@@ -78,6 +78,31 @@ if (index(param.tools,'d'))
 	endif;
 endif;
 
+#################################################
+# Plot gauge pressure
+#################################################
+function result=plotP(mytpd,param,result);
+	
+	plot(mytpd.T,mytpd.pi,"linewidth",2,"color",mytpd.color);
+	
+	[maxi,maxidx]=max(mytpd.pi);
+	maxT=mytpd.T(maxidx);
+	text(maxT,maxi,strcat(num2str(mytpd.idx)));
+endfunction
+
+if (index(param.tools,'p'))
+	figure(8);
+	hold on;
+	ret=iterateTpd(input,param,@plotP);
+	ylabel("Pressure, torr");
+	xlabel("Temperature (K)");
+	if (isfield(ret,"legend"))
+		legend("boxon");
+		legend(ret.legend);
+	endif;
+	print(8,"pressure.png","-dpng","-r300");
+	
+endif;
 
 ##################################################
 # Log(i) over 1/T plot + linear Eads extraction  #
@@ -113,8 +138,7 @@ endif;
 ##################################################
 
 function result=plotEAds(mytpd,param,result);
-	#tpd.a=[1e10, 1e11, 1e12, 1e13, 1e14, 1e15];
-	tpd.a=1e13;
+	tpd.a=[1e10, 1e11, 1e12, 1e13, 1e14, 1e15];
 	source("~/octave/constants.m");
 	cov=mytpd.intg-cumtrapz(mytpd.t,mytpd.i);
 	for ai=1:length(tpd.a);
@@ -155,15 +179,25 @@ if (index(param.tools,'m'));
 	ylabel("Desorption signal");
 endif
 
+########################################################
+# Print file info for all dat files in the current dir #
+########################################################
 
-function result=getInfo(mytpd,param,result);
-	load(mytpd.filename);
-	printf("Temperature range: %f to %f K\n",min(tpd.T),max(tpd.T));
-	printf("Ramp rate: %f K/min\n",tpd.rate*60);
-	printf("MIDs: %f+\n",sort(tpd.mids))
-endfunction
 if (index(param.tools,'i'));
 	printInfo(input);
 endif
+
+########################################################
+# Calibrate pressure-qms offset and scaling            #
+########################################################
+	
+if (index(param.tools,'C'));
+	figure(6);
+	hold on;
+	baseparam=iterateTpd(input,param,@calibrateBaseLine);
+	
+endif
+
+
 drawnow();
 
