@@ -166,8 +166,8 @@ function result=drawModel(mytpd,param,result);
 	isc=mytpd.intg/param.monolayer
 	[Tode,theta, p]=modelTPD1(mytpd.T,isc,0.8e14,0.416);
 	sig=0.9*p*param.monolayer*mytpd.rate;
-	plot(Tode,sig,"color",mytpd.color);
-	plot(Tode,(mytpd.i-sig));
+	plot(Tode,sig);
+	plot(Tode,(mytpd.i-sig),"color","red");
 endfunction
 
 if (index(param.tools,'m'));
