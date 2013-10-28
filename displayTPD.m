@@ -19,6 +19,7 @@ if (nargin==0)
 	#p = plot pressure\n\
 	#c = plot pressure-corrected TPDs\n\
 	#C = calibrate pressure correction\n\
+	#I = interactive parameters\n\
 	#l = log plot of i over 1/T\n\
 	#e = energy estimation using inversion plot over coverage\n\
 	#m = try to model TPD with 1-st order process\n\

@@ -2,10 +2,17 @@ function result=calibrateBaseLine(mytpd,param,result,press);
 	%Function to calibrate baseline parameters using TPD position dose
 	
 	result=plotTPD(mytpd,param,result);
-	%Initial parameters guess
-	par(1)=0;	#delay
-	par(2)=min(mytpd.pi); #base
-	par(3)=max(mytpd.i)/(max(mytpd.pi)-par(2)); #scale
+	
+	if (index(param.tools,'I'));% Interactive parameters
+		par(1) = input("Input initial delay\n");
+		par(2) = input("Input pressure base\n");
+		par(3) = input("Input pressure scale\n");
+	else
+		%Initial parameters guess
+		par(1)=0;	#delay
+		par(2)=min(mytpd.pi); #base
+		par(3)=max(mytpd.i)/(max(mytpd.pi)-par(2)); #scale
+	endif;
 	
 	%Plot initial guess
 	pio=interpBaseLine(par,mytpd,press);
