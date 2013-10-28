@@ -14,6 +14,9 @@ function printInfo(input);
 			endif
 			
 			printf("Mid: %d\n",tpd.mids(find(tpd.mids>0)));
+			if (isfield(tpd,"version"))
+				printf("File format version %d\n",tpd.version);
+			endif
 		else
 			printf("File is in old or unknown format\n")
 		endif
