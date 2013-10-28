@@ -9,11 +9,21 @@ function result=calibrateBaseLine(mytpd,param,result,press);
 		par(3) = input("Input pressure scale\n");
 	else
 		%Initial parameters guess
-		par(1)=0;	#delay
-		par(2)=min(mytpd.pi); #base
-		par(3)=max(mytpd.i)/(max(mytpd.pi)-par(2)); #scale
+		[maxi,maxiidx]=max(mytpd.i);
+		[maxp,maxpidx]=max(mytpd.pi);
+		minp=min(mytpd.pi);
+		mini=min(mytpd.i);
+		par(1)=mytpd.t(maxpidx)-mytpd.t(maxiidx);
+		par(3)=maxi/maxp; #scale
+		par(2)=minp-mini/par(3); #base
+		%Iterate a bit to make the guess better
+		for i=1:3
+			par(3)=mean([par(3),maxi/(maxp-par(2))]); #scale
+			par(2)=mean([par(2),minp-mini/par(3)]); #base
+		endfor;
 	endif;
 	
+	par
 	%Plot initial guess
 	pio=interpBaseLine(par,mytpd,press);
 	plot(mytpd.T,pio,"color","green",'linewidth',1);
