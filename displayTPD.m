@@ -1,11 +1,11 @@
 #!/usr/bin/octave --persist
 #Arguments: mid, min T, max T, display, monolayer
 
-input.filenames=findDatFiles(pwd);
+indata.filenames=findDatFiles(pwd);
 
-input.doses=loadDoses(input.filenames);
+indata.doses=loadDoses(indata.filenames);
 
-input.sorted=sortrows(input.doses,2);
+indata.sorted=sortrows(indata.doses,2);
 
 if (nargin==0)
 	printf("\n\
@@ -64,7 +64,7 @@ endfunction
 if (index(param.tools,'d'))
 	figure(++param.figindex);
 	hold on;
-	ret=iterateTpd(input,param,@plotTPD);
+	ret=iterateTpd(indata,param,@plotTPD);
 	ylabel("Desorption flow (arb.u.)");
 	xlabel("Temperature (K)");
 	if (isfield(ret,"legend"))
@@ -95,7 +95,7 @@ endfunction
 if (index(param.tools,'s'));
 	figure(++param.figindex);
 	hold on;
-	iterateTpd(input,param,@surfTPD);
+	iterateTpd(indata,param,@surfTPD);
 	ylabel("Desorption flow (arb.u.)");
 	xlabel("Temperature (K)");
 endif;
@@ -116,7 +116,7 @@ endfunction
 if (index(param.tools,'p'))
 	figure(++param.figindex);
 	hold on;
-	ret=iterateTpd(input,param,@plotP);
+	ret=iterateTpd(indata,param,@plotP);
 	ylabel("Pressure, torr");
 	xlabel("Temperature (K)");
 	if (isfield(ret,"legend"))
@@ -149,7 +149,7 @@ endfunction
 if (index(param.tools,'l'))
 	figure(++param.figindex);
 	hold on;
-	ret2=iterateTpd(input,param,@plotInvT);
+	ret2=iterateTpd(indata,param,@plotInvT);
 	ylabel("log(i)")
 	xlabel("Inverse Temperature (1/T)")
 	print(param.figindex,"logplot.png","-dpng","-r300");
@@ -175,7 +175,7 @@ endfunction
 if (index(param.tools,'e'))
 	figure(++param.figindex);
 	hold on;
-	ret3=iterateTpd(input,param,@plotEAds);
+	ret3=iterateTpd(indata,param,@plotEAds);
 	ylabel("Eads estimation")
 	xlabel("Coverage")
 endif
@@ -187,7 +187,9 @@ endif
 function result=drawModel(mytpd,param,result);
 	result=plotTPD(mytpd,param,result);
 	isc=mytpd.intg/param.monolayer
-	[Tode,theta, p]=modelTPD1(mytpd.T,isc,0.8e14,0.416);
+	#[Tode,theta, p]=modelTPD1(mytpd.T,isc,0.8e14,0.416);#H2O params
+	#sig=0.9*p*param.monolayer*mytpd.rate
+	[Tode,theta, p]=modelTPD1(mytpd.T,isc,1.2e14,0.187);
 	sig=0.9*p*param.monolayer*mytpd.rate;
 	plot(Tode,sig);
 	plot(Tode,(mytpd.i-sig),"color","red");
@@ -197,7 +199,7 @@ if (index(param.tools,'m'));
 	figure(++param.figindex);
 	hold on;
 	pkg load odepkg;
-	iterateTpd(input,param,@drawModel);
+	iterateTpd(indata,param,@drawModel);
 	xlabel("Temperature (K)")
 	ylabel("Desorption signal");
 endif
@@ -207,7 +209,7 @@ endif
 ########################################################
 
 if (index(param.tools,'i'));
-	printInfo(input);
+	printInfo(indata);
 endif
 
 ########################################################
@@ -217,10 +219,42 @@ endif
 if (index(param.tools,'C'));
 	figure(++param.figindex);
 	hold on;
-	baseparam=iterateTpd(input,param,@calibrateBaseLine);
-	
+	baseparam=iterateTpd(indata,param,@calibrateBaseLine);
 endif
 
+########################################################
+# Apply pressure correction                            #
+########################################################
+function result=extractBaseLine(mytpd,param,result,press);
+	result=plotTPD(mytpd,param,result);
+	
+	mytpd.baseLine=interpBaseLine(param.baseLine,mytpd,press);
+	mytpd.i=mytpd.i-mytpd.baseLine;
+	mytpd.color='black';
+	result=plotTPD(mytpd,param,result);
+	result.Ts{mytpd.idx}=mytpd.T;
+	result.is{mytpd.idx}=mytpd.i;
+endfunction;
+
+if (index(param.tools,'c'));
+	figure(++param.figindex);
+	hold on;
+	param.baseLine=[0,0,0];
+	if (index(param.tools,'I'));% Interactive parameters
+		printf("Please provide the baseline parameters. \n\
+To obtain them, do the TPD in position dose and run displayTPD C mass startT endT\n");
+		
+		param.baseLine(1) = input("Input time delay");
+		param.baseLine(2) = input("Input pressure base\n");
+		param.baseLine(3) = input("Input pressure scale\n");
+	else
+		baselines(130,1:3)=[2.1123e+00,   1.8871e-10,   2.0016e-02];
+		param.baseLine=baselines(param.mass,:);
+	endif;
+	
+	fixedbase=iterateTpd(indata,param,@extractBaseLine);
+	
+endif
 
 drawnow();
 
