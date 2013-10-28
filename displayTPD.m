@@ -15,6 +15,7 @@ if (nargin==0)
 	#Usage: display.m actions mass startTemp endTemp monolayer \n\
 	#Actions:\n\
 	#d = plot TPDs\n\
+	#s = surf TPDs\n\
 	#p = plot pressure\n\
 	#c = plot pressure-corrected TPDs\n\
 	#C = calibrate pressure correction\n\
@@ -36,6 +37,7 @@ param.displayT.max=useArgument(argv(),4,70);
 param.mass=useArgument(argv(),2,130);
 
 param.tools=useArgument(argv(),1,"i");
+param.figindex=0;%Current figure index, to be autoincremented by processings
 
 pkg load optim;
 
@@ -59,7 +61,7 @@ function result=plotTPD(mytpd,param,result);
 endfunction
 
 if (index(param.tools,'d'))
-	figure(1);
+	figure(++param.figindex);
 	hold on;
 	ret=iterateTpd(input,param,@plotTPD);
 	ylabel("Desorption flow (arb.u.)");
@@ -68,15 +70,35 @@ if (index(param.tools,'d'))
 		legend("boxon");
 		legend(ret.legend);
 	endif;
-	print(1,"desorption.png","-dpng","-r300");
+	print(param.figindex,"desorption.png","-dpng","-r300");
 	
 	#Plot doses
 	if (isfield(ret,"doses"))
-		figure(2)
+		figure(++param.figindex)
 		plotDoses(ret);
-		print(2,"sticking.png","-dpng","-r300");
+		print(param.figindex,"sticking.png","-dpng","-r300");
 	endif;
 endif;
+
+
+#################################################
+# Surf TPD
+#################################################
+function result=surfTPD(mytpd,param,result);
+	length(mytpd.mids(2:end))
+	length(mytpd.T)
+	size(mytpd.iN)
+	surfc(mytpd.mids(2:end),mytpd.T,mytpd.iN,'Edgecolor', 'none');
+endfunction
+
+if (index(param.tools,'s'));
+	figure(++param.figindex);
+	hold on;
+	iterateTpd(input,param,@surfTPD);
+	ylabel("Desorption flow (arb.u.)");
+	xlabel("Temperature (K)");
+endif;
+
 
 #################################################
 # Plot gauge pressure
@@ -91,7 +113,7 @@ function result=plotP(mytpd,param,result);
 endfunction
 
 if (index(param.tools,'p'))
-	figure(8);
+	figure(++param.figindex);
 	hold on;
 	ret=iterateTpd(input,param,@plotP);
 	ylabel("Pressure, torr");
@@ -100,7 +122,7 @@ if (index(param.tools,'p'))
 		legend("boxon");
 		legend(ret.legend);
 	endif;
-	print(8,"pressure.png","-dpng","-r300");
+	print(param.figindex,"pressure.png","-dpng","-r300");
 	
 endif;
 
@@ -124,12 +146,12 @@ function result=plotInvT(mytpd,param,result);
 endfunction
 
 if (index(param.tools,'l'))
-	figure(3);
+	figure(++param.figindex);
 	hold on;
 	ret2=iterateTpd(input,param,@plotInvT);
 	ylabel("log(i)")
 	xlabel("Inverse Temperature (1/T)")
-	print(3,"logplot.png","-dpng","-r300");
+	print(param.figindex,"logplot.png","-dpng","-r300");
 endif;
 
 
@@ -150,7 +172,7 @@ function result=plotEAds(mytpd,param,result);
 endfunction
 
 if (index(param.tools,'e'))
-	figure(4);
+	figure(++param.figindex);
 	hold on;
 	ret3=iterateTpd(input,param,@plotEAds);
 	ylabel("Eads estimation")
@@ -171,7 +193,7 @@ function result=drawModel(mytpd,param,result);
 endfunction
 
 if (index(param.tools,'m'));
-	figure(5);
+	figure(++param.figindex);
 	hold on;
 	pkg load odepkg;
 	iterateTpd(input,param,@drawModel);
@@ -192,7 +214,7 @@ endif
 ########################################################
 	
 if (index(param.tools,'C'));
-	figure(6);
+	figure(++param.figindex);
 	hold on;
 	baseparam=iterateTpd(input,param,@calibrateBaseLine);
 	
