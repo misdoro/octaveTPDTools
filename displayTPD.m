@@ -24,6 +24,7 @@ if (nargin==0)
 	#e = energy estimation using inversion plot over coverage\n\
 	#m = try to model TPD with 1-st order process\n\
 	#i = print files info: available masses and T range\n\
+	#v = ask to clear plot after each iteration\n\
 	#\n\
 	")
 endif

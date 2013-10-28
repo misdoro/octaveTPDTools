@@ -1,17 +1,17 @@
 #Iterate through sorted TPD files, call function on each one. returns function call result structure.
-#Uses:	input.filenames,
-#	input.sorted,
+#Uses:	indata.filenames,
+#	indata.sorted,
 #	param.displayT,
 #	param.mass
 #Sets:	cutdat.filename
 #	cutdat.doseintg
 #	cutdat.color
 #Calls: function(cutdat,param,prevresult)
-function result=iterateTpd(input,param,funcName);
+function result=iterateTpd(indata,param,funcName);
 	result.idx=[];
 	counter=0;
-	for idx=1:rows(input.sorted);
-		filename=input.filenames{input.sorted(idx,1)};
+	for idx=1:rows(indata.sorted);
+		filename=indata.filenames{indata.sorted(idx,1)};
 		printf("\n-----------------\n%s\n",filename);
 		load(filename);
 		if (isfield(tpd,"iN"))
@@ -26,6 +26,14 @@ function result=iterateTpd(input,param,funcName);
 				else
 					result=feval(funcName,cutdat,param,result);
 				endif;
+				if (index(param.tools,'C'));
+					if (yes_or_no("clear plot?"))
+						hold off;
+						plot(0,0);
+						hold on;
+					endif
+				endif;
+				
 			else
 				printf("No appropriate data in this file.\n");
 			endif
