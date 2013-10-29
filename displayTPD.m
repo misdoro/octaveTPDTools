@@ -137,10 +137,10 @@ function result=plotInvT(mytpd,param,result);
 	
 	plot(mytpd.invT,mytpd.logi,"linewidth",2,"color",mytpd.color);
 
-	eads=findLogEAds(mytpd);
+	[eads,lnv]=findLogEAds(mytpd);
 	eVKcalmul=23.0609;
 	printf("Eads = %f eV, %f kcal/mol\n",eads,eads*eVKcalmul);
-	
+	lnv
 	txtx=mytpd.invT(1);
 	txty=mytpd.logi(1);
 	text(txtx,txty,strcat("<",num2str(mytpd.idx)));
@@ -190,8 +190,17 @@ function result=drawModel(mytpd,param,result);
 	isc=mytpd.intg/param.monolayer
 	#[Tode,theta, p]=modelTPD1(mytpd.T,isc,0.8e14,0.416);#H2O params
 	#sig=0.9*p*param.monolayer*mytpd.rate
-	[Tode,theta, p]=modelTPD1(mytpd.T,isc,1.2e14,0.187);
-	sig=0.9*p*param.monolayer*mytpd.rate;
+	[Tode,theta, p]=modelTPD1(mytpd.T,5,2e14,0.174,mytpd.rate);#H2O params
+	sig=p*3e-09;
+	#mytpdd=decimateTPD(mytpd,10);
+	#s3=max([0,isc-1])
+	#s3=2.5
+	#s2=min([0.4,isc*0.4])
+	#s1=min([0.6,isc*0.6])
+	#[Tode,theta, p1]=modelTPD1(mytpd.T,s1,2e13,0.201,mytpd.rate);#Xe params
+	#[Tode,theta, p2]=modelTPD1(mytpd.T,s2,2e13,0.187,mytpd.rate);#Xe params
+	#[Tode,theta, p3]=modelTPD1(mytpd.T,s3,1e14,0.14,mytpd.rate);#Xe params
+	#sig=(p1*s1+p2*s2+p3)*param.monolayer*mytpd.rate;
 	plot(Tode,sig);
 	plot(Tode,(mytpd.i-sig),"color","red");
 endfunction
@@ -200,7 +209,7 @@ if (index(param.tools,'m'));
 	figure(++param.figindex);
 	hold on;
 	pkg load odepkg;
-	iterateTpd(indata,param,@drawModel);
+	iterateTpd(indata,param,@fitModel);
 	xlabel("Temperature (K)")
 	ylabel("Desorption signal");
 endif
@@ -228,7 +237,6 @@ endif
 ########################################################
 function result=extractBaseLine(mytpd,param,result,press);
 	result=plotTPD(mytpd,param,result);
-	
 	mytpd.baseLine=interpBaseLine(param.baseLine,mytpd,press);
 	mytpd.i=mytpd.i-mytpd.baseLine;
 	mytpd.color='black';
@@ -250,6 +258,7 @@ To obtain them, do the TPD in position dose and run displayTPD C mass startT end
 		param.baseLine(3) = input("Input pressure scale\n");
 	else
 		baselines(130,1:3)=[2.1123e+00,   1.8871e-10,   2.0016e-02];
+		baselines(40,1:3)=[-6.4   2.6e-10   2.3516e-01];
 		param.baseLine=baselines(param.mass,:);
 	endif;
 	

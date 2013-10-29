@@ -1,4 +1,4 @@
-function [ Tode, theta, p ] = modelTPD1(T,theta0,v,E)
+function [ Tode, theta, p ] = modelTPD1(T,theta0,v,E,rate=3/60)
 % Model TPD curve
 %
 % T - temperatures needed, independent variable
@@ -7,10 +7,9 @@ function [ Tode, theta, p ] = modelTPD1(T,theta0,v,E)
 % E - energy level in electron volts
 
 
-k = 1.38e-23*6.2e18; % (J K^-1)*(eV/J) = eV K^-1 = 8.6e-5 eV K^-1
+k = 1.38e-23*6.24e18; % (J K^-1)*(eV/J) = eV K^-1 = 8.6e-5 eV K^-1
 odepar.ek1=E/k;
-a = 3/60; % K/s, heating rate
-odepar.nuoa=v/a;
+odepar.nuoa=v/rate;
 odepar.myzero=10*eps;
 
 vopt=odeset("NormControl","on","Stats","off");
