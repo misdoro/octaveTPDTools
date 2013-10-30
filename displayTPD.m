@@ -257,7 +257,8 @@ To obtain them, do the TPD in position dose and run displayTPD C mass startT end
 		param.baseLine(2) = input("Input pressure base\n");
 		param.baseLine(3) = input("Input pressure scale\n");
 	else
-		baselines(130,1:3)=[2.1123e+00,   1.8871e-10,   2.0016e-02];
+		#baselines(130,1:3)=[2.1123e+00,   1.8871e-10,   2.0016e-02];
+		baselines(130,1:3)=[2.9660e+00   1.1547e-10   2.0236e-02];
 		baselines(40,1:3)=[-6.4   2.6e-10   2.3516e-01];
 		param.baseLine=baselines(param.mass,:);
 	endif;
