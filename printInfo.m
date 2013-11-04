@@ -4,6 +4,7 @@ function printInfo(input);
 		printf("\n-----------------\n%s\n",filename);
 		load(filename);
 		if (isfield(tpd,"iN"))
+			printf("Dose integral %3.1e A*s\n",dose.integral);
 			printf("Temperature range: %3.1f to %3.1f K\n",min(tpd.T),max(tpd.T));
 			rkm=tpd.rate*60;
 			if (abs(rkm-round(rkm))>0.05)
