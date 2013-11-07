@@ -29,11 +29,11 @@ if (nargin==0)
 	")
 endif
 
-param.monolayer=useArgument(argv(),5,3.2e-09);
-#Xe /crystal
+param.monolayer=3.2e-09;#Xe /crystal
+param.monolayer=1.65e-09;#Xe/HOPG
 #param.monolayer=2e-08;#Xe /amorph 1,2e-6 A*s 100K
 #param.monolayer=1e-5;#H2O
-
+param.monolayer=useArgument(argv(),5,param.monolayer);
 param.displayT.min=useArgument(argv(),3,45);
 param.displayT.max=useArgument(argv(),4,70);
 param.mass=useArgument(argv(),2,130);
@@ -168,7 +168,7 @@ function result=plotEAds(mytpd,param,result);
 	for ai=1:length(tpd.a);
 		#E=-(R_eV/Na).* mytpd.T .*log(mytpd.i ./ ((mytpd.rate*tpd.a(ai)).*cov));
 		E=-(R_eV/Na).* mytpd.T .*log(mytpd.i ./ ((tpd.a(ai)).*cov));
-		plot(cov,log(E),"color",mytpd.color);
+		plot(cov/param.monolayer,E,"color",mytpd.color);
 		text(cov(1),E(1),strcat("<",num2str(mytpd.idx),":",num2str(tpd.a(ai))));
 	end
 endfunction
@@ -219,7 +219,7 @@ endif
 ########################################################
 
 if (index(param.tools,'i'));
-	printInfo(indata);
+	printInfo(indata,param);
 endif
 
 ########################################################
