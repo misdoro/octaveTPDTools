@@ -1,10 +1,11 @@
-function printInfo(input);
+function printInfo(input,param);
 	for idx=1:rows(input.sorted);
 		filename=input.filenames{input.sorted(idx,1)};
 		printf("\n-----------------\n%s\n",filename);
 		load(filename);
 		if (isfield(tpd,"iN"))
 			printf("Dose integral %3.1e A*s\n",dose.integral);
+			printf("Estimated coverage %3.1f ML\n",tpd.integral/param.monolayer)
 			printf("Temperature range: %3.1f to %3.1f K\n",min(tpd.T),max(tpd.T));
 			rkm=tpd.rate*60;
 			if (abs(rkm-round(rkm))>0.05)
