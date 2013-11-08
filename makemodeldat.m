@@ -4,24 +4,44 @@
 par.mids=[0 130]
 
 par.rate=3/60;
-par.np=300;
-par.minT=30;
+par.np=321;
+par.minT=45;
 par.maxT=80;
-par.theta=0.5;
-par.v=1e14;
+par.theta=0.4;
+par.v=3.7e+11;
 par.E=0.160;
 par.monolay=2e-9;
 
 pkg load odepkg
 
+function press=calcP1(tpd,parv)
+	[T,theta,p0]=modelTPD1(tpd.T,parv(2),parv(1),parv(4),tpd.rate);
+	press=p0*parv(3);
+endfunction;
+
+function ptotn=calcPn(tpd,parv)
+	#Sum of tpds with variable parameters
+	numsim=10;
+	pars=parv;
+	pars(3)=parv(3)/numsim;
+	parm=repmat(pars,numsim,1);
+	parspr=0.01;
+	parm(:,4)=linspace(pars(4)-parspr,pars(4)+parspr,numsim);
+
+	ptotn=zeros(length(tpd.T),1);
+	for i=1:numsim
+		ptotn+=calcP1(tpd,parm(i,:));
+	endfor
+endfunction;
+
 tpd.mids=par.mids;
 tpd.rate=par.rate;
-tpd.t=linspace(0,par.np*par.rate,par.np)';
+maxt=(par.maxT-par.minT)/par.rate
+tpd.t=linspace(0,maxt,par.np)';
 tpd.T=linspace(par.minT,par.maxT,par.np)';
 
-
-[To,th,p]=modelTPD1(tpd.T,par.theta,par.v,par.E,tpd.rate);
-tpd.i=p*par.monolay*par.rate;
+parv=[par.v,par.theta,par.monolay*par.rate,par.E];
+tpd.i=calcP1(tpd,parv);
 
 tpd.iN=tpd.i;
 press.t=tpd.t+0.1;
