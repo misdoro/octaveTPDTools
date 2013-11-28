@@ -15,6 +15,7 @@ if (nargin==0)
 	#Usage: display.m actions mass startTemp endTemp monolayer \n\
 	#Actions:\n\
 	#d = plot TPDs\n\
+	#n = use index-based colors\n\
 	#s = surf TPDs\n\
 	#p = plot pressure\n\
 	#c = plot pressure-corrected TPDs\n\
@@ -166,7 +167,6 @@ function result=plotEAds(mytpd,param,result);
 	source("~/octave/constants.m");
 	cov=mytpd.intg-cumtrapz(mytpd.t,mytpd.i);
 	for ai=1:length(tpd.a);
-		#E=-(R_eV/Na).* mytpd.T .*log(mytpd.i ./ ((mytpd.rate*tpd.a(ai)).*cov));
 		E=-(R_eV/Na).* mytpd.T .*log(mytpd.i ./ ((tpd.a(ai)).*cov));
 		plot(cov/param.monolayer,E,"color",mytpd.color);
 		text(cov(1),E(1),strcat("<",num2str(mytpd.idx),":",num2str(tpd.a(ai))));
@@ -179,6 +179,7 @@ if (index(param.tools,'e'))
 	ret3=iterateTpd(indata,param,@plotEAds);
 	ylabel("Eads estimation")
 	xlabel("Coverage")
+	print(param.figindex,"eadsest.png","-dpng","-r300");
 endif
 
 #####################################################

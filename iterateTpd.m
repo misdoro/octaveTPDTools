@@ -19,7 +19,12 @@ function result=iterateTpd(indata,param,funcName);
 			cutdat.doseintg=dose.integral;
 			cutdat.filename=filename;
 			if (length(cutdat.i)>0)
-				cutdat.color=getLineColor(cutdat.intg,param.monolayer);
+				if (index(param.tools,'n'))
+					colors=["black";"cyan";"green";"magenta";"red";"yellow"];
+					cutdat.color=colors(idx);
+				else
+					cutdat.color=getLineColor(cutdat.intg,param.monolayer);
+				endif;
 				cutdat.idx=++counter;
 				if (isfield(tpd,"version") && tpd.version>=20131025);
 					result=feval(funcName,cutdat,param,result,press);
