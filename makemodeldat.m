@@ -7,10 +7,10 @@ par.rate=3/60;
 par.np=321;
 par.minT=45;
 par.maxT=80;
-par.theta=0.4;
+par.theta=0.52;
 par.v=3.7e+11;
-par.E=0.160;
-par.monolay=2e-9;
+par.E=0.163;
+par.monolay=2e-8;
 
 pkg load odepkg
 
@@ -25,8 +25,10 @@ function ptotn=calcPn(tpd,parv)
 	pars=parv;
 	pars(3)=parv(3)/numsim;
 	parm=repmat(pars,numsim,1);
-	parspr=0.01;
-	parm(:,4)=linspace(pars(4)-parspr,pars(4)+parspr,numsim);
+	espr=0.007;
+	cspr=0.001;
+	parm(:,4)=linspace(pars(4)-espr,pars(4)+espr,numsim);
+	parm(:,2)=linspace(pars(2)-cspr,pars(2)+cspr,numsim)
 
 	ptotn=zeros(length(tpd.T),1);
 	for i=1:numsim
@@ -41,7 +43,7 @@ tpd.t=linspace(0,maxt,par.np)';
 tpd.T=linspace(par.minT,par.maxT,par.np)';
 
 parv=[par.v,par.theta,par.monolay*par.rate,par.E];
-tpd.i=calcP1(tpd,parv);
+tpd.i=calcPn(tpd,parv);
 
 tpd.iN=tpd.i;
 press.t=tpd.t+0.1;
@@ -69,5 +71,7 @@ if (nargin>=1);
 		tpd.version=20131025;
 		save("-binary",filename,"tpd","dose","press");
 	endif
+else
+	printf("Usage: modelTPD filename")
 endif
 
