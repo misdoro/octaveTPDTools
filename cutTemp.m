@@ -11,5 +11,9 @@ function result=cutTemp(struct,cutT);
 		maxidx=numpoints;
 	endif;
 	
+	if (minidx>maxidx)
+		minidx=max(max(find(struct.T(1:maxidx)<=cutT.min)),1);
+	endif;
+	
 	result=cutIndex(struct,numpoints,minidx,maxidx);
 endfunction
