@@ -26,6 +26,7 @@ if (nargin==0)
 	#m = try to model TPD with 1-st order process\n\
 	#i = print files info: available masses and T range\n\
 	#v = ask to clear plot after each iteration\n\
+	#T = treat isotherm desorption\n\
 	#\n\
 	")
 endif
@@ -231,6 +232,16 @@ if (index(param.tools,'C'));
 	figure(++param.figindex);
 	hold on;
 	baseparam=iterateTpd(indata,param,@calibrateBaseLine);
+endif
+
+########################################################
+# Calibrate pressure-qms offset and scaling            #
+########################################################
+	
+if (index(param.tools,'T'));
+	figure(++param.figindex);
+	hold on;
+	baseparam=iterateTpd(indata,param,@treatIsotherm);
 endif
 
 ########################################################
