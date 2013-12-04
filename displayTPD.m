@@ -62,6 +62,7 @@ function result=plotTPD(mytpd,param,result);
 	result=retAppend(result,"legend",legendtext);
 	result=retAppend(result,"doses",mytpd.doseintg);
 	result=retAppend(result,"integrals",mytpd.intg);
+	printf("TPD integral: %.3e\n",mytpd.intg);
 endfunction
 
 if (index(param.tools,'d'))
