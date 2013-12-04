@@ -4,7 +4,7 @@ function printInfo(input,param);
 		printf("\n-----------------\n%s\n",filename);
 		load(filename);
 		if (isfield(tpd,"iN"))
-			printf("Dose integral %3.1e A*s\n",dose.integral);
+			printf("Dose %3.1e A*s, at %3.1f K\n",dose.integral,dose.T);
 			printf("Estimated coverage %3.1f ML\n",tpd.integral/param.monolayer)
 			printf("Temperature range: %3.1f to %3.1f K\n",min(tpd.T),max(tpd.T));
 			rkm=tpd.rate*60;
