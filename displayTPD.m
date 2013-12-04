@@ -252,6 +252,7 @@ function result=extractBaseLine(mytpd,param,result,press);
 	result=plotTPD(mytpd,param,result);
 	mytpd.baseLine=interpBaseLine(param.baseLine,mytpd,press);
 	mytpd.i=mytpd.i-mytpd.baseLine;
+	printf("Corrected TPD integral %.3e\n",trapz(mytpd.t, mytpd.i));
 	mytpd.color='black';
 	result=plotTPD(mytpd,param,result);
 	result.Ts{mytpd.idx}=mytpd.T;
@@ -272,12 +273,14 @@ To obtain them, do the TPD in position dose and run displayTPD C mass startT end
 	else
 		#baselines(130,1:3)=[2.1123e+00,   1.8871e-10,   2.0016e-02];
 		baselines(130,1:3)=[2.9660e+00   1.1547e-10   2.0236e-02];
+		baselines(84,1:3)=[-1.1146e+01   1.0841e-10   8.2433e-02];
 		baselines(40,1:3)=[-6.4   2.6e-10   2.3516e-01];
 		param.baseLine=baselines(param.mass,:);
 	endif;
 	
 	fixedbase=iterateTpd(indata,param,@extractBaseLine);
 	
+	print(param.figindex,"baselinefix.png","-dpng","-r300");
 endif
 
 drawnow();
