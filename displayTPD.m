@@ -76,7 +76,7 @@ if (index(param.tools,'d'))
 		legend("boxon");
 		legend(ret.legend);
 	endif;
-	print(param.fig.disp,"desorption.png","-dpng","-r300");
+	
 	
 	#Plot doses
 	if (isfield(ret,"doses"))
@@ -167,7 +167,7 @@ if (index(param.tools,'l'))
 	
 	iterateTpd(indata,param,@plotInvT);
 	
-	print(param.fig.log,"logplot.png","-dpng","-r300");
+	
 	
 endif;
 
@@ -177,7 +177,7 @@ endif;
 ##################################################
 
 function result=plotEAds(mytpd,param,result);
-	tpd.a=[1e10, 1e11, 1e12, 1e13, 1e14, 1e15];
+	tpd.a=[1e11,  1e13, 1e15];
 	source("~/octave/constants.m");
 	cov=mytpd.intg-cumtrapz(mytpd.t,mytpd.i);
 	for ai=1:length(tpd.a);
@@ -191,7 +191,7 @@ if (index(param.tools,'e'))
 	figure(++param.figindex);
 	hold on;
 	ret3=iterateTpd(indata,param,@plotEAds);
-	ylabel("Eads estimation")
+	ylabel("Ea estimation")
 	xlabel("Coverage")
 	print(param.figindex,"eadsest.png","-dpng","-r300");
 endif
@@ -296,4 +296,16 @@ To obtain them, do the TPD in position dose and run displayTPD C mass startT end
 endif
 
 drawnow();
+
+#Save all figures in the end, since they may be updated during the processing
+if(isfield(param,"fig"))
+	if (isfield(param.fig,"disp"))
+		print(param.fig.disp,"desorption.png","-dpng","-r300");
+		printf("Saved desorption image\n");
+	endif;
+	if (isfield(param.fig,"log"))
+		print(param.fig.log,"logplot.png","-dpng","-r300");
+		printf("Saved log fit image\n");
+	endif;
+endif;
 
