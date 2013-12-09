@@ -1,4 +1,4 @@
-function [eads,lnv]=findLogEAds(mytpd)
+function [eads,lnv,win]=findLogEAds(mytpd)
 %
 % Find Eads from linear regression of log(i) over 1/T plot
 % Algorithm may well be improved!
@@ -11,7 +11,7 @@ function [eads,lnv]=findLogEAds(mytpd)
 	win.iendmax=maxdi;
 	win.np=maxdi;
 	win.bstep=10;
-	win.minw=30;
+	win.minw=80;
 	delta=0.0001;
 	pf=[0,0];
 	rmsv=1;
