@@ -11,6 +11,7 @@ par.theta=0.52;
 par.v=3.7e+11;
 par.E=0.163;
 par.monolay=2e-8;
+par.bline=1e-13;
 
 pkg load odepkg
 
@@ -43,7 +44,7 @@ tpd.t=linspace(0,maxt,par.np)';
 tpd.T=linspace(par.minT,par.maxT,par.np)';
 
 parv=[par.v,par.theta,par.monolay*par.rate,par.E];
-tpd.i=calcPn(tpd,parv);
+tpd.i=calcPn(tpd,parv)+par.bline;
 
 tpd.iN=tpd.i;
 press.t=tpd.t+0.1;
