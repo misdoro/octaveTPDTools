@@ -66,7 +66,8 @@ function result=plotTPD(mytpd,param,result);
 endfunction
 
 if (index(param.tools,'d'))
-	figure(++param.figindex);
+	param.fig.disp=++param.figindex;
+	figure(param.fig.disp);
 	hold on;
 	ret=iterateTpd(indata,param,@plotTPD);
 	ylabel("Desorption flow (arb.u.)");
@@ -75,13 +76,14 @@ if (index(param.tools,'d'))
 		legend("boxon");
 		legend(ret.legend);
 	endif;
-	print(param.figindex,"desorption.png","-dpng","-r300");
+	print(param.fig.disp,"desorption.png","-dpng","-r300");
 	
 	#Plot doses
 	if (isfield(ret,"doses"))
-		figure(++param.figindex)
+		param.fig.doses=++param.figindex;
+		figure(param.fig.doses);
 		plotDoses(ret);
-		print(param.figindex,"sticking.png","-dpng","-r300");
+		print(param.fig.doses,"sticking.png","-dpng","-r300");
 	endif;
 endif;
 
@@ -138,25 +140,35 @@ function result=plotInvT(mytpd,param,result);
 	mytpd.invT=1./mytpd.T;
 	mytpd.logi=log(mytpd.i);
 	
+	figure(param.fig.log);
 	plot(mytpd.invT,mytpd.logi,"linewidth",2,"color",mytpd.color);
 
-	[eads,lnv]=findLogEAds(mytpd);
+	[eads,lnv,win]=findLogEAds(mytpd);
 	eVKcalmul=23.0609;
 	printf("Eads = %f eV, %f kcal/mol\n",eads,eads*eVKcalmul);
-	lnv
 	txtx=mytpd.invT(1);
 	txty=mytpd.logi(1);
 	text(txtx,txty,strcat("<",num2str(mytpd.idx)));
 	
+	if(isfield(param,"fig") && isfield(param.fig,"disp"))
+		figure(param.fig.disp);
+		plot(mytpd.T(win.istart),mytpd.i(win.istart),"o");
+		plot(mytpd.T(win.iend),mytpd.i(win.iend),"o");
+	endif;
+	
 endfunction
 
 if (index(param.tools,'l'))
-	figure(++param.figindex);
+	param.fig.log=++param.figindex;
+	figure(param.fig.log);
 	hold on;
-	ret2=iterateTpd(indata,param,@plotInvT);
 	ylabel("log(i)")
 	xlabel("Inverse Temperature (1/T)")
-	print(param.figindex,"logplot.png","-dpng","-r300");
+	
+	iterateTpd(indata,param,@plotInvT);
+	
+	print(param.fig.log,"logplot.png","-dpng","-r300");
+	
 endif;
 
 
