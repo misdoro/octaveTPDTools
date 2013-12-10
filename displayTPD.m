@@ -33,7 +33,7 @@ endif
 
 param.monolayer=3.2e-09;#Xe /crystal
 param.monolayer=1.65e-09;#Xe/HOPG
-#param.monolayer=2e-08;#Xe /amorph 1,2e-6 A*s 100K
+param.monolayer=2e-08;#Xe /amorph 1,2e-6 A*s 100K
 #param.monolayer=1e-5;#H2O
 param.monolayer=useArgument(argv(),5,param.monolayer);
 param.displayT.min=useArgument(argv(),3,45);
@@ -123,7 +123,7 @@ if (index(param.tools,'p'))
 	figure(++param.figindex);
 	hold on;
 	ret=iterateTpd(indata,param,@plotP);
-	ylabel("Pressure, torr");
+	ylabel("Pressure (torr)");
 	xlabel("Temperature (K)");
 	if (isfield(ret,"legend"))
 		legend("boxon");
@@ -177,23 +177,27 @@ endif;
 ##################################################
 
 function result=plotEAds(mytpd,param,result);
-	tpd.a=[1e11,  1e13, 1e15];
+	tpd.a=[1e11, 1e13, 1e15];
 	source("~/octave/constants.m");
 	cov=mytpd.intg-cumtrapz(mytpd.t,mytpd.i);
 	for ai=1:length(tpd.a);
 		E=-(R_eV/Na).* mytpd.T .*log(mytpd.i ./ ((tpd.a(ai)).*cov));
 		plot(cov/param.monolayer,E,"color",mytpd.color);
-		text(cov(1),E(1),strcat("<",num2str(mytpd.idx),":",num2str(tpd.a(ai))));
+		if (mytpd.idx==1)
+			[maxE,maxEpos]=max(E);
+			txt=strcat("<",num2str(mytpd.idx),":",num2str(tpd.a(ai)));
+			text(cov(maxEpos),maxE,txt);
+		endif;
 	end
 endfunction
 
 if (index(param.tools,'e'))
-	figure(++param.figindex);
+	param.fig.eads=++param.figindex;
+	figure(param.fig.eads);
 	hold on;
+	ylabel("Ea (eV)")
+	xlabel("Coverage (ML)")
 	ret3=iterateTpd(indata,param,@plotEAds);
-	ylabel("Ea estimation")
-	xlabel("Coverage")
-	print(param.figindex,"eadsest.png","-dpng","-r300");
 endif
 
 #####################################################
@@ -297,6 +301,7 @@ endif
 
 drawnow();
 
+input("Adjust figures if needed, then press enter to save");
 #Save all figures in the end, since they may be updated during the processing
 if(isfield(param,"fig"))
 	if (isfield(param.fig,"disp"))
@@ -306,6 +311,10 @@ if(isfield(param,"fig"))
 	if (isfield(param.fig,"log"))
 		print(param.fig.log,"logplot.png","-dpng","-r300");
 		printf("Saved log fit image\n");
+	endif;
+	if (isfield(param.fig,"eads"))
+		print(param.fig.eads,"eadsest.png","-dpng","-r300");
+		printf("Saved Ea inversion image\n");
 	endif;
 endif;
 
