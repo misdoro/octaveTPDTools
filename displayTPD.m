@@ -1,4 +1,4 @@
-#!/usr/bin/octave --persist
+#!/usr/bin/octave --q
 #Arguments: mid, min T, max T, display, monolayer
 
 indata.filenames=findDatFiles(pwd);
@@ -301,9 +301,10 @@ endif
 
 drawnow();
 
-input("Adjust figures if needed, then press enter to save");
+
 #Save all figures in the end, since they may be updated during the processing
 if(isfield(param,"fig"))
+	input("Adjust figures if needed, then press enter to save");
 	if (isfield(param.fig,"disp"))
 		print(param.fig.disp,"desorption.png","-dpng","-r300");
 		printf("Saved desorption image\n");
@@ -317,4 +318,5 @@ if(isfield(param,"fig"))
 		printf("Saved Ea inversion image\n");
 	endif;
 endif;
+exit(0);
 
