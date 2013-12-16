@@ -246,13 +246,14 @@ endif
 ########################################################
 	
 if (index(param.tools,'C'));
-	figure(++param.figindex);
+	param.fig.blcalib=++param.figindex;
+	figure(param.fig.blcalib);
 	hold on;
 	baseparam=iterateTpd(indata,param,@calibrateBaseLine);
 endif
 
 ########################################################
-# Calibrate pressure-qms offset and scaling            #
+# Experimental isotherm treatment, not complete        #
 ########################################################
 	
 if (index(param.tools,'T'));
@@ -276,7 +277,8 @@ function result=extractBaseLine(mytpd,param,result,press);
 endfunction;
 
 if (index(param.tools,'c'));
-	figure(++param.figindex);
+	param.fig.blf=++param.figindex;
+	figure(param.fig.blf);
 	hold on;
 	param.baseLine=[0,0,0];
 	if (index(param.tools,'I'));% Interactive parameters
@@ -290,13 +292,14 @@ To obtain them, do the TPD in position dose and run displayTPD C mass startT end
 		#baselines(130,1:3)=[2.1123e+00,   1.8871e-10,   2.0016e-02];
 		baselines(130,1:3)=[2.9660e+00   1.1547e-10   2.0236e-02];
 		baselines(84,1:3)=[-1.1146e+01   1.0841e-10   8.2433e-02];
+		baselines(84,1:3)=[2.5799e+00   7.2170e-11   5.8502e-02];
 		baselines(40,1:3)=[-6.4   2.6e-10   2.3516e-01];
 		param.baseLine=baselines(param.mass,:);
 	endif;
 	
 	fixedbase=iterateTpd(indata,param,@extractBaseLine);
 	
-	print(param.figindex,"baselinefix.png","-dpng","-r300");
+	
 endif
 
 drawnow();
@@ -316,6 +319,14 @@ if(isfield(param,"fig"))
 	if (isfield(param.fig,"eads"))
 		print(param.fig.eads,"eadsest.png","-dpng","-r300");
 		printf("Saved Ea inversion image\n");
+	endif;
+	if (isfield(param.fig,"blf"))
+		print(param.fig.blf,"baselinefix.png","-dpng","-r300");
+		printf("Saved the baseline-corrected image\n");
+	endif;
+	if (isfield(param.fig,"blcalib"))
+		print(param.fig.blcalib,"baselinecal.png","-dpng","-r300");
+		printf("Saved the baseline calibration image\n");
 	endif;
 endif;
 exit(0);
