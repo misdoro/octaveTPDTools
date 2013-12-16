@@ -307,7 +307,7 @@ drawnow();
 
 #Save all figures in the end, since they may be updated during the processing
 if(isfield(param,"fig"))
-	input("Adjust figures if needed, then press enter to save");
+	input("Adjust figures if needed, then press enter to save, ctrl-c to exit");
 	if (isfield(param.fig,"disp"))
 		print(param.fig.disp,"desorption.png","-dpng","-r300");
 		printf("Saved desorption image\n");
