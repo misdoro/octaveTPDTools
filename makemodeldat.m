@@ -1,15 +1,15 @@
 #!/usr/bin/octave --persist
 #Model a TPD dat file
 
-par.mids=[0 130]
+par.mids=[0 84]
 
-par.rate=3/60;
+par.rate=1/60;
 par.np=321;
-par.minT=45;
-par.maxT=80;
-par.theta=0.8;
+par.minT=25;
+par.maxT=60;
+par.theta=0.16;
 par.v=3.7e+11;
-par.E=0.163;
+par.E=0.11;
 par.monolay=2e-8;
 par.bline=1e-13;
 

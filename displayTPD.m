@@ -51,7 +51,11 @@ pkg load optim;
 function result=plotTPD(mytpd,param,result);
 	
 	mytpd.i_sm=supsmu(mytpd.T,mytpd.i,'spa',0.005);
-	plot(mytpd.T,mytpd.i_sm,"linewidth",2,"color",mytpd.color);
+	ls="-";
+	if (isfield(mytpd,"model"));
+		ls="--";
+	endif;
+	plot(mytpd.T,mytpd.i_sm,"linewidth",2,"linestyle",ls,"color",mytpd.color);
 	
 	[maxi,maxidx]=max(mytpd.i_sm);
 	maxT=mytpd.T(maxidx);
