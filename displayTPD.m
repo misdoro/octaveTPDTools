@@ -210,29 +210,9 @@ if (index(param.tools,'e'))
 	ret3=iterateTpd(indata,param,@plotEAds);
 endif
 
-#####################################################
-# Basic TPD modeling, should use log fit parameters #
-#####################################################
-
-function result=drawModel(mytpd,param,result);
-	result=plotTPD(mytpd,param,result);
-	isc=mytpd.intg/param.monolayer
-	#[Tode,theta, p]=modelTPD1(mytpd.T,isc,0.8e14,0.416);#H2O params
-	#sig=0.9*p*param.monolayer*mytpd.rate
-	[Tode,theta, p]=modelTPD1(mytpd.T,5,2e14,0.174,mytpd.rate);#H2O params
-	sig=p*3e-09;
-	#mytpdd=decimateTPD(mytpd,10);
-	#s3=max([0,isc-1])
-	#s3=2.5
-	#s2=min([0.4,isc*0.4])
-	#s1=min([0.6,isc*0.6])
-	#[Tode,theta, p1]=modelTPD1(mytpd.T,s1,2e13,0.201,mytpd.rate);#Xe params
-	#[Tode,theta, p2]=modelTPD1(mytpd.T,s2,2e13,0.187,mytpd.rate);#Xe params
-	#[Tode,theta, p3]=modelTPD1(mytpd.T,s3,1e14,0.14,mytpd.rate);#Xe params
-	#sig=(p1*s1+p2*s2+p3)*param.monolayer*mytpd.rate;
-	plot(Tode,sig);
-	plot(Tode,(mytpd.i-sig),"color","red");
-endfunction
+#######################################################
+# TPD modeling, uses (user-defined) function fitModel #
+#######################################################
 
 if (index(param.tools,'m'));
 	figure(++param.figindex);
