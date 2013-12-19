@@ -27,6 +27,7 @@ if (nargin==0)
 	#i = print files info: available masses and T range\n\
 	#v = ask to clear plot after each iteration\n\
 	#T = treat isotherm desorption\n\
+	#x = extract the min(i) from the data\n\
 	#\n\
 	")
 endif
@@ -49,12 +50,17 @@ pkg load optim;
 # Plot TPD
 #################################################
 function result=plotTPD(mytpd,param,result);
-	
+	mini=min(mytpd.i);
 	mytpd.i_sm=supsmu(mytpd.T,mytpd.i,'spa',0.005);
+	
 	ls="-";
 	if (isfield(mytpd,"model"));
-		ls="--";
+		ls=":";
 	endif;
+	if (index(param.tools,'x'))
+		mytpd.i_sm-=mini;
+	endif;
+	
 	plot(mytpd.T,mytpd.i_sm,"linewidth",2,"linestyle",ls,"color",mytpd.color);
 	
 	[maxi,maxidx]=max(mytpd.i_sm);
@@ -313,7 +319,7 @@ drawnow();
 if(isfield(param,"fig"))
 	input("Adjust figures if needed, then press enter to save, ctrl-c to exit");
 	if (isfield(param.fig,"disp"))
-		print(param.fig.disp,"desorption.png","-dpng","-r300");
+		print(param.fig.disp,"desorption.ps","-depsc","-r300");
 		printf("Saved desorption image\n");
 	endif;
 	if (isfield(param.fig,"log"))
