@@ -25,10 +25,16 @@ endif;
 
 
 pkg load odepkg
+pkg load general
 
 function press=calcP1(tpd,parv)
 	[T,theta,p0]=modelTPD1(tpd.T,parv(2),parv(1),parv(4),tpd.rate);
 	press=p0*parv(3);
+endfunction;
+
+function press=calcP1a(para)
+	[T,theta,p0]=modelTPD1(para.T,para.b,para.a,para.d,para.rate);
+	press=p0*para.c;
 endfunction;
 
 function ptotn=calcPn(tpd,parv,par)
@@ -42,10 +48,18 @@ function ptotn=calcPn(tpd,parv,par)
 	parm(:,4)=linspace(pars(4)-espr,pars(4)+espr,numsim);
 	parm(:,2)=linspace(pars(2)-cspr,pars(2)+cspr,numsim);
 
-	ptotn=zeros(length(tpd.T),1);
 	for i=1:numsim
-		ptotn+=calcP1(tpd,parm(i,:));
+		para(i).a=parm(i,1);
+		para(i).b=parm(i,2);
+		para(i).c=parm(i,3);
+		para(i).d=parm(i,4);
+		para(i).T=tpd.T;
+		para(i).rate=tpd.rate;
+		
 	endfor
+	tic();
+	ptotn=sum(pararrayfun(2,@calcP1a,para),2);
+	toc()
 endfunction;
 
 tpd.mids=par.mids;
@@ -55,8 +69,8 @@ tpd.t=linspace(0,maxt,par.np)';
 tpd.T=linspace(par.minT,par.maxT,par.np)';
 
 parv=[par.v,par.theta,par.monolay*par.rate,par.E];
-tpd.i=calcP1(tpd,parv)+par.bline;
-#tpd.i=calcPn(tpd,parv,par)+par.bline;
+#tpd.i=calcP1(tpd,parv)+par.bline;
+tpd.i=calcPn(tpd,parv,par)+par.bline;
 
 tpd.iN=tpd.i;
 press.t=tpd.t+0.1;
@@ -88,3 +102,4 @@ else
 	printf("Usage: modelTPD filename")
 endif
 
+#exit(0);

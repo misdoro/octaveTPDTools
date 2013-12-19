@@ -14,9 +14,9 @@ odepar.myzero=10*eps;
 
 vopt=odeset("NormControl","on","Stats","off");
 
-tic();
+#tic();
 ret=ode45(@odemlde,T,theta0,vopt,odepar);
-toc()
+#toc()
 
 if (isfield(ret,"stats"))
 	ret.stats
