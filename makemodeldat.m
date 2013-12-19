@@ -58,7 +58,7 @@ function ptotn=calcPn(tpd,parv,par)
 		
 	endfor
 	tic();
-	ptotn=sum(pararrayfun(2,@calcP1a,para),2);
+	ptotn=sum(pararrayfun(3,@calcP1a,para),2);
 	toc()
 endfunction;
 
