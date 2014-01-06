@@ -16,19 +16,13 @@ of=@(x,t) odemlde(x,t,odepar);
 
 theta=lsode(of,theta0,T);
 
-
-#if (isfield(ret,"stats"))
-#	ret.stats
-#endif
 if (rows(T)>1)
 	Tode=T;
 else
 	Tode=T';
 endif;
-#theta=ret.y;
 
 p=-arrayfun(@odemlde,theta,Tode,odepar);
-
 
 endfunction;
 
