@@ -12,13 +12,9 @@ odepar.ek1=E/k;
 odepar.nuoa=v/rate;
 odepar.myzero=10*eps;
 
-global odparam=odepar;
+of=@(x,t) odemlde(x,t,odepar);
 
-
-tic();
-theta=lsode(@odemlde,theta0,T);
-printf("lsode time:")
-toc()
+theta=lsode(of,theta0,T);
 
 
 #if (isfield(ret,"stats"))
@@ -30,14 +26,14 @@ else
 	Tode=T';
 endif;
 #theta=ret.y;
-p=-arrayfun(@odemlde,theta,Tode);
+
+p=-arrayfun(@odemlde,theta,Tode,odepar);
+
 
 endfunction;
 
 #ODE for multilayer desorption, zero order, then first order
-function dthetadT = odemlde(theta,T)
-	global odparam;
-	param=odparam;
+function dthetadT = odemlde(theta,T,param)
 	nuovera=param.nuoa;
 	Ek1=param.ek1;
 	Eoverk=param.ek1;
