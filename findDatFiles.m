@@ -6,7 +6,7 @@ function result=findDatFiles(directory)
 	result={};
 
 	for idx=1:length(files);
-		if (regexpi(files{idx},".dat$")>1)
+		if (regexpi(files{idx},"\\.dat$")>1 && ~isdir(files{idx}))
 			result=[result,files{idx}];
 		endif
 	end;
