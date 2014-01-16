@@ -19,12 +19,7 @@ par.ls=1;
 par.parallel=3;
 
 
-[f.info, f.err, f.msg]=stat("param.m");
-if (f.err>=0);
-	printf("Loading param\n");
-	source("param.m");
-endif;
-
+par=loadParamFile(par);
 
 pkg load odepkg
 pkg load general
