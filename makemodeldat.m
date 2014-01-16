@@ -15,7 +15,7 @@ par.Es=0.007;
 par.monolay=2e-8;
 par.bline=1e-13;
 par.numsim=10;
-
+par.ls=1;
 par.parallel=3;
 
 
@@ -28,6 +28,16 @@ endif;
 
 pkg load odepkg
 pkg load general
+
+function press=calcP1o(tpd,parv)
+	[T,theta,p0]=modelTPD1(tpd.T,parv(2),parv(1),parv(4),tpd.rate);
+	press=p0*parv(3);
+endfunction;
+
+function press=calcP1ao(para)
+	[T,theta,p0]=modelTPD1(para.T,para.b,para.a,para.d,para.rate);
+	press=p0*para.c;
+endfunction;
 
 function press=calcP1(tpd,parv)
 	[T,theta,p0]=modelTPDlsode(tpd.T,parv(2),parv(1),parv(4),tpd.rate);
@@ -56,7 +66,11 @@ function ptotn=calcPn(tpd,parv,par)
 		ptotn=zeros(length(tpd.T),1);
 	
 		for i=1:numsim
-			ptotn+=calcP1(tpd,parm(i,:));
+			if (par.ls==1);
+				ptotn+=calcP1(tpd,parm(i,:));
+			else
+				ptotn+=calcP1o(tpd,parm(i,:));
+			endif
 		endfor
 		toc()
 	else
@@ -70,7 +84,11 @@ function ptotn=calcPn(tpd,parv,par)
 			para(i).T=tpd.T;
 			para(i).rate=tpd.rate;
 		endfor
-		ptotn=sum(pararrayfun(par.parallel,@calcP1a,para),2);
+		if (par.ls==1);
+			ptotn=sum(pararrayfun(par.parallel,@calcP1a,para),2);
+		else
+			ptotn=sum(pararrayfun(par.parallel,@calcP1ao,para),2);
+		endif;
 		toc()
 	endif;
 endfunction;
@@ -115,4 +133,4 @@ else
 	printf("Usage: modelTPD filename")
 endif
 
-#exit(0);
+exit(0);
