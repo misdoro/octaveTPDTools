@@ -10,7 +10,7 @@ function [ Tode, theta, p ] = modelTPD1(T,theta0,v,E,rate=3/60)
 k = 1.38e-23*6.24e18; % (J K^-1)*(eV/J) = eV K^-1 = 8.6e-5 eV K^-1
 odepar.ek1=E/k;
 odepar.nuoa=v/rate;
-odepar.myzero=10*eps;
+odepar.myzero=eps;
 
 vopt=odeset("NormControl","on","Stats","off");
 
