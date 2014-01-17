@@ -33,6 +33,7 @@ fitT.max=max(press.T)-10;
 
 
 fit=fitTempSlope(press.t,press.T,fitT);
+press.To=press.T;
 press.T=fit.points;
 press.Tfp=fit.poly;
 tpd.rate=fit.poly(1);
@@ -72,7 +73,7 @@ dose=dose_out;
 if (nargin>=1);
 	filename=argv(){1};
 	if (!isempty(strfind(filename,".dat" )))
-		tpd.version=20131025;
+		tpd.version=20140117;
 		save("-binary",filename,"tpd","dose","press");
 		
 		comb=[tpd.t,tpd.T,tpd.i,tpd.pi];
