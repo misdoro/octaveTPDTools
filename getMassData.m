@@ -2,7 +2,7 @@
 function result = getMassData(tpd,Trange,mass);
 	massidx=find(tpd.mids==mass);
 	zerosi=min(find(tpd.mids>0));
-	if (massidx>1)
+	if (massidx>=1)
 		result=tpd;
 		result.i=tpd.iN(:,massidx-zerosi+1);
 		result=cutTemp(result,Trange);
