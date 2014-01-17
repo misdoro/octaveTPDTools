@@ -1,4 +1,4 @@
-#!/usr/bin/octave --persist
+#!/usr/bin/octave -q
 #Arguments: mid, min T, max T, display, monolayer
 
 indata.filenames=findDatFiles(pwd);
@@ -37,9 +37,15 @@ param.monolayer=1.65e-09;#Xe/HOPG
 param.monolayer=2e-08;#Xe /amorph 1,2e-6 A*s 100K
 #param.monolayer=1e-5;#H2O
 param.monolayer=useArgument(argv(),5,param.monolayer);
-param.displayT.min=useArgument(argv(),3,45);
-param.displayT.max=useArgument(argv(),4,70);
-param.mass=useArgument(argv(),2,130);
+
+#By default, use the first MID and available temperature range from the first input file.
+param=getFileInfo(indata,param);
+param.displayT.min=useArgument(argv(),3,param.displayT.min);
+param.displayT.max=useArgument(argv(),4,param.displayT.max);
+param.mass=useArgument(argv(),2,param.mass);
+
+printf("Displayed temperature: %.2f to %.2f K\nDisplayed MID: %d\n",param.displayT.min,param.displayT.max,param.mass);
+
 
 param.tools=useArgument(argv(),1,"i");
 param.figindex=0;%Current figure index, to be autoincremented by processings
