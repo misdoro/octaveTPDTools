@@ -9,27 +9,25 @@ indata.sorted=sortrows(indata.doses,2);
 
 if (nargin==0)
 	printf("\n\
-	#\n\
-	#\n\
-	#\n\
-	#Usage: display.m actions mass startTemp endTemp monolayer \n\
-	#Actions:\n\
-	#d = plot TPDs\n\
-	#n = use index-based colors\n\
-	#s = surf TPDs\n\
-	#p = plot pressure\n\
-	#c = plot pressure-corrected TPDs\n\
-	#C = calibrate pressure correction\n\
-	#I = interactive parameters\n\
-	#l = log plot of i over 1/T\n\
-	#e = energy estimation using inversion plot over coverage\n\
-	#m = try to model TPD with 1-st order process\n\
-	#i = print files info: available masses and T range\n\
-	#v = ask to clear plot after each iteration\n\
-	#T = treat isotherm desorption\n\
-	#x = extract the min(i) from the data\n\
-	#\n\
-	")
+	################################################################\n\
+	# TPD data treatment program, LPMAA/LERMA, UPMC, Paris         #\n\
+	################################################################\n\
+	#Usage: display.m actions [mass startTemp endTemp monolayer]   #\n\
+	#Actions:                                                      #\n\
+	#d = plot TPDs                                                 #\n\
+	#n = use index-based colors                                    #\n\
+	#p = plot pressure                                             #\n\
+	#c = plot pressure-corrected TPDs                              #\n\
+	#C = calibrate pressure correction                             #\n\
+	#I = interactive parameters                                    #\n\
+	#l = log plot of i over 1/T                                    #\n\
+	#e = energy estimation using inversion plot over coverage      #\n\
+	#m = try to model TPD with 1-st order process                  #\n\
+	#i = print files info: available masses and T range            #\n\
+	#v = ask to clear plot after each iteration                    #\n\
+	#T = treat isotherm desorption                                 #\n\
+	#x = extract the min(i) from the data                          #\n\
+	################################################################\n\n");
 endif
 
 param.monolayer=3.2e-09;#Xe /crystal
