@@ -57,8 +57,8 @@ tpd.pi=interp1(press.t,press.p,tpd.t);
 dose.integral=trapz(dose.t,dose.i);
 
 #Export temperature range
-exportT.min=min(press.T)+1;
-exportT.max=max(press.T)-1;
+exportT.min=min(press.To)+1;
+exportT.max=max(press.To)-1;
 
 tpd_out=cutTemp(tpd,exportT);
 tpd_out.integral=trapz(tpd_out.t,tpd_out.i);
