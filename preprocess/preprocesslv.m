@@ -9,6 +9,7 @@ dosep.data=dlmread(strcat(tmppath,"/dosep.txt"));
 press.data=dlmread(strcat(tmppath,"/press.txt"));
 
 tpd.mids=tpd.data(1,:);
+tpd.mids=tpd.mids(find(tpd.mids>0));
 tpd.data=tpd.data(2:end,:);
 dose.mids=dose.data(1,:);
 dose.data=dose.data(2:end,:);
