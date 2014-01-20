@@ -63,6 +63,7 @@ exportT.max=max(press.To)-1;
 tpd_out=cutTemp(tpd,exportT);
 tpd_out.integral=trapz(tpd_out.t,tpd_out.i);
 tpd=tpd_out;
+tpd.model=0;
 
 dose_out.integral=dose.integral;
 dose_out.T=mean(dose.T);
@@ -73,7 +74,7 @@ dose=dose_out;
 if (nargin>=1);
 	filename=argv(){1};
 	if (!isempty(strfind(filename,".dat" )))
-		tpd.version=20140117;
+		tpd.version=20140120;
 		save("-binary",filename,"tpd","dose","press");
 		
 		comb=[tpd.t,tpd.T,tpd.i,tpd.pi];

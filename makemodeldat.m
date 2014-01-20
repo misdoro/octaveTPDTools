@@ -101,6 +101,7 @@ tpd.i=calcPn(tpd,parv,par)+par.bline;
 tpd.iN=tpd.i;
 press.t=tpd.t+0.1;
 press.T=tpd.T;
+press.To=press.T;
 press.p=tpd.i*23;
 
 tpd.pi=interp1(press.t,press.p,tpd.t);
@@ -112,6 +113,7 @@ plot(tpd.T,tpd.i,"color","green",'linewidth',2);
 
 tpd.integral=trapz(tpd.t,tpd.i);
 tpd.model=1;
+tpd.par=par;
 
 dose.integral=tpd.integral*0.1;
 dose.T=par.minT;
@@ -121,7 +123,7 @@ dose.T=par.minT;
 if (nargin>=1);
 	filename=argv(){1};
 	if (!isempty(strfind(filename,".dat" )))
-		tpd.version=20131025;
+		tpd.version=20140120;
 		save("-binary",filename,"tpd","dose","press");
 	endif
 else
