@@ -52,8 +52,16 @@ function ptotn=calcPn(tpd,parv,par)
 	parm=repmat(pars,numsim,1);
 	espr=par.Es;
 	cspr=par.thetas;
-	parm(:,4)=linspace(pars(4)-espr,pars(4)+espr,numsim);
-	parm(:,2)=linspace(pars(2)-cspr,pars(2)+cspr,numsim);
+	if (isfield(par,"Ei") && length(par.Ei)==numsim);
+		parm(:,4)=par.Ei;
+	else
+		parm(:,4)=linspace(pars(4)-espr,pars(4)+espr,numsim);
+	endif;
+	if (isfield(par,"thetai") && length(par.thetai)==numsim);
+		parm(:,2)=par.thetai;
+	else
+		parm(:,2)=linspace(pars(2)-cspr,pars(2)+cspr,numsim);
+	endif;
 	
 	
 	if (par.parallel<2);
