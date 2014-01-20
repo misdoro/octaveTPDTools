@@ -15,6 +15,7 @@ if (nargin==0)
 	#Usage: display.m actions [mass startTemp endTemp monolayer]   #\n\
 	#Actions:                                                      #\n\
 	#d = plot TPDs                                                 #\n\
+	#D = plot dose metrics                                         #\n\
 	#n = use index-based colors                                    #\n\
 	#p = plot pressure                                             #\n\
 	#c = plot pressure-corrected TPDs                              #\n\
@@ -99,25 +100,6 @@ if (index(param.tools,'d'))
 		plotDoses(ret);
 		print(param.fig.doses,"sticking.png","-dpng","-r300");
 	endif;
-endif;
-
-
-#################################################
-# Surf TPD
-#################################################
-function result=surfTPD(mytpd,param,result);
-	length(mytpd.mids(2:end))
-	length(mytpd.T)
-	size(mytpd.iN)
-	surfc(mytpd.mids(2:end),mytpd.T,mytpd.iN,'Edgecolor', 'none');
-endfunction
-
-if (index(param.tools,'s'));
-	figure(++param.figindex);
-	hold on;
-	iterateTpd(indata,param,@surfTPD);
-	ylabel("Desorption flow (arb.u.)");
-	xlabel("Temperature (K)");
 endif;
 
 
