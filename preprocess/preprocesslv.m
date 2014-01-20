@@ -67,6 +67,9 @@ tpd.model=0;
 
 dose_out.integral=dose.integral;
 dose_out.T=mean(dose.T);
+dose_out.mids=dose.mids;
+dose_out.t=dose.t;
+dose_out.iN=dose.iN;
 dose=dose_out;
 
 ##########################
