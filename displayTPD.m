@@ -72,7 +72,10 @@ function result=plotTPD(mytpd,param,result);
 	
 	[maxi,maxidx]=max(mytpd.i_sm);
 	maxT=mytpd.T(maxidx);
-	txt=strcat(num2str(mytpd.idx),":M=",num2str(mytpd.mass))
+	txt=num2str(mytpd.idx);
+	if (length(param.mass)>1)
+		txt=strcat(txt,":M=",num2str(mytpd.mass))
+	endif;
 	text(maxT,maxi,txt);
 	
 	legendtext=strcat(txt,":",mytpd.filename,"(",num2str(mytpd.intg/param.monolayer,"%3.2f"),"ML)");
