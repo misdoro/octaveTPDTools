@@ -12,7 +12,7 @@ if (nargin==0)
 	################################################################\n\
 	# TPD data treatment program, LPMAA/LERMA, UPMC, Paris         #\n\
 	################################################################\n\
-	#Usage: display.m actions [mass startTemp endTemp monolayer]   #\n\
+	#Usage: display.m act [M1,M2,MN startTemp endTemp monolayer]   #\n\
 	#Actions:                                                      #\n\
 	#d = plot TPDs                                                 #\n\
 	#D = plot dose metrics                                         #\n\
