@@ -5,7 +5,9 @@ function result = getMassData(tpd,Trange,mass);
 	if (massidx>=1)
 		result=tpd;
 		result.i=tpd.iN(:,massidx-zerosi+1);
-		result=cutTemp(result,Trange);
+		if (isstruct(Trange))
+			result=cutTemp(result,Trange);
+		endif;
 		result.intg=trapz(result.t,result.i);
 	else
 		result.T=[];
