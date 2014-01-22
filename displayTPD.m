@@ -59,7 +59,7 @@ function result=plotTPD(mytpd,param,result);
 	mytpd.i_sm=supsmu(mytpd.T,mytpd.i,'spa',0.005);
 	
 	ls="-";
-	if (isfield(mytpd,"model"));
+	if (isfield(mytpd,"model")&& mytpd.model>0);
 		ls=":";
 	endif;
 	if (index(param.tools,'x'))
@@ -98,11 +98,29 @@ if (index(param.tools,'d'))
 		param.fig.doses=++param.figindex;
 		figure(param.fig.doses);
 		plotDoses(ret);
-		print(param.fig.doses,"sticking.png","-dpng","-r300");
 	endif;
 endif;
 
+#################################################
+# Plot extended dose information
+#################################################
+function result=plotDoses(mytpd,param,result,press,dose);
+	dose=getMassData(dose,[],param.mass);
+	plot(dose.t,dose.i,"linewidth",2,"color",mytpd.color)
+	[maxi,maxidx]=max(dose.i);
+	maxt=dose.t(maxidx);
+	text(maxt,maxi,strcat(num2str(mytpd.idx)));
+endfunction;
 
+
+if (index(param.tools,'D'))
+	param.fig.doseext=++param.figindex;
+	figure(param.fig.doseext);
+	hold on;
+	ylabel("Dose current (arb.u.)");
+	xlabel("Time (s)");
+	ret=iterateTpd(indata,param,@plotDoses);
+endif;
 #################################################
 # Plot gauge pressure
 #################################################
@@ -288,6 +306,16 @@ if(isfield(param,"fig"))
 		print(param.fig.disp,"desorption.png","-dpng","-r300");
 		printf("Saved desorption image\n");
 	endif;
+	
+	if (isfield(param.fig,"doses"))
+		print(param.fig.doses,"sticking.png","-dpng","-r300");
+		printf("Saved sticking graph image\n");
+	endif;
+	if (isfield(param.fig,"doseext"))
+		print(param.fig.doseext,"doses.png","-dpng","-r300");
+		printf("Saved dose information image\n");
+	endif;
+	
 	if (isfield(param.fig,"log"))
 		print(param.fig.log,"logplot.png","-dpng","-r300");
 		printf("Saved log fit image\n");
