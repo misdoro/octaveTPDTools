@@ -26,13 +26,13 @@ function result=iterateTpd(indata,param,funcName);
 				cutdat.doseintg=dose.integral;
 				cutdat.filename=filename;
 				if (length(cutdat.i)>0)
+					cutdat.idx=++counter;
 					if (index(param.tools,'n'))
 						colors=["black";"cyan";"green";"magenta";"red";"yellow"];
-						cutdat.color=colors(idx);
+						cutdat.color=colors(counter);
 					else
 						cutdat.color=getLineColor(cutdat.intg,param.monolayer);
 					endif;
-					cutdat.idx=++counter;
 					result=feval(funcName,cutdat,param,result,press,dose);
 				else
 					printf("No appropriate data in file %s for mid %d in T range [%d, %d]\n"\
