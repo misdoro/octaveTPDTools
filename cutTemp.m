@@ -1,5 +1,9 @@
 #Cut all arrays in a structure according to range of T
 function result=cutTemp(struct,cutT);
+	if (!isfield(struct,"T") || !isstruct(cutT))
+		result=struct;
+		return;
+	endif
 	numpoints=length(struct.T);
 	minidx=max(max(find(struct.T<=cutT.min)),1);
 	if (isnan(minidx) || length(minidx)==0)
