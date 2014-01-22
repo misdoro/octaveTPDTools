@@ -5,6 +5,9 @@ function printInfo(input,param);
 		load(filename);
 		if (isfield(tpd,"iN"))
 			printf("Dose %3.1e A*s, at %3.1f K\n",dose.integral,dose.T);
+			if (isfield(tpd,"version")&& tpd.version>=20140120)
+				printf("Dose mid: %d\n",dose.mids(find(dose.mids>0)))
+			endif;
 			printf("Estimated coverage %3.1f ML\n",tpd.integral/param.monolayer)
 			printf("Temperature range: %3.1f to %3.1f K\n",min(tpd.T),max(tpd.T));
 			rkm=tpd.rate*60;
