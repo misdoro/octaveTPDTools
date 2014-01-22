@@ -42,8 +42,10 @@ param=getFileInfo(indata,param);
 param.displayT.min=useArgument(argv(),3,param.displayT.min);
 param.displayT.max=useArgument(argv(),4,param.displayT.max);
 param.mass=useArgument(argv(),2,param.mass);
-
-printf("Displayed temperature: %.2f to %.2f K\nDisplayed MID: %d\n",param.displayT.min,param.displayT.max,param.mass);
+for midx=1:length(param.mass)
+	printf("Displayed temperature: %.2f to %.2f K\nDisplayed MID: %d\n"\
+	,param.displayT.min,param.displayT.max,param.mass(midx));
+end
 
 
 param.tools=useArgument(argv(),1,"i");
@@ -70,9 +72,10 @@ function result=plotTPD(mytpd,param,result);
 	
 	[maxi,maxidx]=max(mytpd.i_sm);
 	maxT=mytpd.T(maxidx);
-	text(maxT,maxi,strcat(num2str(mytpd.idx)));
+	txt=strcat(num2str(mytpd.idx),":M=",num2str(mytpd.mass))
+	text(maxT,maxi,txt);
 	
-	legendtext=strcat(num2str(mytpd.idx),":",mytpd.filename,"(",num2str(mytpd.intg/param.monolayer,"%3.2f"),"ML)");
+	legendtext=strcat(txt,":",mytpd.filename,"(",num2str(mytpd.intg/param.monolayer,"%3.2f"),"ML)");
 	
 	result=retAppend(result,"legend",legendtext);
 	result=retAppend(result,"doses",mytpd.doseintg);

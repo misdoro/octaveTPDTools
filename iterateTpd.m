@@ -14,38 +14,31 @@ function result=iterateTpd(indata,param,funcName);
 		filename=indata.filenames{indata.sorted(idx,1)};
 		printf("\n-----------------\n%s\n",filename);
 		load(filename);
+		if (!exist("dose","var") || !isstruct(dose));
+			dose.data=[]
+		endif;
+		if (!exist("press","var") || !isstruct(press));
+			press.t=[]
+		endif;
 		if (isfield(tpd,"iN"))
-			cutdat=getMassData(tpd,param.displayT,param.mass);
-			cutdat.doseintg=dose.integral;
-			cutdat.filename=filename;
-			if (length(cutdat.i)>0)
-				if (index(param.tools,'n'))
-					colors=["black";"cyan";"green";"magenta";"red";"yellow"];
-					cutdat.color=colors(idx);
-				else
-					cutdat.color=getLineColor(cutdat.intg,param.monolayer);
-				endif;
-				cutdat.idx=++counter;
-				if (isfield(tpd,"version"));
-					if(tpd.version>=20140120)
-						result=feval(funcName,cutdat,param,result,press,dose);
-					elseif(tpd.version>=20131025)
-						result=feval(funcName,cutdat,param,result,press);
+			for midx=1:length(param.mass);
+				cutdat=getMassData(tpd,param.displayT,param.mass(midx));
+				cutdat.doseintg=dose.integral;
+				cutdat.filename=filename;
+				if (length(cutdat.i)>0)
+					if (index(param.tools,'n'))
+						colors=["black";"cyan";"green";"magenta";"red";"yellow"];
+						cutdat.color=colors(idx);
+					else
+						cutdat.color=getLineColor(cutdat.intg,param.monolayer);
 					endif;
+					cutdat.idx=++counter;
+					result=feval(funcName,cutdat,param,result,press,dose);
 				else
-					result=feval(funcName,cutdat,param,result);
-				endif;
-				if (index(param.tools,'C'));
-					if (yes_or_no("clear plot?"))
-						hold off;
-						plot(0,0);
-						hold on;
-					endif
-				endif;
-				
-			else
-				printf("No appropriate data in this file.\n");
-			endif
+					printf("No appropriate data in file %s for mid %d in T range [%d, %d]\n"\
+					,filename,param.mass,param.displayT.min,param.displayT.max);
+				endif
+			end;
 		endif
 	end
 endfunction

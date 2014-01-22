@@ -9,6 +9,7 @@ function result = getMassData(tpd,Trange,mass);
 			result=cutTemp(result,Trange);
 		endif;
 		result.intg=trapz(result.t,result.i);
+		result.mass=mass;
 	else
 		result.T=[];
 		result.i=[];

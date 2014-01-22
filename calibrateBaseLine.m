@@ -44,6 +44,12 @@ function result=calibrateBaseLine(mytpd,param,result,press);
 	plot(tpd_c.T,(tpd_c.i-tpd_c.pio)*100,"color","black",'linewidth',1);
 	drawnow();
 	
+	if (yes_or_no("clear plot?"))
+		hold off;
+		plot(0,0);
+		hold on;
+	endif;
+	
 	result.baselineopt{mytpd.idx}=paro;
 endfunction;
 
