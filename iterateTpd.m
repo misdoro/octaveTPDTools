@@ -26,8 +26,12 @@ function result=iterateTpd(indata,param,funcName);
 					cutdat.color=getLineColor(cutdat.intg,param.monolayer);
 				endif;
 				cutdat.idx=++counter;
-				if (isfield(tpd,"version") && tpd.version>=20131025);
-					result=feval(funcName,cutdat,param,result,press);
+				if (isfield(tpd,"version"));
+					if(tpd.version>=20140120)
+						result=feval(funcName,cutdat,param,result,press,dose);
+					elseif(tpd.version>=20131025)
+						result=feval(funcName,cutdat,param,result,press);
+					endif;
 				else
 					result=feval(funcName,cutdat,param,result);
 				endif;
