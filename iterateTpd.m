@@ -36,7 +36,7 @@ function result=iterateTpd(indata,param,funcName);
 					result=feval(funcName,cutdat,param,result,press,dose);
 				else
 					printf("No appropriate data in file %s for mid %d in T range [%d, %d]\n"\
-					,filename,param.mass,param.displayT.min,param.displayT.max);
+					,filename,param.mass(midx),param.displayT.min,param.displayT.max);
 				endif
 			end;
 		endif
