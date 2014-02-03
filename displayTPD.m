@@ -3,9 +3,7 @@
 
 indata.filenames=findDatFiles(pwd);
 
-indata.doses=loadDoses(indata.filenames);
 
-indata.sorted=sortrows(indata.doses,2);
 
 if (nargin==0)
 	printf("\n\
@@ -37,6 +35,8 @@ param.monolayer=2e-08;#Xe /amorph 1,2e-6 A*s 100K
 #param.monolayer=1e-5;#H2O
 param.monolayer=useArgument(argv(),5,param.monolayer);
 
+
+
 #By default, use the first MID and available temperature range from the first input file.
 param=getFileInfo(indata,param);
 param.displayT.min=useArgument(argv(),3,param.displayT.min);
@@ -47,6 +47,10 @@ for midx=1:length(param.mass)
 	,param.displayT.min,param.displayT.max,param.mass(midx));
 end
 
+indata.doses=loadDoses(indata.filenames,param.mass(1));
+
+indata.sorted=sortrows(indata.doses,2);
+
 
 param.tools=useArgument(argv(),1,"i");
 param.figindex=0;%Current figure index, to be autoincremented by processings
@@ -56,7 +60,7 @@ pkg load optim;
 #################################################
 # Plot TPD
 #################################################
-function result=plotTPD(mytpd,param,result);
+function result=plotTPD(mytpd,param,result,press,dose);
 	mini=min(mytpd.i);
 	mytpd.i_sm=supsmu(mytpd.T,mytpd.i,'spa',0.005);
 	
@@ -81,7 +85,14 @@ function result=plotTPD(mytpd,param,result);
 	legendtext=strcat(txt,":",mytpd.filename,"(",num2str(mytpd.intg/param.monolayer,"%3.2f"),"ML)");
 	
 	result=retAppend(result,"legend",legendtext);
-	result=retAppend(result,"doses",mytpd.doseintg);
+	if (isfield(mytpd,"version") && mytpd.version>=20140120)
+		dosedat=getMassData(dose,[],param.selectedmass);
+		doseint=trapz(dosedat.t,dosedat.i);
+		result=retAppend(result,"doses",doseint);
+			
+	else
+		result=retAppend(result,"doses",mytpd.doseintg);
+	endif
 	result=retAppend(result,"integrals",mytpd.intg);
 	printf("TPD integral: %.3e\n",mytpd.intg);
 endfunction
@@ -111,7 +122,7 @@ endif;
 # Plot extended dose information
 #################################################
 function result=plotDoses(mytpd,param,result,press,dose);
-	dose=getMassData(dose,[],param.mass);
+	dose=getMassData(dose,[],param.selectedmass);
 	plot(dose.t,dose.i,"linewidth",2,"color",mytpd.color)
 	[maxi,maxidx]=max(dose.i);
 	maxt=dose.t(maxidx);

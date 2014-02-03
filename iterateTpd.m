@@ -22,7 +22,8 @@ function result=iterateTpd(indata,param,funcName);
 		endif;
 		if (isfield(tpd,"iN"))
 			for midx=1:length(param.mass);
-				cutdat=getMassData(tpd,param.displayT,param.mass(midx));
+				param.selectedmass=param.mass(midx);
+				cutdat=getMassData(tpd,param.displayT,param.selectedmass);
 				cutdat.doseintg=dose.integral;
 				cutdat.filename=filename;
 				if (length(cutdat.i)>0)

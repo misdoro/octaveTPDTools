@@ -1,5 +1,5 @@
 function param=getFileInfo(input,param);
-	filename=input.filenames{input.sorted(1,1)};
+	filename=input.filenames{1};
 	load(filename);
 	if (isfield(tpd,"version") && tpd.version>=20131025)
 		param.displayT.min=min(tpd.T);
