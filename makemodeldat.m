@@ -1,7 +1,7 @@
 #!/usr/bin/octave --persist
 #Model a TPD dat file
 
-par.mids=[0 84];
+par.mids=[84];
 
 par.rate=15/60;
 par.np=321;
@@ -54,6 +54,12 @@ tpd.par=par;
 
 dose.integral=tpd.integral*0.1;
 dose.T=par.minT;
+dose.mids=tpd.mids;
+dose.np=20;
+dose.time=10;
+dose.t=linspace(0,dose.time,dose.np)';
+dose.i=dose.integral./10.*ones(1,dose.np)';
+dose.iN=dose.i;
 
 ##########################
 #Output data truncation and save
