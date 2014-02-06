@@ -276,13 +276,13 @@ endif
 ########################################################
 # Apply pressure correction                            #
 ########################################################
-function result=extractBaseLine(mytpd,param,result,press);
-	result=plotTPD(mytpd,param,result);
+function result=extractBaseLine(mytpd,param,result,press,dose);
+	result=plotTPD(mytpd,param,result,press,dose);
 	mytpd.baseLine=interpBaseLine(param.baseLine,mytpd,press);
 	mytpd.i=mytpd.i-mytpd.baseLine;
 	printf("Corrected TPD integral %.3e\n",trapz(mytpd.t, mytpd.i));
 	mytpd.color='black';
-	result=plotTPD(mytpd,param,result);
+	result=plotTPD(mytpd,param,result,press,dose);
 	result.Ts{mytpd.idx}=mytpd.T;
 	result.is{mytpd.idx}=mytpd.i;
 endfunction;

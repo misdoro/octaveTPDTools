@@ -1,7 +1,7 @@
-function result=calibrateBaseLine(mytpd,param,result,press);
+function result=calibrateBaseLine(mytpd,param,result,press,dose);
 	%Function to calibrate baseline parameters using TPD position dose
 	
-	result=plotTPD(mytpd,param,result);
+	result=plotTPD(mytpd,param,result,press,dose);
 	
 	if (index(param.tools,'I'));% Interactive parameters
 		par(1) = input("Input initial delay\n");
