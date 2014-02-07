@@ -85,14 +85,17 @@ function result=plotTPD(mytpd,param,result,press,dose);
 	legendtext=strcat(txt,":",mytpd.filename,"(",num2str(mytpd.intg/param.monolayer,"%3.2f"),"ML)");
 	
 	result=retAppend(result,"legend",legendtext);
+	
+	doseintg=0;
 	if (isfield(mytpd,"version") && mytpd.version>=20140120)
-		result=retAppend(result,"doses",calculateDoseIntegral(getMassData(dose,[],param.selectedmass)));
-			
+		doseintg=calculateDoseIntegral(getMassData(dose,[],param.selectedmass));
 	else
-		result=retAppend(result,"doses",mytpd.doseintg);
+		doseintg=mytpd.doseintg;
 	endif
+	result=retAppend(result,"doses",doseintg);
 	result=retAppend(result,"integrals",mytpd.intg);
 	printf("TPD integral: %.3e\n",mytpd.intg);
+	printf("Dose integral: %.3e\n",doseintg);
 endfunction
 
 if (index(param.tools,'d'))
