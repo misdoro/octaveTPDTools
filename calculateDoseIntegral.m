@@ -6,7 +6,7 @@ function [doseint,maxidx]=calculateDoseIntegral(dosedata)
 		!isfield(dosedata,"t")||\
 		!isfield(dosedata,"i")||\
 		length(dosedata.i)==0||\
-		length(dosedata.t==0));
+		length(dosedata.t)==0);
 		doseint=0;
 		maxidx=0;
 		return;
