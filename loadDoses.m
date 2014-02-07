@@ -6,7 +6,7 @@ function result=loadDoses(filenames,mass)
 		load(filenames{idx});
 		if (isfield(tpd,"version") && tpd.version>=20140120)
 			dosedat=getMassData(dose,[],mass);
-			doseint=trapz(dosedat.t,dosedat.i);
+			doseint=calculateDoseIntegral(dosedat);
 			result=[result; idx, doseint];
 		else
 			result=[result; idx, dose.integral];

@@ -86,9 +86,7 @@ function result=plotTPD(mytpd,param,result,press,dose);
 	
 	result=retAppend(result,"legend",legendtext);
 	if (isfield(mytpd,"version") && mytpd.version>=20140120)
-		dosedat=getMassData(dose,[],param.selectedmass);
-		doseint=trapz(dosedat.t,dosedat.i);
-		result=retAppend(result,"doses",doseint);
+		result=retAppend(result,"doses",calculateDoseIntegral(getMassData(dose,[],param.selectedmass)));
 			
 	else
 		result=retAppend(result,"doses",mytpd.doseintg);
