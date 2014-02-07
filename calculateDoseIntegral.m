@@ -1,6 +1,17 @@
 function [doseint,maxidx]=calculateDoseIntegral(dosedata)
 %Calculate dose integral: extract the baseline, finish integration at 1/2(max-end)
 %Returns the dose integral and the final point of the integration
+	
+	if (!isstruct(dosedata) ||\
+		!isfield(dosedata,"t")||\
+		!isfield(dosedata,"i")||\
+		length(dosedata.i)==0||\
+		length(dosedata.t==0));
+		doseint=0;
+		maxidx=0;
+		return;
+	endif;
+	
 	dose.mini=min(dosedata.i);
 	dose.maxi=max(dosedata.i);
 	dose.fini=dosedata.i(end);

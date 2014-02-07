@@ -2,9 +2,10 @@
 function result = getMassData(tpd,Trange,mass);
 	massidx=find(tpd.mids==mass);
 	zerosi=min(find(tpd.mids>0));
-	if (massidx>=1)
+	if (mass>0 && massidx>=1)
 		result=tpd;
-		result.i=tpd.iN(:,massidx-zerosi+1);
+		colidx=massidx-zerosi+1;
+		result.i=tpd.iN(:,colidx);
 		if (isstruct(Trange))
 			result=cutTemp(result,Trange);
 		endif;

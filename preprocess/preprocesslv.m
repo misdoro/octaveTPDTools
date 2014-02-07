@@ -53,8 +53,11 @@ tpd.pi=interp1(press.t,press.p,tpd.t);
 
 
 ##################
-#Dose integral
-dose.integral=trapz(dose.t,dose.i);
+#Dose integrals
+for midx=1:length(dose.mids);
+	mid=dose.mids(midx);
+	[dose.integral(midx),dose.intimax(midx)]=calculateDoseIntegral(getMassData(dose,[],mid));
+end;
 
 #Export temperature range
 exportT.min=min(press.To)+1;
@@ -77,7 +80,7 @@ dose=dose_out;
 if (nargin>=1);
 	filename=argv(){1};
 	if (!isempty(strfind(filename,".dat" )))
-		tpd.version=20140120;
+		tpd.version=20140207;
 		save("-binary",filename,"tpd","dose","press");
 		
 		comb=[tpd.t,tpd.T,tpd.i,tpd.pi];
