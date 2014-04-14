@@ -16,6 +16,7 @@ if (nargin==0)
 	#D = plot dose metrics                                         #\n\
 	#n = use index-based colors                                    #\n\
 	#p = plot pressure                                             #\n\
+	#P = plot pressure vs Iqms                                     #\n\
 	#c = plot pressure-corrected TPDs                              #\n\
 	#C = calibrate pressure correction                             #\n\
 	#I = interactive parameters                                    #\n\
@@ -153,7 +154,8 @@ function result=plotP(mytpd,param,result);
 endfunction
 
 if (index(param.tools,'p'))
-	figure(++param.figindex);
+	param.fig.press=++param.figindex;
+	figure(param.fig.press);
 	hold on;
 	ret=iterateTpd(indata,param,@plotP);
 	ylabel("Pressure (torr)");
@@ -162,7 +164,33 @@ if (index(param.tools,'p'))
 		legend("boxon");
 		legend(ret.legend);
 	endif;
-	print(param.figindex,"pressure.png","-dpng","-r300");
+	
+endif;
+
+#################################################
+# Plot QMS current vs pressure 
+#################################################
+function result=plotP(mytpd,param,result);
+	
+	plot(mytpd.pi,mytpd.i,"linewidth",2,"color",mytpd.color);
+	
+	[maxi,maxidx]=max(mytpd.pi);
+	maxiq=mytpd.i(maxidx);
+	text(maxi,maxiq,strcat(num2str(mytpd.idx)));
+endfunction
+
+if (index(param.tools,'P'))
+	param.fig.qipress=++param.figindex;
+	figure(param.fig.qipress);
+	hold on;
+	ret=iterateTpd(indata,param,@plotP);
+	ylabel("Iqms, A");
+	xlabel("Pressure (torr)");
+	if (isfield(ret,"legend"))
+		legend("boxon");
+		legend(ret.legend);
+	endif;
+	print(param.figindex,"pq.png","-dpng","-r300");
 	
 endif;
 
@@ -210,7 +238,7 @@ endif;
 ##################################################
 
 function result=plotEAds(mytpd,param,result);
-	tpd.a=[1e11, 1e13, 1e15];
+	tpd.a=[1e13, 1e15, 1e17, 1e19];
 	source("~/octave/constants.m");
 	cov=mytpd.intg-cumtrapz(mytpd.t,mytpd.i);
 	for ai=1:length(tpd.a);
@@ -351,6 +379,15 @@ if(isfield(param,"fig"))
 		print(param.fig.blcalib,"baselinecal.png","-dpng","-r300");
 		printf("Saved the baseline calibration image\n");
 	endif;
+	if (isfield(param.fig,"press"))
+		print(param.fig.press,"pressure.png","-dpng","-r300");
+		printf("Saved the pressure vs T image\n");
+	endif;
+	if (isfield(param.fig,"qipress"))
+		print(param.fig.press,"qms-pressure.png","-dpng","-r300");
+		printf("Saved the Iqms vs pressure image\n");
+	endif;
+
 endif;
 exit(0);
 
