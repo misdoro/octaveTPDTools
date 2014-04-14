@@ -43,7 +43,7 @@ param.displayT.min=useArgument(argv(),3,param.displayT.min);
 param.displayT.max=useArgument(argv(),4,param.displayT.max);
 param.mass=useArgument(argv(),2,param.mass);
 for midx=1:length(param.mass)
-	printf("Displayed temperature: %.2f to %.2f K\nDisplayed MID: %d\n"\
+	printf("Displayed temperature: %.2f to %.2f K\nDisplayed MID: %d\n"
 	,param.displayT.min,param.displayT.max,param.mass(midx));
 end
 
@@ -96,6 +96,7 @@ function result=plotTPD(mytpd,param,result,press,dose);
 	result=retAppend(result,"integrals",mytpd.intg);
 	printf("TPD integral: %.3e\n",mytpd.intg);
 	printf("Dose integral: %.3e\n",doseintg);
+	printf("Itpd/Idose: %.3f\n",mytpd.intg/doseintg);
 endfunction
 
 if (index(param.tools,'d'))
