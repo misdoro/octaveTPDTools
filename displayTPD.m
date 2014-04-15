@@ -1,4 +1,4 @@
-#!/usr/bin/octave -q
+#!/usr/bin/octave -qi
 #Arguments: mid, min T, max T, display, monolayer
 
 indata.filenames=findDatFiles(pwd);
@@ -170,27 +170,38 @@ endif;
 #################################################
 # Plot QMS current vs pressure 
 #################################################
-function result=plotP(mytpd,param,result);
-	
-	plot(mytpd.pi,mytpd.i,"linewidth",2,"color",mytpd.color);
-	
-	[maxi,maxidx]=max(mytpd.pi);
-	maxiq=mytpd.i(maxidx);
-	text(maxi,maxiq,strcat(num2str(mytpd.idx)));
+function result=plotqP(mytpd,param,result);
+	hold off;
+	printf("Use keys a, d to move the pressure, q to exit\n");
+	shiftit=0;
+	inp="0";
+	while(inp!="q")
+		if (inp=="a")
+			shiftit--;
+		elseif (inp=="d")
+			shiftit++;
+		endif
+		shiftit
+		psi=circshift(mytpd.pi,shiftit);
+		plot(psi,mytpd.i,"linewidth",2,"color",mytpd.color);
+		[maxi,maxidx]=max(psi);
+		maxiq=mytpd.i(maxidx);
+		text(maxi,maxiq,strcat(num2str(mytpd.idx)));
+		inp=kbhit();
+	endwhile
 endfunction
 
 if (index(param.tools,'P'))
 	param.fig.qipress=++param.figindex;
 	figure(param.fig.qipress);
-	hold on;
-	ret=iterateTpd(indata,param,@plotP);
+	hold off;
 	ylabel("Iqms, A");
 	xlabel("Pressure (torr)");
+	ret=iterateTpd(indata,param,@plotqP);
 	if (isfield(ret,"legend"))
 		legend("boxon");
 		legend(ret.legend);
 	endif;
-	print(param.figindex,"pq.png","-dpng","-r300");
 	
 endif;
 
@@ -330,6 +341,7 @@ To obtain them, do the TPD in position dose and run displayTPD C mass startT end
 		param.baseLine(2) = input("Input pressure base\n");
 		param.baseLine(3) = input("Input pressure scale\n");
 	else
+		#baselines(MID,1:3)=[dt,p0,p1]
 		#baselines(130,1:3)=[2.1123e+00,   1.8871e-10,   2.0016e-02];
 		baselines(130,1:3)=[2.9660e+00   1.1547e-10   2.0236e-02];
 		baselines(84,1:3)=[-1.1146e+01   1.0841e-10   8.2433e-02];
