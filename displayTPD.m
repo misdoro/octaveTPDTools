@@ -170,34 +170,13 @@ endif;
 #################################################
 # Plot QMS current vs pressure 
 #################################################
-function result=plotqP(mytpd,param,result);
-	hold off;
-	printf("Use keys a, d to move the pressure, q to exit\n");
-	shiftit=0;
-	inp="0";
-	while(inp!="q")
-		if (inp=="a")
-			shiftit--;
-		elseif (inp=="d")
-			shiftit++;
-		endif
-		shiftit
-		psi=circshift(mytpd.pi,shiftit);
-		plot(psi,mytpd.i,"linewidth",2,"color",mytpd.color);
-		[maxi,maxidx]=max(psi);
-		maxiq=mytpd.i(maxidx);
-		text(maxi,maxiq,strcat(num2str(mytpd.idx)));
-		inp=kbhit();
-	endwhile
-endfunction
-
 if (index(param.tools,'P'))
 	param.fig.qipress=++param.figindex;
 	figure(param.fig.qipress);
 	hold off;
 	ylabel("Iqms, A");
 	xlabel("Pressure (torr)");
-	ret=iterateTpd(indata,param,@plotqP);
+	ret=iterateTpd(indata,param,@dispplotqP);
 	if (isfield(ret,"legend"))
 		legend("boxon");
 		legend(ret.legend);

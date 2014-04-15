@@ -6,7 +6,7 @@ function result = getMassData(tpd,Trange,mass);
 		result=tpd;
 		colidx=massidx-zerosi+1;
 		result.i=tpd.iN(:,colidx);
-		if (isstruct(Trange))
+		if (isstruct(Trange) && Trange.max>0)
 			result=cutTemp(result,Trange);
 		endif;
 		result.intg=trapz(result.t,result.i);
