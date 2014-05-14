@@ -82,8 +82,8 @@ function result=plotTPD(mytpd,param,result,press,dose);
 		txt=strcat(txt,":M=",num2str(mytpd.mass))
 	endif;
 	text(maxT,maxi,txt);
-	
-	legendtext=strcat(txt,":",mytpd.filename,"(",num2str(mytpd.intg/param.monolayer,"%3.2f"),"ML)");
+	fn=strrep(mytpd.filename,"_","-");
+	legendtext=strcat(txt,":",fn,"(",num2str(mytpd.intg/param.monolayer,"%3.2f"),"ML)");
 	
 	result=retAppend(result,"legend",legendtext);
 	
@@ -109,7 +109,8 @@ if (index(param.tools,'d'))
 	xlabel("Temperature (K)");
 	if (isfield(ret,"legend"))
 		legend("boxon");
-		legend(ret.legend);
+		h=legend(ret.legend);
+		set (h, 'fontsize', 12);
 	endif;
 	
 	
