@@ -1,7 +1,7 @@
 function result=dispplotqP(mytpd,param,result);
-	hold off;
+	hold on;
 	printf("Use keys a, d to move the pressure, q to exit\n");
-	shiftit=0;
+	shiftit=-2;
 	inp="0";
 	while(inp!="q")
 		if (inp=="a")

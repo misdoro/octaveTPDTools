@@ -10,3 +10,4 @@ function result=findDatFiles(directory)
 			result=[result,files{idx}];
 		endif
 	end;
+  
