@@ -34,7 +34,9 @@ function result=calibrateBaseLine(mytpd,param,result,press,dose);
 	tic();
 	fh=@(param)shiftp(param,mytpd,press);
 	options(6)=2;
-	[paro,mindiff]=fminsearch(fh,par,options,[])
+	#[paro,mindiff]=fminsearch(fh,par,options)
+	#[paro,mindiff]=fminsearch(fh,par)
+	[paro]=fmins(fh,par,options)
 	toc()
 	
 	%Plot fits and errors

@@ -4,9 +4,13 @@ function printInfo(input,param);
 		printf("\n-----------------\n%s\n",filename);
 		load(filename);
 		if (isfield(tpd,"iN"))
-			printf("Dose %3.1e A*s, at %3.1f K\n",dose.integral,dose.T);
 			if (isfield(tpd,"version")&& tpd.version>=20140120)
-				printf("Dose mid: %d\n",dose.mids(find(dose.mids>0)))
+				for midx=find(dose.mids>0)
+					printf("Mass %d dose integral %3.1e\n",dose.mids(midx),dose.integral(midx))
+				end
+				printf("Dose temperature %3.1f K\n", dose.T)
+			else
+				printf("Dose %3.1e A*s, at %3.1f K\n",dose.integral,dose.T);
 			endif;
 			printf("Estimated coverage %3.1f ML\n",tpd.integral/param.monolayer)
 			printf("Temperature range: %3.1f to %3.1f K\n",min(tpd.T),max(tpd.T));
