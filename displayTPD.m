@@ -62,7 +62,6 @@ pkg load optim;
 # Plot TPD
 #################################################
 function result=plotTPD(mytpd,param,result,press,dose);
-  length(mytpd.i)
 	mini=min(mytpd.i);
 	mytpd.i_sm=supsmu(mytpd.T,mytpd.i,'spa',0.005);
 	

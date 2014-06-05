@@ -5,34 +5,42 @@ endif
 di=[0;diff(tpd.i)];
 dis=supsmu(tpd.T,di,'spa',0.01);
 
+#Minimum number of points at each end
+minpts=20;
 #Find the TPD half-maximum
 maxi=max(find(tpd.i>max(tpd.i)/2));
 
 #Find the baseline head end: min(i)
 [mini,minidx]=min(tpd.i(1:maxi));
 #Use minidx or at least first 10 points for the baseline head
-headi=max(minidx,10);
+headi=max(minidx,minpts);
 
-#Find a di>0 point after the TPD half-maximum, this will be the baseline tail start
-taili=[];
 tpdlen=length(tpd.i);
-dthresh=1e-11;
-while(length(taili)==0 || taili > tpdlen-10)
-  if (dthresh>eps)
-    dthresh/=2;
-  elseif (dthresh>0)
-    dthresh=-eps;
-  else
-    dthresh*=2;
-  endif
-  posdis=find(dis>dthresh);
-  taili=posdis(min(find(posdis>maxi+10)));
-  if (debug)
-    dthresh
-    taili
-    tpdlen
-  endif
-endwhile
+taili=tpdlen;
+if (maxi+2*minpts>tpdlen)
+  taili=tpdlen-minpts;#If tpd half-maximum is way too close or 
+  # behind the end, take the last minpts points
+else
+  #Find a di>0 point after the TPD half-maximum, 
+  #this will be the baseline tail start
+  dthresh=1e-11;
+  while(length(taili)==0 || taili > tpdlen-minpts)
+    if (dthresh>eps)
+      dthresh/=2;
+    elseif (dthresh>0)
+      dthresh=-eps;
+    else
+      dthresh*=2;
+    endif
+    posdis=find(dis>dthresh);
+    taili=posdis(min(find(posdis>maxi+minpts)));
+    if (debug)
+      dthresh
+      taili
+      tpdlen
+    endif
+  endwhile
+endif
 #Works poorly on noisy TPDs
 
 bl.T=cat(1,tpd.T(1:headi),tpd.T(taili:end));
