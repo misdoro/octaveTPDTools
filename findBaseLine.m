@@ -1,15 +1,39 @@
-function ret=findBaseLine(tpd,debug=0,dthresh)
+function ret=findBaseLine(tpd,debug=0)
 di=[0;diff(tpd.i)];
 dis=supsmu(tpd.T,di,'spa',0.01);
 
-#Find a di>0 point after the TPD maximum, this will be the baseline start
-[maxv,maxi]=max(tpd.i);
-dislim=[0 1e-13 2e-13 5e-13 1e-12];
-posdis=find(dis>dthresh);
-bltailidx=posdis(min(find(posdis>maxi+10)));
+#Find the TPD half-maximum
+maxi=max(find(tpd.i>max(tpd.i)/2));
 
-bl.T=cat(1,tpd.T(1:10),tpd.T(bltailidx:end));
-bl.i=cat(1,tpd.i(1:10),tpd.i(bltailidx:end));
+#Find the baseline head end: min(i)
+[mini,minidx]=min(tpd.i(1:maxi));
+#Use minidx or at least first 10 points for the baseline head
+headi=max(minidx,10);
+
+#Find a di>0 point after the TPD half-maximum, this will be the baseline tail start
+taili=[];
+tpdlen=length(tpd.i);
+dthresh=1e-11;
+while(length(taili)==0 || taili > tpdlen-10)
+  if (dthresh>eps)
+    dthresh/=2;
+  elseif (dthresh>0)
+    dthresh=-eps;
+  else
+    dthresh*=2;
+  endif
+  posdis=find(dis>dthresh);
+  taili=posdis(min(find(posdis>maxi+10)));
+  if (debug)
+    dthresh
+    taili
+    tpdlen
+  endif
+endwhile
+#Works poorly on noisy TPDs
+
+bl.T=cat(1,tpd.T(1:headi),tpd.T(taili:end));
+bl.i=cat(1,tpd.i(1:headi),tpd.i(taili:end));
 
 [poly,s]=polyfit(bl.T,bl.i,3);
 tpd.bl=polyval(poly,tpd.T);
