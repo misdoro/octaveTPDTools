@@ -1,4 +1,7 @@
 function ret=findBaseLine(tpd,debug=0)
+if (length(tpd.i)!=length(tpd.T))
+  return
+endif
 di=[0;diff(tpd.i)];
 dis=supsmu(tpd.T,di,'spa',0.01);
 
