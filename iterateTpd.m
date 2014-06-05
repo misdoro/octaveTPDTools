@@ -24,7 +24,15 @@ function result=iterateTpd(indata,param,funcName);
 			for midx=1:length(param.mass);
 				param.selectedmass=param.mass(midx);
 				cutdat=getMassData(tpd,param.displayT,param.selectedmass);
-				cutdat.doseintg=dose.integral;
+			  if (index(param.tools,'x'))
+          cutdat=findBaseLine(cutdat);
+          purintg=trapz(cutdat.t,cutdat.ipur);
+          intg=trapz(cutdat.t,cutdat.i);
+          printf("Baseline integral part: %d percent\n",(1-purintg/intg)*100);
+          cutdat.i=cutdat.ipur;
+          cutdat.intg=purintg;
+        endif 
+        cutdat.doseintg=dose.integral;
 				cutdat.filename=filename;
 				if (length(cutdat.i)>0)
 					cutdat.idx=++counter;
