@@ -51,6 +51,11 @@ tpd.pi=interp1(press.t,press.p,tpd.t);
 #figure(2);
 #plot(dose.t,dose.i);
 
+#Detect and remove spikes from TPD and dose
+for i=1:size(tpd.iN,2)
+  tpd.iN(:,i)=removeSpikes(tpd.t,tpd.iN(:,i));
+end
+
 
 ##################
 #Dose integrals
@@ -74,6 +79,9 @@ dose_out.mids=dose.mids;
 dose_out.t=dose.t;
 dose_out.iN=dose.iN;
 dose=dose_out;
+
+
+
 
 ##########################
 #Output data truncation and save
