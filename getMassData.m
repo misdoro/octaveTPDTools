@@ -7,7 +7,11 @@ function result = getMassData(tpd,Trange,mass);
 		colidx=massidx-zerosi+1;
 		result.i=tpd.iN(:,colidx);
 		if (isstruct(Trange) && Trange.max>0)
-			result=cutTemp(result,Trange);
+			result=findBaseLine(cutTemp(result,Trange));
+      purintg=trapz(result.t,result.ipur);
+      intg=trapz(result.t,result.i);
+      printf("Baseline integral part: %d percent\n",(1-purintg/intg)*100);
+      result.i=result.ipur;
 		endif;
 		result.intg=trapz(result.t,result.i);
 		result.mass=mass;
