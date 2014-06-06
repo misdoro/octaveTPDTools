@@ -1,31 +1,36 @@
 function result=fitModel(mytpd,param,result,press,dose);
-	result=plotTPD(mytpd,param,result);
+	result=plotTPD(mytpd,param,result,press,dose);
 	par.mids=mytpd.mids;
 	
-	
+	doseintg=0;
+	if (isfield(mytpd,"version") && mytpd.version>=20140120)
+		doseintg=calculateDoseIntegral(getMassData(dose,[],param.selectedmass));
+	else
+		doseintg=mytpd.doseintg;
+	endif
 	par=loadParamFile(par);
-	
-	para=[par.v,dose.integral/par.monolayd,par.asc*par.monolay*mytpd.rate,par.E];
+	doseintg/par.monolayd
+	para=[par.v,mytpd.intg/par.monolay,par.asc*par.monolay*mytpd.rate,par.E];
 	ptotn=calcPn(mytpd,para,par);
 	
-	plot(mytpd.T,ptotn,'color','green');
+	plot(mytpd.T,ptotn,'color',mytpd.color);
 	plot(mytpd.T,(mytpd.i-ptotn)*10,'color','black');
 	
 	
 	plot(mytpd.T,mytpd.i,".");
 	drawnow();
-	input("hold on before fitting");
+	#input("hold on before fitting");
 	
 	
-	fh=@(para)model(para,mytpd,par);
-	options(1)=0;
-	options(6)=2;
-	[paro,mindiff]=fminsearch(fh,para,options,[]);
-	paro
+	#fh=@(para)model(para,mytpd,par);
+	#options(1)=0;
+	#options(6)=2;
+	#[paro,mindiff]=fminsearch(fh,para,options,[]);
+	#paro
 	
-	popt=calcPn(mytpd,paro,par);
-	plot(mytpd.T,popt,"color","red");
-	plot(mytpd.T,(mytpd.i-popt)*10,'color','blue');
+	#popt=calcPn(mytpd,paro,par);
+	#plot(mytpd.T,popt,"color","red");
+	#plot(mytpd.T,(mytpd.i-popt)*10,'color','blue');
 endfunction;
 
 

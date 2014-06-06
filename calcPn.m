@@ -10,7 +10,7 @@ function ptotn=calcPn(tpd,parv,par)
 	endif;
 	parm=repmat(pars,numsim,1);
 	espr=par.Es;
-	cspr=par.thetas;
+	cspr=par.covspr;
 	if (isfield(par,"Ei") && length(par.Ei)==numsim);
 		parm(:,4)=par.Ei;
 	else
@@ -19,7 +19,7 @@ function ptotn=calcPn(tpd,parv,par)
 	if (isfield(par,"thetai") && length(par.thetai)==numsim);
 		parm(:,2)=par.thetai;
 	else
-		parm(:,2)=linspace(pars(2)-cspr,pars(2)+cspr,numsim)
+		parm(:,2)=linspace(pars(2)*(1-cspr),pars(2)*(1+cspr),numsim)
 	endif;
 	
 	
@@ -28,7 +28,7 @@ function ptotn=calcPn(tpd,parv,par)
 		ptotn=zeros(length(tpd.T),1);
 	
 		for i=1:numsim
-			if (par.ls==1);
+			if (isfield(par,"ls")&&par.ls==1);
 				ptotn+=calcP1(tpd,parm(i,:));
 			else
 				ptotn+=calcP1o(tpd,parm(i,:));
@@ -46,7 +46,7 @@ function ptotn=calcPn(tpd,parv,par)
 			para(i).T=tpd.T;
 			para(i).rate=tpd.rate;
 		endfor
-		if (par.ls==1);
+		if (isfield(par,"ls")&&par.ls==1);
 			ptotn=sum(pararrayfun(par.parallel,@calcP1a,para),2);
 		else
 			ptotn=sum(pararrayfun(par.parallel,@calcP1ao,para),2);

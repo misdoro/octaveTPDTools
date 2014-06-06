@@ -26,7 +26,8 @@ if (nargin==0)
 	#i = print files info: available masses and T range            #\n\
 	#v = ask to clear plot after each iteration                    #\n\
 	#T = treat isotherm desorption                                 #\n\
-	#x = extract the baseline from the data                          #\n\
+	#x = extract the baseline from the data                        #\n\
+  #u = run the user init.m, iterate.m and final.m, if available  #\n\
 	################################################################\n\n");
 endif
 
@@ -117,6 +118,35 @@ if (index(param.tools,'d'))
 		figure(param.fig.doses);
 		plotDoses(ret);
 	endif;
+endif;
+
+#################################################
+# iterate with user-provided code
+#################################################
+function result=iterTPD(mytpd,param,result,press,dose);
+  source("iterate.m")
+  result=result;
+endfunction;
+
+if (index(param.tools,'u'))
+  [init.info, init.err, init.msg]=stat("init.m");
+  [iter.info, iter.err, iter.msg]=stat("iterate.m");
+  [fin.info, fin.err, fin.msg]=stat("final.m");
+	if (iter.err>=0);
+    #Prepare the user figure
+    param.fig.user=++param.figindex;
+    figure(param.fig.user);
+	
+    #First check if we have the iteration script
+    if (init.err>=0);
+      source("init.m");
+    endif;
+    ret=iterateTpd(indata,param,@iterTPD);
+    
+    if (fin.err>=0);
+      source("final.m");
+    endif;
+  endif;
 endif;
 
 #################################################
@@ -373,10 +403,13 @@ if(isfield(param,"fig"))
 		printf("Saved the pressure vs T image\n");
 	endif;
 	if (isfield(param.fig,"qipress"))
-		print(param.fig.press,"qms-pressure.png","-dpng","-r300");
+		print(param.fig.qipress,"qms-pressure.png","-dpng","-r300");
 		printf("Saved the Iqms vs pressure image\n");
 	endif;
-
+  if (isfield(param.fig,"user"))
+		print(param.fig.user,"user.png","-dpng","-r300");
+		printf("Saved the user-specified image\n");
+	endif;
 endif;
 exit(0);
 
