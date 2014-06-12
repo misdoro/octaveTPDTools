@@ -26,8 +26,10 @@ if (nargin==0)
 	#i = print files info: available masses and T range            #\n\
 	#v = ask to clear plot after each iteration                    #\n\
 	#T = treat isotherm desorption                                 #\n\
+	#r = plot real non-smooth data                                 #\n\
 	#x = extract the baseline from the data                        #\n\
-  #u = run the user init.m, iterate.m and final.m, if available  #\n\
+	#u = run the user init.m, iterate.m and final.m, if available  #\n\
+  #s = save the graph points in ascii format                     #\n\
 	################################################################\n\n");
 endif
 
@@ -64,8 +66,11 @@ pkg load optim;
 #################################################
 function result=plotTPD(mytpd,param,result,press,dose);
 	mini=min(mytpd.i);
-	mytpd.i_sm=supsmu(mytpd.T,mytpd.i,'spa',0.005);
-	
+	if (index(param.tools,'r'))
+		mytpd.i_sm=mytpd.i;
+	else
+		mytpd.i_sm=supsmu(mytpd.T,mytpd.i,'spa',0.005);
+	endif;
 	ls="-";
 	if (isfield(mytpd,"model")&& mytpd.model>0);
 		ls=":";
@@ -87,7 +92,8 @@ function result=plotTPD(mytpd,param,result,press,dose);
 	
 	doseintg=0;
 	if (isfield(mytpd,"version") && mytpd.version>=20140120)
-		doseintg=calculateDoseIntegral(getMassData(dose,[],param.selectedmass));
+		dosdat=getMassData(dose,[],param.selectedmass);
+		doseintg=calculateDoseIntegral(dosdat,0);
 	else
 		doseintg=mytpd.doseintg;
 	endif
@@ -96,6 +102,10 @@ function result=plotTPD(mytpd,param,result,press,dose);
 	printf("TPD integral: %.3e\n",mytpd.intg);
 	printf("Dose integral: %.3e\n",doseintg);
 	printf("Itpd/Idose: %.3f\n",mytpd.intg/doseintg);
+  if (index(param.tools,'s'))
+    table=[mytpd.t-mytpd.t(1),mytpd.T,mytpd.i,mytpd.pi];
+    save("-text",strcat(mytpd.filename,".asc"),"table");
+  endif
 endfunction
 
 if (index(param.tools,'d'))
@@ -108,7 +118,7 @@ if (index(param.tools,'d'))
 	if (isfield(ret,"legend"))
 		legend("boxon");
 		h=legend(ret.legend);
-		set (h, 'fontsize', 12);
+		set (h, 'fontsize', 10);
 	endif;
 	
 	
@@ -155,6 +165,9 @@ endif;
 function result=plotDoses(mytpd,param,result,press,dose);
 	dose=getMassData(dose,[],param.selectedmass);
 	plot(dose.t,dose.i,"linewidth",2,"color",mytpd.color)
+	dosi=calculateDoseIntegral(dose,0);
+	printf("Dose integral %.2f\n",dosi);
+	
 	[maxi,maxidx]=max(dose.i);
 	maxt=dose.t(maxidx);
 	text(maxt,maxi,strcat(num2str(mytpd.idx)));
@@ -256,7 +269,7 @@ endif;
 ##################################################
 
 function result=plotEAds(mytpd,param,result);
-	tpd.a=[1e13, 1e15, 1e17, 1e19];
+	tpd.a=[1e13, 1e15, 1e17];
 	source("~/octave/constants.m");
 	cov=mytpd.intg-cumtrapz(mytpd.t,mytpd.i);
 	for ai=1:length(tpd.a);
@@ -264,7 +277,10 @@ function result=plotEAds(mytpd,param,result);
 		plot(cov/param.monolayer,E,"color",mytpd.color);
 		if (mytpd.idx==1)
 			[maxE,maxEpos]=max(E);
-			txt=strcat("<",num2str(mytpd.idx),":",num2str(tpd.a(ai)));
+      txt=sprintf("< %.1e ",tpd.a(ai))
+			#txt=strcat("<",num2str(mytpd.idx),":",num2str(tpd.a(ai)));
+      cov(maxEpos)
+      maxE
 			text(cov(maxEpos),maxE,txt);
 		endif;
 	end

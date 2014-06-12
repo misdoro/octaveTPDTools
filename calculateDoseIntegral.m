@@ -12,13 +12,16 @@ function [doseint,maxidx]=calculateDoseIntegral(dosedata,debug=0)
 		return;
 	endif;
 
+	dosedata=findBaseLine(dosedata,debug);
+	dosedata.i=dosedata.ipur;
+	
 	dose.mini=min(dosedata.i);
 	[dose.maxi,dose.maxii]=max(dosedata.i);
-  dose.decay=dosedata.i(dose.maxii:end);
-  dose.miniend=min(dose.decay);
+	dose.decay=dosedata.i(dose.maxii:end);
+	dose.miniend=min(dose.decay);
 	dose.fini=dosedata.i(end);
 	dose.iend=(dose.maxi+2*dose.miniend)/3;
-  #dose.iend=dose.maxi;
+	#dose.iend=dose.maxi;
 	dose.intend=dose.maxii+min(min(find(dose.decay<=dose.iend)),length(dosedata.i));
 	dose.isub=dosedata.i(1:dose.intend)-dose.mini;
 	dose.tsub=dosedata.t(1:dose.intend);

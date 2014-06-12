@@ -1,12 +1,12 @@
 function ret=findBaseLine(tpd,debug=0)
-if (length(tpd.i)!=length(tpd.T))
+if (length(tpd.i)!=length(tpd.t))
   return
 endif
 di=[0;diff(tpd.i)];
-dis=supsmu(tpd.T,di,'spa',0.01);
+dis=supsmu(tpd.i,di,'spa',0.01);
 
 #Minimum number of points at each end
-minpts=20;
+minpts=10;
 #Find the TPD half-maximum
 maxi=max(find(tpd.i>max(tpd.i)/2));
 
@@ -43,22 +43,24 @@ else
 endif
 #Works poorly on noisy TPDs
 
-bl.T=cat(1,tpd.T(1:headi),tpd.T(taili:end));
+
+bl.t=cat(1,tpd.t(1:headi),tpd.t(taili:end));
 bl.i=cat(1,tpd.i(1:headi),tpd.i(taili:end));
 
-[poly,s]=polyfit(bl.T,bl.i,3);
-tpd.bl=polyval(poly,tpd.T);
+[poly,s]=polyfit(bl.t,bl.i,4);
+tpd.bl=polyval(poly,tpd.t);
 tpd.ipur=max(tpd.i-tpd.bl,0);
 
 ret=tpd;
 if (debug)
   figure(1)
-  plot(tpd.T,dis,tpd.T,di)
+  plot(tpd.t,dis,tpd.t,di)
   figure(2)
   clf()
   hold on
-  plot(tpd.T,tpd.i)
-  plot(tpd.T,polyval(poly,tpd.T),'color',"green")
-  plot(bl.T,bl.i,'color',"red")
-  plot(tpd.T,tpd.ipur);
+  plot(tpd.t,tpd.i)
+  plot(tpd.t,polyval(poly,tpd.t),'color',"green")
+  plot(bl.t,bl.i,'color',"red")
+  plot(tpd.t,tpd.ipur);
+  input("OK?");
 endif
