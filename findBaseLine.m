@@ -47,7 +47,7 @@ endif
 bl.t=cat(1,tpd.t(1:headi),tpd.t(taili:end));
 bl.i=cat(1,tpd.i(1:headi),tpd.i(taili:end));
 
-[poly,s]=polyfit(bl.t,bl.i,4);
+[poly,s]=polyfit(bl.t,bl.i,3);
 tpd.bl=polyval(poly,tpd.t);
 tpd.ipur=max(tpd.i-tpd.bl,0);
 
