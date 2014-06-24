@@ -1,5 +1,5 @@
 function result=plotEAds(mytpd,param,result);
-	tpd.a=[1e11,1e13, 1e15, 1e17];
+	tpd.a=[1e11,1e13];
 	source("~/octave/constants.m");
 	cov=trapz(mytpd.t,mytpd.i)-cumtrapz(mytpd.t,mytpd.i);
 	for ai=1:length(tpd.a);
@@ -12,12 +12,23 @@ function result=plotEAds(mytpd,param,result);
     endif
     
     mini=min([find(isnan(E));length(E)-10]);
-    mini
 		plot(cml(maxbeg:mini),E(maxbeg:mini),"color",mytpd.color);
 		if (mytpd.idx==1)
-			
 			txt=sprintf("< %.1e ",tpd.a(ai));
-			text(cov(mini-1),E(mini-1),txt);
+			text(cml(mini-1),E(mini-1),txt);
 		endif;
+    if (index(param.tools,'t'))
+      minT=5*ceil(min(mytpd.T)/5);
+      maxT=5*floor(max(mytpd.T)/5);
+      numstep=1+(maxT-minT)/5;
+      temps=linspace(minT,maxT,numstep);
+      for i=1:numstep
+        tidx=max(find(mytpd.T<=temps(i)));
+        if (tidx>maxbeg && tidx<mini)
+          txt=sprintf("< %dK",temps(i));
+          text(cml(tidx),E(tidx),txt);
+        endif
+      endfor;
+    endif;
 	end
 endfunction

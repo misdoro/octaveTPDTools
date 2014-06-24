@@ -22,6 +22,7 @@ if (nargin==0)
 	#I = interactive parameters                                    #\n\
 	#l = log plot of i over 1/T                                    #\n\
 	#e = energy estimation using inversion plot over coverage      #\n\
+  #t = plot temperature points on the inversion curves every 5K  #\n\
 	#m = try to model TPD with 1-st order process                  #\n\
 	#i = print files info: available masses and T range            #\n\
 	#v = ask to clear plot after each iteration                    #\n\
