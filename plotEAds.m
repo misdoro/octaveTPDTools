@@ -2,11 +2,12 @@ function result=plotEAds(mytpd,param,result);
 	tpd.a=[1e11,1e13];
 	source("~/octave/constants.m");
 	cov=trapz(mytpd.t,mytpd.i)-cumtrapz(mytpd.t,mytpd.i);
+  [maxd,maxdi]=max(mytpd.i);
 	for ai=1:length(tpd.a);
 		E=-(R_eV/Na).* mytpd.T .*log(mytpd.i ./ ((tpd.a(ai)).*(cov+eps)));
     cml=cov/param.monolayer;
     if(isinf(E(1)))
-      maxbeg=max(find(isinf(E)))
+      maxbeg=max(find(isinf(E(1:maxdi))))
     else
       maxbeg=20;
     endif

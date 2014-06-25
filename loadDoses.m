@@ -4,7 +4,7 @@ function result=loadDoses(filenames,mass)
 	result=[];
 	for idx=1:len;
 		load(filenames{idx});
-		if (isfield(tpd,"version") && tpd.version>=20140120)
+		if (isfield(tpd,"version") && tpd.version>=20140120 && ~tpd.model)
 			dosedat=getMassData(dose,[],mass);
 			doseint=calculateDoseIntegral(dosedat);
 			result=[result; idx, doseint];

@@ -3,7 +3,7 @@ function result=fitModel(mytpd,param,result,press,dose);
 	par.mids=mytpd.mids;
 	
 	doseintg=0;
-	if (isfield(mytpd,"version") && mytpd.version>=20140120)
+	if (isfield(mytpd,"version") && mytpd.version>=20140120 && ~mytpd.model)
 		doseintg=calculateDoseIntegral(getMassData(dose,[],param.selectedmass));
 	else
 		doseintg=mytpd.doseintg;
