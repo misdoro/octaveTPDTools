@@ -15,6 +15,7 @@ if (nargin==0)
 	#d = plot TPDs                                                 #\n\
 	#D = plot dose metrics                                         #\n\
 	#n = use index-based colors                                    #\n\
+  #f = plot the temperature fit quality                          #\n\
 	#p = plot pressure                                             #\n\
 	#P = plot pressure vs Iqms                                     #\n\
 	#c = plot pressure-corrected TPDs                              #\n\
@@ -219,6 +220,23 @@ if (index(param.tools,'P'))
 	ylabel("Iqms, A");
 	xlabel("Pressure (torr)");
 	ret=iterateTpd(indata,param,@dispplotqP);
+	if (isfield(ret,"legend"))
+		legend("boxon");
+		legend(ret.legend);
+	endif;
+	
+endif;
+
+#################################################
+# Plot temperature fit quality
+#################################################
+if (index(param.tools,'f'))
+	param.fig.Tfitq=++param.figindex;
+	figure(param.fig.Tfitq);
+	hold on;
+	ylabel("T fit error, K");
+	xlabel("T, K");
+	ret=iterateTpd(indata,param,@dispTfitq);
 	if (isfield(ret,"legend"))
 		legend("boxon");
 		legend(ret.legend);
