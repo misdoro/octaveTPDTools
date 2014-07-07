@@ -34,7 +34,7 @@ fitT.max=max(press.T)-10;
 
 fit=fitTempSlope(press.t,press.T,fitT);
 press.To=press.T;
-press.T=fit.points;
+press.T=polyval(fit.poly,press.t);
 press.Tfp=fit.poly;
 tpd.rate=fit.poly(1);
 tpd.T=polyval(fit.poly,tpd.t);
