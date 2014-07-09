@@ -7,32 +7,34 @@ indata.filenames=findDatFiles(pwd);
 
 if (nargin==0)
 	printf("\n\
-	################################################################\n\
-	# TPD data treatment program, LPMAA/LERMA, UPMC, Paris         #\n\
-	################################################################\n\
-	#Usage: display.m act [M1,M2,MN startTemp endTemp monolayer]   #\n\
-	#Actions:                                                      #\n\
-	#d = plot TPDs                                                 #\n\
-	#D = plot dose metrics                                         #\n\
-	#n = use index-based colors                                    #\n\
+  ################################################################\n\
+  # TPD data treatment program, LPMAA/LERMA, UPMC, Paris         #\n\
+  ################################################################\n\
+  #Usage: display.m act [M1,M2,MN startTemp endTemp monolayer]   #\n\
+  #Actions:                                                      #\n\
+  #d = plot TPDs                                                 #\n\
+  #D = plot dose metrics                                         #\n\
+  #n = use index-based colors                                    #\n\
   #f = plot the temperature fit quality                          #\n\
-	#p = plot pressure                                             #\n\
-	#P = plot pressure vs Iqms                                     #\n\
-	#c = plot pressure-corrected TPDs                              #\n\
-	#C = calibrate pressure correction                             #\n\
-	#I = interactive parameters                                    #\n\
-	#l = log plot of i over 1/T                                    #\n\
-	#e = energy estimation using inversion plot over coverage      #\n\
+  #p = plot pressure                                             #\n\
+  #P = plot pressure vs Iqms                                     #\n\
+  #c = plot pressure-corrected TPDs                              #\n\
+  #C = calibrate pressure correction                             #\n\
+  #I = interactive parameters                                    #\n\
+  #l = log plot of i over 1/T                                    #\n\
+  #e = energy estimation using inversion plot over coverage      #\n\
   #t = plot temperature points on the inversion curves every 5K  #\n\
-	#m = try to model TPD with 1-st order process                  #\n\
-	#i = print files info: available masses and T range            #\n\
-	#v = ask to clear plot after each iteration                    #\n\
-	#T = treat isotherm desorption                                 #\n\
-	#r = plot real non-smooth data                                 #\n\
-	#x = extract the baseline from the data                        #\n\
-	#u = run the user init.m, iterate.m and final.m, if available  #\n\
+  #m = try to model TPD with 1-st order process                  #\n\
+  #i = print files info: available masses and T range            #\n\
+  #v = ask to clear plot after each iteration                    #\n\
+  #T = treat isotherm desorption                                 #\n\
+  #r = plot real non-smooth data                                 #\n\
+  #x = extract the baseline from the data                        #\n\
+  #u = run the user init.m, iterate.m and final.m, if available  #\n\
   #s = save the graph points in ascii format                     #\n\
-	################################################################\n\n");
+  #s = save the graph points in ascii format                     #\n\
+  #R = plot the IR spectrum, link points to the TPD              #\n\
+  ################################################################\n\n");
 endif
 
 param.monolayer=3.2e-09;#Xe /crystal
@@ -335,6 +337,24 @@ if (index(param.tools,'T'));
 	figure(++param.figindex);
 	hold on;
 	baseparam=iterateTpd(indata,param,@treatIsotherm);
+endif
+
+########################################################
+# Infra-red spectrum plot, with colour points on TPD   #
+########################################################
+if (index(param.tools,'R'));
+	param.fig.IR=++param.figindex;
+  figure(param.fig.IR);
+  ylabel("Absorbance")
+	xlabel("Wavelength, cm-1")
+	hold on;
+  [f.info, f.err, f.msg]=stat("IR.irdat");
+	if (f.err>=0);
+    load ("IR.irdat");
+	  points=iterateTpd(indata,param,@plotIRData,IRDAT);
+
+    
+  endif
 endif
 
 ########################################################

@@ -7,7 +7,7 @@
 #	cutdat.doseintg
 #	cutdat.color
 #Calls: function(cutdat,param,prevresult)
-function result=iterateTpd(indata,param,funcName);
+function result=iterateTpd(indata,param,funcName,varargin);
 	result.idx=[];
 	counter=0;
 	for idx=1:rows(indata.sorted);
@@ -43,7 +43,7 @@ function result=iterateTpd(indata,param,funcName);
 					else
 						cutdat.color=getLineColor(cutdat.intg,param.monolayer);
 					endif;
-					result=feval(funcName,cutdat,param,result,press,dose);
+					result=feval(funcName,cutdat,param,result,press,dose,varargin);
 				else
 					printf("No appropriate data in file %s for mid %d in T range [%d, %d]\n"
           ,filename,param.mass(midx),param.displayT.min,param.displayT.max);
