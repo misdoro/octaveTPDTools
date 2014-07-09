@@ -31,7 +31,8 @@ count=0;
 irplot={};
 
 for i=1:irdat.count
-  irtime=mktime(irdat.data{i}.time);
+%  irtime=mktime(irdat.data{i}.time)-2700; Time delay for old data
+  irtime=mktime(irdat.data{i}.time);% Clock synchronized after 7 jun 2014
   if (irtime>=tpd.mintime && irtime<=tpd.maxtime)
     count++;
     irplot{count}=irdat.data{i};

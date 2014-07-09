@@ -346,7 +346,7 @@ if (index(param.tools,'R'));
 	param.fig.IR=++param.figindex;
   figure(param.fig.IR);
   ylabel("Absorbance")
-	xlabel("Wavelength, cm-1")
+	xlabel("Wavelength (cm-1)")
 	hold on;
   [f.info, f.err, f.msg]=stat("IR.irdat");
 	if (f.err>=0);
