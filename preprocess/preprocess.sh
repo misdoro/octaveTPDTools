@@ -11,6 +11,7 @@ TPD=`echo $1 | sed -e "s/p_tpd_/q_tpd_/g"`
 
 echo "writing to " $OUTFILE
 
+cat $PRESS | head -n 1 > $TEMP/time.txt
 cat $PRESS | sed -e "s/,/./g" | tail -n+2 > $TEMP/press.txt
 cat $TPD | sed -e "s/,/./g"  > $TEMP/tpd.txt
 cat $DOSE | sed -e "s/,/./g"  > $TEMP/dose.txt

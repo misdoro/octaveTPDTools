@@ -8,6 +8,11 @@ dose.data=dlmread(strcat(tmppath,"/dose.txt"));
 dosep.data=dlmread(strcat(tmppath,"/dosep.txt"));
 press.data=dlmread(strcat(tmppath,"/press.txt"));
 
+tfile=fopen(strcat(tmppath,"/time.txt"));
+timeline=fgetl(tfile);
+fclose(tfile);
+tpd.time=strptime(timeline,"#%Y.%m.%d-%H:%M:%S");
+
 tpd.mids=tpd.data(1,:);
 tpd.mids=tpd.mids(find(tpd.mids>0));
 tpd.data=tpd.data(2:end,:);
@@ -91,7 +96,7 @@ dose=dose_out;
 if (nargin>=1);
 	filename=argv(){1};
 	if (!isempty(strfind(filename,".dat" )))
-		tpd.version=20140612;
+		tpd.version=20140709;
 		save("-binary",filename,"tpd","dose","press");
 		
 		comb=[tpd.t,tpd.T,tpd.i,tpd.pi];

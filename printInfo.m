@@ -3,6 +3,9 @@ function printInfo(input,param);
 		filename=input.filenames{input.sorted(idx,1)};
 		printf("\n-----------------\n%s\n",filename);
 		load(filename);
+    if (isfield(tpd,"version")&& tpd.version>=20140709)
+      printf("TPD start at: %s",asctime(tpd.time));
+    endif
 		if (isfield(tpd,"iN"))
 			if (isfield(tpd,"version")&& tpd.version>=20140120)
 				for midx=find(dose.mids>0)
