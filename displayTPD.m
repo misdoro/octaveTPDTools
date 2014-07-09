@@ -352,8 +352,6 @@ if (index(param.tools,'R'));
 	if (f.err>=0);
     load ("IR.irdat");
 	  points=iterateTpd(indata,param,@plotIRData,IRDAT);
-
-    
   endif
 endif
 
@@ -445,6 +443,10 @@ if(isfield(param,"fig"))
   if (isfield(param.fig,"user"))
 		print(param.fig.user,"user.png","-dpng","-r300");
 		printf("Saved the user-specified image\n");
+	endif;
+  if (isfield(param.fig,"IR"))
+		print(param.fig.IR,"FTIR.png","-dpng","-r300");
+		printf("Saved the FTIR image\n");
 	endif;
 endif;
 exit(0);
