@@ -2,7 +2,7 @@
 
 PRESS=$1
 TEMP=/tmp
-TPDTools=/home/doronin/octave/TPDTools
+TPDTools=~/octave/TPDTools
 
 OUTFILE=`echo $1 | sed -e "s/.asc/.dat/g" | sed -e "s/p_tpd/tpd/g"`
 DOSE=`echo $1 | sed -e "s/p_tpd_/q_dose_/g"`
