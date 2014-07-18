@@ -12,8 +12,8 @@ function [doseint,maxidx]=calculateDoseIntegral(dosedata,debug=0)
 		return;
 	endif;
 
-	dosedata=findBaseLine(dosedata,debug);
-	dosedata.i=dosedata.ipur;
+	#dosedata=findBaseLine(dosedata,debug);
+	#dosedata.i=dosedata.ipur;
 	
 	dose.mini=min(dosedata.i);
 	[dose.maxi,dose.maxii]=max(dosedata.i);
