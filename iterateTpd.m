@@ -26,7 +26,7 @@ function result=iterateTpd(indata,param,funcName,varargin);
 				cutdat=getMassData(tpd,param.displayT,param.selectedmass);
 			  if (length(cutdat.i)>0)
           if (index(param.tools,'x'))
-            cutdat=findBaseLine(cutdat);
+            cutdat=findBaseLine(cutdat,1);
             purintg=trapz(cutdat.t,cutdat.ipur);
             intg=trapz(cutdat.t,cutdat.i);
             printf("Baseline integral part: %d percent\n",(1-purintg/intg)*100);

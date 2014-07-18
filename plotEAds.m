@@ -1,5 +1,5 @@
 function result=plotEAds(mytpd,param,result);
-	tpd.a=[1e11,1e13];
+	tpd.a=[1e15,1e17,1e19];
 	source("~/octave/constants.m");
 	cov=trapz(mytpd.t,mytpd.i)-cumtrapz(mytpd.t,mytpd.i);
   [maxd,maxdi]=max(mytpd.i);
