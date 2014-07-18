@@ -66,7 +66,7 @@ end
 #Dose integrals
 for midx=1:length(dose.mids);
 	mid=dose.mids(midx);
-	[dose.integral(midx),dose.intimax(midx)]=calculateDoseIntegral(getMassData(dose,[],mid));
+	[dose.integral(midx),dose.intimax(midx)]=calculateDoseIntegral(getMassData(dose,[],mid),0);
 end;
 
 #Export temperature range
