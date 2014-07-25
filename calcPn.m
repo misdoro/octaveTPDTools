@@ -3,7 +3,7 @@ function ptotn=calcPn(tpd,parv,par)
 	#Sum of tpds with variable parameters
 	numsim=par.numsim;
 	pars=parv;
-	if (!isfield(par,"thetai") || length(par.thetai)!=numsim)
+	if (~isfield(par,"thetai") || length(par.thetai)~=numsim)
 		pars(3)=parv(3)/numsim;
 	else
 		pars(3)=parv(3);
@@ -19,12 +19,11 @@ function ptotn=calcPn(tpd,parv,par)
 	if (isfield(par,"thetai") && length(par.thetai)==numsim);
 		parm(:,2)=par.thetai;
 	else
-		parm(:,2)=linspace(pars(2)*(1-cspr),pars(2)*(1+cspr),numsim)
+		parm(:,2)=linspace(pars(2)*(1-cspr),pars(2)*(1+cspr),numsim);
 	endif;
 	
 	
 	if (par.parallel<2);
-		tic();
 		ptotn=zeros(length(tpd.T),1);
 	
 		for i=1:numsim
@@ -34,10 +33,8 @@ function ptotn=calcPn(tpd,parv,par)
 				ptotn+=calcP1o(tpd,parm(i,:));
 			endif
 		endfor
-		toc()
 	else
 	
-		tic();
 		for i=1:numsim
 			para(i).a=parm(i,1);
 			para(i).b=parm(i,2);
@@ -51,7 +48,6 @@ function ptotn=calcPn(tpd,parv,par)
 		else
 			ptotn=sum(pararrayfun(par.parallel,@calcP1ao,para),2);
 		endif;
-		toc()
 	endif;
 endfunction;
 
