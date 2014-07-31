@@ -8,9 +8,10 @@ function result=fitModel(mytpd,param,result,press,dose);
 	else
 		doseintg=mytpd.doseintg;
 	endif
-  dosecov=doseintg/par.monolayd;
+
 	par=loadParamFile(par);
-  
+  dosecov=doseintg/par.monolayd;
+
   #Check if we have file-specific options defined
   fns=strsplit(mytpd.filename,".");
   fn=fns{1};
@@ -26,7 +27,8 @@ function result=fitModel(mytpd,param,result,press,dose);
     cutT.max=parfs.maxT;
     mytpd=cutTemp(mytpd,cutT);
   endif
-    
+  
+  #Decimate TPD to reduce to defined number of points, if asked
   if (isfield(par,"decimate") && par.decimate)
     factor = round(length(mytpd.i)/par.np)
     mytpd=decimateTPD(mytpd,factor);
@@ -38,9 +40,9 @@ function result=fitModel(mytpd,param,result,press,dose);
   mytpd.i=mytpd.i-par.bline;
 	
   figure(param.fig.model);
-  plot(mytpd.T,ptotn,'color',mytpd.color);
-	plot(mytpd.T,(mytpd.i-ptotn)*10,'color','black');
-  plot(mytpd.T,mytpd.i,".");
+  plot(mytpd.T,ptotn,'color',mytpd.color,'linewidth',2);
+	plot(mytpd.T,(mytpd.i-ptotn)*10,'color',mytpd.color);
+  plot(mytpd.T,mytpd.i,".",'color',mytpd.color);
 	drawnow();
   
   ssq=fitcoverage((dosecov),para,mytpd,par);
