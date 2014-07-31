@@ -14,6 +14,9 @@ function result=fitModel(mytpd,param,result,press,dose);
   fn=fns{1};
   if (isfield(par,fn))
     parfs=getfield(par,fn);
+    if (isfield(parfs,"bline"))
+      par.bline=parfs.bline;
+    endif;
     cutT.min=parfs.minT;
     cutT.max=parfs.maxT;
     mytpd=cutTemp(mytpd,cutT);
