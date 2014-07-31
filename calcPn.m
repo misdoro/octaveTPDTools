@@ -35,6 +35,7 @@ function ptotn=calcPn(tpd,parv,par)
 		endfor
 	else
 	
+    pkg load parallel;
 		for i=1:numsim
 			para(i).a=parm(i,1);
 			para(i).b=parm(i,2);
