@@ -303,7 +303,9 @@ endif
 #######################################################
 
 if (index(param.tools,'m'));
-	figure(++param.figindex);
+  param.fig.model=++param.figindex;
+  param.fig.modelfit=++param.figindex;
+	figure(param.fig.model);
 	hold on;
 	pkg load odepkg;
 	iterateTpd(indata,param,@fitModel);
