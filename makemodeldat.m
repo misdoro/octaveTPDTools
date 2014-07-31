@@ -34,7 +34,14 @@ tpd.T=linspace(par.minT,par.maxT,par.np)';
 parv=[par.v,par.theta,par.monolay*par.rate,par.E];
 #tpd.i=calcP1(tpd,parv)+par.bline;
 tpd.i=calcPn(tpd,parv,par)+par.bline;
-
+if(isfield(par,"noise")&& par.noise)
+  snr=1000;
+  if (isfield(par,"snr"))
+    snr=par.snr;
+  endif
+  maxisnr=max(tpd.i)/snr
+  tpd.i=tpd.i.+stdnormal_rnd(par.np,1).*maxisnr;
+endif
 tpd.iN=tpd.i;
 press.t=tpd.t+0.1;
 press.T=tpd.T;
