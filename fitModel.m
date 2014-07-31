@@ -8,14 +8,19 @@ function result=fitModel(mytpd,param,result,press,dose);
 	else
 		doseintg=mytpd.doseintg;
 	endif
+  dosecov=doseintg/par.monolayd;
 	par=loadParamFile(par);
   
+  #Check if we have file-specific options defined
   fns=strsplit(mytpd.filename,".");
   fn=fns{1};
   if (isfield(par,fn))
     parfs=getfield(par,fn);
     if (isfield(parfs,"bline"))
       par.bline=parfs.bline;
+    endif;
+    if (isfield(parfs,"cov"))
+      dosecov=parfs.cov;
     endif;
     cutT.min=parfs.minT;
     cutT.max=parfs.maxT;
@@ -26,19 +31,21 @@ function result=fitModel(mytpd,param,result,press,dose);
     factor = round(length(mytpd.i)/par.np)
     mytpd=decimateTPD(mytpd,factor);
   endif
-	dosecov=doseintg/par.monolayd;
-  tpdcov=mytpd.intg/par.monolay
+	
 	para=[par.v,dosecov,par.monolay*mytpd.rate,par.E];
 	ptotn=calcPn(mytpd,para,par);
 	
   mytpd.i=mytpd.i-par.bline;
-	plot(mytpd.T,ptotn,'color',mytpd.color);
-	plot(mytpd.T,(mytpd.i-ptotn)*10,'color','black');
-	ssq=fitcoverage((dosecov),para,mytpd,par);
-  printf("Initial SSQ: %e\n",ssq);
 	
-	plot(mytpd.T,mytpd.i,".");
+  figure(param.fig.model);
+  plot(mytpd.T,ptotn,'color',mytpd.color);
+	plot(mytpd.T,(mytpd.i-ptotn)*10,'color','black');
+  plot(mytpd.T,mytpd.i,".");
 	drawnow();
+  
+  ssq=fitcoverage((dosecov),para,mytpd,par);
+  printf("Initial SSQ: %e\n",ssq);
+  
   
 	if (index(param.tools,'F'))
     if isfield(par,"vs")
@@ -67,7 +74,7 @@ function result=fitModel(mytpd,param,result,press,dose);
       row=[v,para(4),para(2),ssq]
       fitret=[fitret; row]
       
-      figure(99);
+      figure(param.fig.modelfit);
       clf();
       hold on;
       plot(mytpd.T,mytpd.i,'color',mytpd.color);
