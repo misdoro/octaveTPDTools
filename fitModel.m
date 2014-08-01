@@ -61,7 +61,7 @@ function result=fitModel(mytpd,param,result,press,dose);
       printf("Iteration for v=%e\n",v);
       ssq=0;
       for i=[1,2]
-        printf("Coverage optimisation\n");
+        
         
         #opts=optimset("Display","iter","TolX",1e-9);
         opts=optimset("Display","final","TolX",1e-9);
@@ -93,6 +93,7 @@ function result=fitModel(mytpd,param,result,press,dose);
 endfunction;
 
 function [para,ssq]=optimCoverage(opts,para,mytpd,par)
+  printf("Coverage optimisation\n");
   fh=@(fp)fitcoverage(fp,para,mytpd,par);
   fp=para(2);
   [paro,ssq]=fminsearch(fh,fp,opts);
