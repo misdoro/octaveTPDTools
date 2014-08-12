@@ -12,6 +12,10 @@ function result=fitModel(mytpd,param,result,press,dose);
 	par=loadParamFile(par);
   dosecov=doseintg/par.monolayd;
 
+  if (~isfield(par,"mincov")|| ~isfield(par,"maxcov"))
+    par.mincov=0.1;
+    par.maxcov=0.9;
+  endif
   #Check if we have file-specific options defined
   fns=strsplit(mytpd.filename,".");
   fn=fns{1};
@@ -23,11 +27,33 @@ function result=fitModel(mytpd,param,result,press,dose);
     if (isfield(parfs,"cov"))
       dosecov=parfs.cov;
     endif;
-    cutT.min=parfs.minT;
-    cutT.max=parfs.maxT;
-    mytpd=cutTemp(mytpd,cutT);
+      
+    #Cutoff temperatures
+    if (isfield(parfs,"minT") && isfield(parfs,"maxT"))
+      par.cutT.min=parfs.minT;
+      par.cutT.max=parfs.maxT;
+    endif
+    
+    #Cutoff coverage ratio, used by default
+    if (isfield(parfs,"mincov")&& isfield(parfs,"maxcov"))
+      par.mincov=parfs.mincov;
+      par.maxcov=parfs.maxcov;
+    endif;
+      
   endif
-  
+    
+  if (isfield(par,"bline"))
+    mytpd.i=mytpd.i-par.bline;
+  endif;
+  if (isfield(par,"cutT"))
+    mytpd=cutTemp(mytpd,par.cutT);
+  else
+    cov=cumtrapz(mytpd.t,mytpd.i);
+    covnorm=cov./cov(end);
+    cutstart=max(find(covnorm<par.mincov));
+    cutend=min(find(covnorm>par.maxcov));
+    mytpd=cutIndex(mytpd,length(mytpd.i),cutstart,cutend);
+  endif;
   #Decimate TPD to reduce to defined number of points, if asked
   if (isfield(par,"decimate") && par.decimate)
     factor = round(length(mytpd.i)/par.np)
@@ -37,7 +63,7 @@ function result=fitModel(mytpd,param,result,press,dose);
 	para=[par.v,dosecov,par.monolay*mytpd.rate,par.E];
 	ptotn=calcPn(mytpd,para,par);
 	
-  mytpd.i=mytpd.i-par.bline;
+  
 	
   figure(param.fig.model);
   plot(mytpd.T,ptotn,'color',mytpd.color,'linewidth',2);
