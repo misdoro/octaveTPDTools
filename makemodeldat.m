@@ -39,8 +39,11 @@ if(isfield(par,"noise")&& par.noise)
   if (isfield(par,"snr"))
     snr=par.snr;
   endif
-  maxisnr=max(tpd.i)/snr
-  tpd.i=tpd.i.+stdnormal_rnd(par.np,1).*maxisnr;
+  noiselvl=max(tpd.i)/snr
+  if (isfield(par,"constnoise"))
+    noiselvl+=par.constnoise;
+  endif
+  tpd.i=tpd.i.+stdnormal_rnd(par.np,1).*noiselvl;
 endif
 tpd.iN=tpd.i;
 press.t=tpd.t+0.1;
