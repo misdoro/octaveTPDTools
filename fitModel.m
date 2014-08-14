@@ -90,7 +90,8 @@ function result=fitModel(mytpd,param,result,press,dose);
         
         
         #opts=optimset("Display","iter","TolX",1e-9);
-        opts=optimset("Display","final","TolX",1e-9);
+        #opts=optimset("Display","final","TolX",1e-9);
+        opts=optimset("Display","final","TolX",1e-5);
         
         [para,ssq]=optimEa(opts,para,mytpd,par);
         #plotoptimres(mytpd,para,par);
@@ -114,6 +115,7 @@ function result=fitModel(mytpd,param,result,press,dose);
     endfor
     printf("Final values: Ea=%f eV, theta=%f ML\n",para(4),para(2));
     result=fitret;
+    #Output table: prefactor, Ea, coverage, ssq
     save("-text",strcat(mytpd.filename,".fit"),"fitret");
   endif;
 endfunction;
@@ -145,13 +147,19 @@ function plotoptimres(mytpd,para,par)
 endfunction;
 
 function ssq=fitcoverage(fp,parv,tpd,par)
-  parv(2)=fp(1);
+  if (fp(1)<0)
+    fp(1)=eps;
+  endif;
+  parv(2)=fp(1)
 	p=calcPn(tpd,parv,par);
 	ssq=sumsq(p-tpd.i);
 endfunction;
 
 function ssq=fitEa(fp,parv,tpd,par)
-  parv(4)=fp(1);
+  if (fp(1)<0)
+    fp(1)=eps;
+  endif;
+  parv(4)=fp(1)
 	p=calcPn(tpd,parv,par);
 	ssq=sumsq(p-tpd.i);
 endfunction;
