@@ -305,12 +305,34 @@ endif
 if (index(param.tools,'m'));
   param.fig.model=++param.figindex;
   param.fig.modelfit=++param.figindex;
+  param.fig.modelediff=++param.figindex;
 	figure(param.fig.model);
 	hold on;
 	pkg load odepkg;
 	iterateTpd(indata,param,@fitModel);
+  figure(param.fig.model);
 	xlabel("Temperature (K)")
 	ylabel("Desorption signal");
+  
+  #Plot fit results, if any
+  fitfiles=findDatFiles(pwd,"fit");
+  if (length(fitfiles)>1)
+    figure(param.fig.modelediff);
+    toplotv=[];
+    toplote=[];
+    for filen=fitfiles;
+      filen{1}
+      load(filen{1});
+      if (length(fitret(:,1)==length(toplotv))||length(toplotv)==0)
+        toplotv=fitret(:,1);
+        toplote=[toplote,fitret(:,2)];
+      endif
+    endfor
+    toplotstd=std(toplote,0,2);
+    semilogx(toplotv,toplotstd);
+    xlabel("Prefactor v");
+    ylabel("E stddev(ramp)");
+  endif
 endif
 
 ########################################################
@@ -451,6 +473,10 @@ if(isfield(param,"fig"))
 		print(param.fig.IR,"FTIR.png","-dpng","-r300");
 		printf("Saved the FTIR image\n");
 	endif;
+  if (isfield(param.fig,"modeldiff"))
+    print(param.fig.modeldiff,"prefactor.png","-dpng","-r300");
+		printf("Saved the prefactor fit image\n");
+  endif;
 endif;
 exit(0);
 
