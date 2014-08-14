@@ -329,7 +329,7 @@ if (index(param.tools,'m'));
       endif
     endfor
     toplotstd=std(toplote,0,2);
-    semilogx(toplotv,toplotstd);
+    semilogx(toplotv,toplotstd,"linewidth",2);
     xlabel("Prefactor v");
     ylabel("E stddev(ramp)");
   endif
@@ -473,8 +473,8 @@ if(isfield(param,"fig"))
 		print(param.fig.IR,"FTIR.png","-dpng","-r300");
 		printf("Saved the FTIR image\n");
 	endif;
-  if (isfield(param.fig,"modeldiff"))
-    print(param.fig.modeldiff,"prefactor.png","-dpng","-r300");
+  if (isfield(param.fig,"modelediff"))
+    print(param.fig.modelediff,"prefactor.png","-dpng","-r300");
 		printf("Saved the prefactor fit image\n");
   endif;
 endif;
