@@ -1,23 +1,18 @@
 function result=plotEAds(mytpd,param,result);
   par.vs=[1e15,1e17,1e19];
   par=loadParamFile(par);
-	tpd.a=par.vs;
 	source("~/octave/constants.m");
-	cov=trapz(mytpd.t,mytpd.i)-cumtrapz(mytpd.t,mytpd.i);
-  [maxd,maxdi]=max(mytpd.i);
-	for ai=1:length(tpd.a);
-		E=-(R_eV/Na).* mytpd.T .*log(mytpd.i ./ ((tpd.a(ai)).*(cov+eps)));
-    cml=cov/param.monolayer;
-    if(isinf(E(1)))
-      maxbeg=max(find(isinf(E(1:maxdi))))
-    else
-      maxbeg=20;
-    endif
-    
-    mini=min([find(isnan(E));length(E)-10]);
-		plot(cml(maxbeg:mini),E(maxbeg:mini),"color",mytpd.color);
+	mytpd.cov=trapz(mytpd.t,mytpd.i)-cumtrapz(mytpd.t,mytpd.i);
+  cml=mytpd.cov/param.monolayer;
+  
+	for vi=par.vs;
+		inv=invertEa(mytpd,vi);
+    E=inv.E;
+    maxbeg=inv.startidx;
+    mini=inv.endidx;
+    plot(cml(maxbeg:mini),E(maxbeg:mini),"color",mytpd.color);
 		if (mytpd.idx==1)
-			txt=sprintf("< %.1e ",tpd.a(ai));
+			txt=sprintf("< %.1e ",vi);
 			text(cml(mini-1),E(mini-1),txt);
 		endif;
     if (index(param.tools,'t'))
