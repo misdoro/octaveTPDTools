@@ -23,6 +23,7 @@ function [doseint,maxidx]=calculateDoseIntegral(dosedata,debug=0)
 	dose.iend=(dose.maxi+2*dose.miniend)/3;
 	#dose.iend=dose.maxi;
 	dose.intend=dose.maxii+min(min(find(dose.decay<=dose.iend)),length(dosedata.i));
+  dose.intend=min(length(dosedata.i),dose.intend);
 	dose.isub=dosedata.i(1:dose.intend)-dose.mini;
 	dose.tsub=dosedata.t(1:dose.intend);
 	doseint=trapz(dose.tsub,dose.isub);
