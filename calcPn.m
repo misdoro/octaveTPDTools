@@ -9,9 +9,14 @@ function ptotn=calcPn(tpd,parv,par)
 		pars(3)=parv(3);
 	endif;
 	parm=repmat(pars,numsim,1);
-	espr=par.Es;
-	cspr=par.covspr;
-	if (isfield(par,"Ei") && length(par.Ei)==numsim);
+  if (length(parv)==5)
+    espr=parv(5);
+    cspr=0;
+  else
+  	espr=par.Es;
+	  cspr=par.covspr;
+	endif
+  if (isfield(par,"Ei") && length(par.Ei)==numsim);
 		parm(:,4)=par.Ei;
 	else
 		parm(:,4)=linspace(pars(4)-espr,pars(4)+espr,numsim);

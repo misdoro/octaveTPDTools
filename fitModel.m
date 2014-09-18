@@ -1,5 +1,4 @@
 function result=fitModel(mytpd,param,result,press,dose);
-	#result=plotTPD(mytpd,param,result,press,dose);
 	par.mids=mytpd.mids;
 	
 	doseintg=0;
@@ -16,6 +15,7 @@ function result=fitModel(mytpd,param,result,press,dose);
     par.mincov=0.1;
     par.maxcov=0.9;
   endif
+  
   #Check if we have file-specific options defined
   fns=strsplit(mytpd.filename,".");
   fn=fns{1};
@@ -45,6 +45,7 @@ function result=fitModel(mytpd,param,result,press,dose);
   if (isfield(par,"bline"))
     mytpd.i=mytpd.i-par.bline;
   endif;
+  
   if (isfield(par,"cutT"))
     mytpd=cutTemp(mytpd,par.cutT);
   else
@@ -54,13 +55,14 @@ function result=fitModel(mytpd,param,result,press,dose);
     cutend=min(find(covnorm>par.maxcov));
     mytpd=cutIndex(mytpd,length(mytpd.i),cutstart,cutend);
   endif;
+  
   #Decimate TPD to reduce to defined number of points, if asked
   if (isfield(par,"decimate") && par.decimate)
     factor = round(length(mytpd.i)/par.np)
     mytpd=decimateTPD(mytpd,factor);
   endif
 	
-	para=[par.v,dosecov,par.monolay*mytpd.rate,par.E];
+	para=[par.v,dosecov,par.monolay*mytpd.rate,par.E,par.Es];
 	ptotn=calcPn(mytpd,para,par);
 	
   
@@ -98,9 +100,11 @@ function result=fitModel(mytpd,param,result,press,dose);
         
         [para,ssq]=optimCoverage(opts,para,mytpd,par);
         #plotoptimres(mytpd,para,par);
+        
+        [para,ssq]=optimEs(opts,para,mytpd,par);
       endfor
       #Output table: prefactor, Ea, coverage, ssq
-      row=[v,para(4),para(2),ssq]
+      row=[v,para(4),para(2),ssq,para(5)]
       fitret=[fitret; row]
       
       figure(param.fig.modelfit);
@@ -115,7 +119,7 @@ function result=fitModel(mytpd,param,result,press,dose);
     endfor
     printf("Final values: Ea=%f eV, theta=%f ML\n",para(4),para(2));
     result=fitret;
-    #Output table: prefactor, Ea, coverage, ssq
+    #Output table: prefactor, Ea, coverage, ssq, Es
     save("-text",strcat(mytpd.filename,".fit"),"fitret");
   endif;
 endfunction;
@@ -139,6 +143,15 @@ function [para,ssq]=optimEa(opts,para,mytpd,par)
   para(4)=paro(1);
 endfunction;
 
+function [para,ssq]=optimEs(opts,para,mytpd,par)
+  printf("Es optimisation\n");
+  fp=para(5);
+  fh=@(fp)fitEs(fp,para,mytpd,par);
+  [paro,ssq]=fminsearch(fh,fp,opts);
+  printf("Final SSQ: %e\n",ssq);
+  para(5)=paro(1);
+endfunction;
+
 function plotoptimres(mytpd,para,par)
   popt=calcPn(mytpd,para,par);
   plot(mytpd.T,popt,"color","red");
@@ -160,6 +173,15 @@ function ssq=fitEa(fp,parv,tpd,par)
     fp(1)=eps;
   endif;
   parv(4)=fp(1)
+	p=calcPn(tpd,parv,par);
+	ssq=sumsq(p-tpd.i);
+endfunction;
+
+function ssq=fitEs(fp,parv,tpd,par)
+  if (fp(1)<0)
+    fp(1)=eps;
+  endif;
+  parv(5)=fp(1)
 	p=calcPn(tpd,parv,par);
 	ssq=sumsq(p-tpd.i);
 endfunction;
