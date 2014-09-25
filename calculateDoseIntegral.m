@@ -29,6 +29,10 @@ function [doseint,maxidx]=calculateDoseIntegral(dosedata,debug=0)
 	doseint=trapz(dose.tsub,dose.isub);
 	maxidx=dose.intend;
   
+  if length(maxidx)==0
+    maxidx=0;
+  endif
+  
   if(debug)
     figure(99)
     clf();
