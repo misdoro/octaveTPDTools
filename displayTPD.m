@@ -237,7 +237,7 @@ if (index(param.tools,'f'))
 	param.fig.Tfitq=++param.figindex;
 	figure(param.fig.Tfitq);
 	hold on;
-	ylabel("T fit error, K");
+	ylabel("T ramp fit error, K");
 	xlabel("T, K");
 	ret=iterateTpd(indata,param,@dispTfitq);
 	if (isfield(ret,"legend"))
@@ -476,6 +476,10 @@ if(isfield(param,"fig"))
   if (isfield(param.fig,"modelediff"))
     print(param.fig.modelediff,"prefactor.png","-dpng","-r300");
 		printf("Saved the prefactor fit image\n");
+  endif;
+  if (isfield(param.fig,"Tfitq"))
+    print(param.fig.Tfitq,"Trampqual.png","-dpng","-r300");
+		printf("Saved the ramp quality image\n");
   endif;
 endif;
 exit(0);
