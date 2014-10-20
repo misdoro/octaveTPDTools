@@ -101,7 +101,9 @@ function result=fitModel(mytpd,param,result,press,dose);
         [para,ssq]=optimCoverage(opts,para,mytpd,par);
         #plotoptimres(mytpd,para,par);
         
-        [para,ssq]=optimEs(opts,para,mytpd,par);
+        if (isfield(par,"fitde")&& par.fitde~=0)
+          [para,ssq]=optimEs(opts,para,mytpd,par);
+        endif
       endfor
       #Output table: prefactor, Ea, coverage, ssq
       row=[v,para(4),para(2),ssq,para(5)]
