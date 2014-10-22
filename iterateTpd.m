@@ -9,8 +9,10 @@
 #Calls: function(cutdat,param,prevresult)
 function result=iterateTpd(indata,param,funcName,varargin);
 	result.idx=[];
+  filesCount=rows(indata.sorted);
+  plotCount=length(param.mass)*filesCount;
 	counter=0;
-	for idx=1:rows(indata.sorted);
+	for idx=1:filesCount;
 		filename=indata.filenames{indata.sorted(idx,1)};
 		printf("\n-----------------\n%s\n",filename);
 		load(filename);
@@ -38,8 +40,9 @@ function result=iterateTpd(indata,param,funcName,varargin);
 				
 					cutdat.idx=++counter;
 					if (index(param.tools,'n'))
-						colors=["black";"cyan";"green";"magenta";"red";"yellow"];
-						cutdat.color=colors(counter);
+            cutdat.color=getLineColor(4*counter/plotCount,1,2);
+						#colors=["black";"cyan";"green";"magenta";"red";"yellow"];
+						#cutdat.color=colors(counter);
 					else
 						cutdat.color=getLineColor(cutdat.intg,param.monolayer);
 					endif;
