@@ -1,9 +1,9 @@
 #!/usr/bin/octave -q
-if (nargin>=2);
-	irpath=argv(){2};
-  outfile=argv(){1};
+if (nargin>=1);
+	irpath=argv(){1};
+  outfile="IR.irdat";
 else
-  printf("Usage: preprocessIR out.irdat /path/to/irdata/\n");
+  printf("Usage: preprocessIR /path/to/irdata/\n");
   exit();
 endif;
 
