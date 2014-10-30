@@ -65,7 +65,8 @@ end
 ##################
 #Dose integrals
 for midx=1:length(dose.mids);
-	mid=dose.mids(midx);
+	mid=dose.mids(midx)
+  [int,maxi]=calculateDoseIntegral(getMassData(dose,[],mid),0)
 	[dose.integral(midx),dose.intimax(midx)]=calculateDoseIntegral(getMassData(dose,[],mid),0);
 end;
 
