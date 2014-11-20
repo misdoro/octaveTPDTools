@@ -43,7 +43,7 @@ param.monolayer=1.65e-09;#Xe/HOPG
 param.monolayer=2e-08;#Xe /amorph 1,2e-6 A*s 100K
 #param.monolayer=1e-5;#H2O
 param.monolayer=useArgument(argv(),5,param.monolayer);
-
+param=loadParamFile(param);
 
 
 #By default, use the first MID and available temperature range from the first input file.
@@ -259,7 +259,7 @@ function result=plotInvT(mytpd,param,result);
 
 	[eads,lnv,win]=findLogEAds(mytpd);
 	eVKcalmul=23.0609;
-	printf("Eads = %f eV, %f kcal/mol\n",eads,eads*eVKcalmul);
+	printf("Eads = %e eV, %e kcal/mol\n",eads,eads*eVKcalmul);
 	txtx=mytpd.invT(1);
 	txty=mytpd.logi(1);
 	text(txtx,txty,strcat("<",num2str(mytpd.idx)));

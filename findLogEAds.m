@@ -16,11 +16,13 @@ function [eads,lnv,win]=findLogEAds(mytpd)
 	pf=[0,0];
 	rmsv=1;
 	spvec=[];
+  pass=0;
 	% Find the max error point, use it to cut the fit window
-	while(win.np>win.minw && rmsv>delta)
+	while((win.np>win.minw && rmsv>delta) || pass==0)
 		[sp,rmsv,pf]=findSplitPoint(mytpd,win,0);
 		win=stepWin(win,sp);
 		spvec=[spvec,sp];
+    pass=1;
 	end
 	
 	[sp,rmsv]=findSplitPoint(mytpd,win,1);
