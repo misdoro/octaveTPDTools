@@ -17,7 +17,7 @@ function [ T, theta, p ] = modelTPDlsode(T,theta0,v,E,rate=3/60)
 
 k = 1.38e-23*6.24e18; % (J K^-1)*(eV/J) = eV K^-1 = 8.6e-5 eV K^-1
 #Pre-calculate parameters
-odepar.ek1=E/k; odepar.nuoa=v/rate; odepar.myzero=eps;
+odepar.ek1=E/k; odepar.nuoa=v/rate;
 
 of=@(x,t) odemlde(x,t,odepar); #Solve the ODE
 theta=lsode(of,theta0,T);
@@ -33,10 +33,10 @@ endfunction;
 
 #ODE for multilayer desorption, zero order, then first order
 function dthetadT = odemlde(theta,T,param)
-	nuovera=param.nuoa;Eoverk=param.ek1;myzero=param.myzero;
+	nuovera=param.nuoa;Eoverk=param.ek1;
 	if (theta > 1)
 		dthetadT = -nuovera.*exp(-Eoverk./(T+eps));
-	elseif (theta > myzero)
+	elseif (theta > eps)
 		dthetadT = -nuovera.*theta.*exp(-Eoverk./(T+eps));
 	else
 		dthetadT = 0;
