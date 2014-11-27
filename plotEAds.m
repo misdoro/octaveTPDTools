@@ -15,6 +15,7 @@ function result=plotEAds(mytpd,param,result);
 			txt=sprintf("< %.1e ",vi);
 			text(cml(mini-1),E(mini-1),txt);
 		endif;
+    sprintf("paramtools:%s",param.tools);
     if (index(param.tools,'t'))
       minT=5*ceil(min(mytpd.T)/5);
       maxT=5*floor(max(mytpd.T)/5);

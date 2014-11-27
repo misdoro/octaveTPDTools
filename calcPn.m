@@ -1,5 +1,5 @@
 function ptotn=calcPn(tpd,parv,par)
-	
+	%TODO:To throw away, too messy!
 	#Sum of tpds with variable parameters
 	numsim=par.numsim;
 	pars=parv;
