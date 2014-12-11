@@ -39,15 +39,15 @@ function result=iterateTpd(indata,param,funcName,varargin);
           endif 
           cutdat.doseintg=dose.integral;
 				  cutdat.filename=filename;
-				
 					cutdat.idx=++counter;
-					if (index(param.tools,'n'))
-            cutdat.color=getLineColor(4*counter/plotCount,1,2);
-						#colors=["black";"cyan";"green";"magenta";"red";"yellow"];
-						#cutdat.color=colors(counter);
+          
+          #Define plot color
+					if (index(param.tools,'c'))
+            cutdat.color=getLineColor(cutdat.intg,param.monolayer);
 					else
-						cutdat.color=getLineColor(cutdat.intg,param.monolayer);
+            cutdat.color=getLineColor(4*counter/plotCount,1,2);
 					endif;
+          
 					result=feval(funcName,cutdat,param,result,press,dose,varargin);
 				else
 					printf("No appropriate data in file %s for mid %d in T range [%d, %d]\n"
