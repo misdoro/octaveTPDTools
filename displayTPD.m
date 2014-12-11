@@ -12,27 +12,29 @@ if (nargin==0)
   ################################################################\n\
   #Usage: display.m act [M1,M2,MN startTemp endTemp monolayer]   #\n\
   #Actions:                                                      #\n\
+  #-----------display --------------                             #\n\  
   #d = plot TPDs                                                 #\n\
-  #D = plot dose metrics                                         #\n\
-  #n = use index-based colors                                    #\n\
+  #D = plot dose graph                                           #\n\
+  #r = plot real non-smooth data                                 #\n\
+  #x = extract the baseline from the data                        #\n\
+  #c = use coverage-based colors                                 #\n\
   #f = plot the temperature fit quality                          #\n\
   #p = plot pressure                                             #\n\
   #P = plot pressure vs Iqms                                     #\n\
-  #I = interactive parameters                                    #\n\
+  #R = plot the IR spectrum, add points to the TPD plot          #\n\
+  #-----------Ea extract -----------                             #\n\
   #l = log plot of i over 1/T                                    #\n\
   #e = energy estimation using inversion plot over coverage      #\n\
   #t = plot temperature points on the inversion curves every 5K  #\n\
   #m = model TPD with 1-st order process                         #\n\
   #F = Fit model parameters                                      #\n\
+  #-----------Fine tune, misc.------                             #\n\
+  #I = interactive parameters                                    #\n\
   #i = print files info: available masses and T range            #\n\
   #v = ask to clear plot after each iteration                    #\n\
   #T = treat isotherm desorption                                 #\n\
-  #r = plot real non-smooth data                                 #\n\
-  #x = extract the baseline from the data                        #\n\
   #u = run the user init.m, iterate.m and final.m, if available  #\n\
   #s = save the graph points in ascii format                     #\n\
-  #s = save the graph points in ascii format                     #\n\
-  #R = plot the IR spectrum, link points to the TPD              #\n\
   ################################################################\n\n");
 endif
 
