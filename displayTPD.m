@@ -18,8 +18,6 @@ if (nargin==0)
   #f = plot the temperature fit quality                          #\n\
   #p = plot pressure                                             #\n\
   #P = plot pressure vs Iqms                                     #\n\
-  #c = plot pressure-corrected TPDs                              #\n\
-  #C = calibrate pressure correction                             #\n\
   #I = interactive parameters                                    #\n\
   #l = log plot of i over 1/T                                    #\n\
   #e = energy estimation using inversion plot over coverage      #\n\
@@ -345,17 +343,6 @@ if (index(param.tools,'i'));
 endif
 
 ########################################################
-# Calibrate pressure-qms offset and scaling            #
-########################################################
-	
-if (index(param.tools,'C'));
-	param.fig.blcalib=++param.figindex;
-	figure(param.fig.blcalib);
-	hold on;
-	baseparam=iterateTpd(indata,param,@calibrateBaseLine);
-endif
-
-########################################################
 # Experimental isotherm treatment, not complete        #
 ########################################################
 	
@@ -394,35 +381,6 @@ function result=extractBaseLine(mytpd,param,result,press,dose);
 	result.Ts{mytpd.idx}=mytpd.T;
 	result.is{mytpd.idx}=mytpd.i;
 endfunction;
-
-if (index(param.tools,'c'));
-	param.fig.blf=++param.figindex;
-	figure(param.fig.blf);
-	hold on;
-	param.baseLine=[0,0,0];
-	if (index(param.tools,'I'));% Interactive parameters
-		printf("Please provide the baseline parameters. \n\
-To obtain them, do the TPD in position dose and run displayTPD C mass startT endT\n");
-		
-		param.baseLine(1) = input("Input time delay");
-		param.baseLine(2) = input("Input pressure base\n");
-		param.baseLine(3) = input("Input pressure scale\n");
-	else
-		#baselines(MID,1:3)=[dt,p0,p1]
-		#baselines(130,1:3)=[2.1123e+00,   1.8871e-10,   2.0016e-02];
-		baselines(130,1:3)=[2.9660e+00   1.1547e-10   2.0236e-02];
-		baselines(84,1:3)=[-1.1146e+01   1.0841e-10   8.2433e-02];
-		baselines(84,1:3)=[2.5799e+00   7.2170e-11   5.8502e-02];
-		baselines(40,1:3)=[-6.4   2.6e-10   2.3516e-01];
-		param.baseLine=baselines(param.mass,:);
-	endif;
-	
-	fixedbase=iterateTpd(indata,param,@extractBaseLine);
-	
-	
-endif
-
-drawnow();
 
 
 #Save all figures in the end, since they may be updated during the processing
