@@ -259,7 +259,8 @@ function result=plotInvT(mytpd,param,result);
 
 	[eads,lnv,win]=findLogEAds(mytpd);
 	eVKcalmul=23.0609;
-	printf("Eads = %e eV, %e kcal/mol\n",eads,eads*eVKcalmul);
+  eVKJmul=96.4869;
+	printf("Eads = %f eV, %f kcal/mol, %f kJ/mol\n",eads,eads*eVKcalmul,eads*eVKJmul);
 	txtx=mytpd.invT(1);
 	txty=mytpd.logi(1);
 	text(txtx,txty,strcat("<",num2str(mytpd.idx)));
