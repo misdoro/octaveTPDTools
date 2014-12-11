@@ -14,10 +14,11 @@ if (nargin==0)
   #Actions:                                                      #\n\
   #-----------display --------------                             #\n\  
   #d = plot TPDs                                                 #\n\
-  #D = plot dose graph                                           #\n\
   #r = plot real non-smooth data                                 #\n\
   #x = extract the baseline from the data                        #\n\
   #c = use coverage-based colors                                 #\n\
+  #N = Normalize to ML/K as y axis for display                   #\n\
+  #D = plot dose graph                                           #\n\
   #f = plot the temperature fit quality                          #\n\
   #p = plot pressure                                             #\n\
   #P = plot pressure vs Iqms                                     #\n\
@@ -118,7 +119,11 @@ if (index(param.tools,'d'))
 	figure(param.fig.disp);
 	hold on;
 	ret=iterateTpd(indata,param,@plotTPD);
-	ylabel("Desorption flow (arb.u.)");
+  if (index(param.tools,'N'))
+    ylabel("Desorption flow (ML/K)");
+  else
+	  ylabel("Desorption flow (arb.u.)");
+  endif
 	xlabel("Temperature (K)");
 	if (isfield(ret,"legend"))
 		legend("boxon");

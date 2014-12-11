@@ -48,6 +48,11 @@ function result=iterateTpd(indata,param,funcName,varargin);
             cutdat.color=getLineColor(4*counter/plotCount,1,2);
 					endif;
           
+          #Check if we are asked to convert the data in ML/K units
+          if (index(param.tools,'N'))
+            cutdat.i=cutdat.i./(param.monolayer.*(cutdat.rate./60));
+          endif
+          
 					result=feval(funcName,cutdat,param,result,press,dose,varargin);
 				else
 					printf("No appropriate data in file %s for mid %d in T range [%d, %d]\n"
