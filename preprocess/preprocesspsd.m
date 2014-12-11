@@ -25,17 +25,18 @@ press.p=press.data(:,3);
 #dose.T=dosep.data(:,2);
 
 #fit temperature range
-fitT.min=min(press.T)+10;
-fitT.max=max(press.T)-10;
+#fitT.min=min(press.T)+10;
+#fitT.max=max(press.T)-10;
 
 
 
-fit=fitTempSlope(press.t,press.T,fitT);
+#fit=fitTempSlope(press.t,press.T,fitT);
 press.To=press.T;
-press.T=fit.points;
-press.Tfp=fit.poly;
-tpd.rate=fit.poly(1);
-tpd.T=polyval(fit.poly,tpd.t);
+#press.T=fit.points;
+#press.Tfp=fit.poly;
+#tpd.rate=fit.poly(1);
+#tpd.T=polyval(fit.poly,tpd.t);
+tpd.T=interp1(press.t,press.T,tpd.t);
 
 pkg load optim;
 
