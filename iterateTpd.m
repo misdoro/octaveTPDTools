@@ -50,7 +50,7 @@ function result=iterateTpd(indata,param,funcName,varargin);
           
           #Check if we are asked to convert the data in ML/K units
           if (index(param.tools,'N'))
-            cutdat.i=cutdat.i./(param.monolayer.*(cutdat.rate./60));
+            cutdat.i=cutdat.i./(param.monolayer.*(cutdat.rate));
           endif
           
 					result=feval(funcName,cutdat,param,result,press,dose,varargin);
