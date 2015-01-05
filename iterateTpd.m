@@ -29,7 +29,8 @@ function result=iterateTpd(indata,param,funcName,varargin);
 			  if (length(cutdat.i)>0)
           if (index(param.tools,'x'))
             #cutdat=findBaseLine(cutdat,1);
-            cutdat.i=cutdat.i-param.bline;
+            baseline=getOptionValue(param,filename,"bline",0);
+            cutdat.i=cutdat.i-baseline;
             cutdat.intg=trapz(cutdat.t,cutdat.i);
             #purintg=trapz(cutdat.t,cutdat.ipur);
             #intg=trapz(cutdat.t,cutdat.i);

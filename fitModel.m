@@ -10,37 +10,6 @@ function result=fitModel(mytpd,param,result,press,dose);
 
 	par=loadParamFile(par);
   dosecov=doseintg/par.monolayd;
-
-  if (~isfield(par,"mincov")|| ~isfield(par,"maxcov"))
-    par.mincov=0.1;
-    par.maxcov=0.9;
-  endif
-  
-  #Check if we have file-specific options defined
-  fns=strsplit(mytpd.filename,".");
-  fn=fns{1};
-  if (isfield(par,fn))
-    parfs=getfield(par,fn);
-    if (isfield(parfs,"bline"))
-      par.bline=parfs.bline;
-    endif;
-    if (isfield(parfs,"cov"))
-      dosecov=parfs.cov;
-    endif;
-      
-    #Cutoff temperatures
-    if (isfield(parfs,"minT") && isfield(parfs,"maxT"))
-      par.cutT.min=parfs.minT;
-      par.cutT.max=parfs.maxT;
-    endif
-    
-    #Cutoff coverage ratio, used by default
-    if (isfield(parfs,"mincov")&& isfield(parfs,"maxcov"))
-      par.mincov=parfs.mincov;
-      par.maxcov=parfs.maxcov;
-    endif;
-      
-  endif
     
   if (isfield(par,"bline"))
     mytpd.i=mytpd.i-par.bline;
@@ -51,8 +20,10 @@ function result=fitModel(mytpd,param,result,press,dose);
   else
     cov=cumtrapz(mytpd.t,mytpd.i);
     covnorm=cov./cov(end);
-    cutstart=max(find(covnorm<par.mincov));
-    cutend=min(find(covnorm>par.maxcov));
+    mincov=getOptionValue(par,mytpd.filename,"mincov",0.1);
+    maxcov=getOptionValue(par,mytpd.filename,"maxcov",0.9);
+    cutstart=max(find(covnorm<mincov));
+    cutend=min(find(covnorm>maxcov));
     mytpd=cutIndex(mytpd,length(mytpd.i),cutstart,cutend);
   endif;
   
