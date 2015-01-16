@@ -11,15 +11,16 @@ function [p,theta]=modelTPDmc(T,fitpar)
 % p - desorption rates array
 % theta - coverages array
 
-E0=par.E0;
-dE=par.dE;
-v=par.v;
-rate=par.rate;
-monolay=par.ml;
+E0=fitpar.E0;
+dE=fitpar.dE;
+v=fitpar.v;
+rate=fitpar.rate;
+monolay=fitpar.ml;
+thetas=fitpar.thetas;
 
 k = 1.38e-23*6.24e18; % (J K^-1)*(eV/J) = eV K^-1 = 8.6e-5 eV K^-1
 
-numpts=length(thetavec);
+numpts=length(thetas);
 E=linspace(E0,E0+dE*(numpts-1),numpts);
 #Pre-calculate parameters
 odepar.ek1=E/k; odepar.nuoa=v/rate;
@@ -40,7 +41,7 @@ for i=1:numT
 endfor
 
 #Switch from 1/K to 1/sec.
-p=p*rate*par.monolay;
+p=p*rate*monolay;
 
 endfunction;
 
