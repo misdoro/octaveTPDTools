@@ -15,6 +15,7 @@ E0=fitpar.E0;
 dE=fitpar.dE;
 v=fitpar.v;
 rate=fitpar.rate;
+scale=fitpar.scale;
 monolay=fitpar.ml;
 thetas=fitpar.thetas;
 
@@ -41,7 +42,7 @@ for i=1:numT
 endfor
 
 #Switch from 1/K to 1/sec.
-p=p*rate*monolay;
+p=p*rate*monolay*scale;
 
 endfunction;
 
