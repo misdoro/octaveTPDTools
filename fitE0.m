@@ -13,5 +13,8 @@ endfunction
 function ssq=fitcovsc(tpd,fitpar,E0)
   fitpar.E0=abs(E0);
   p=modelTPDmc(tpd.T,fitpar);
-	ssq=sumsq(p-tpd.i)
+	ssq=sumsq(p-tpd.i);
+  if isfield(fitpar,'debug')
+    printf("SSQ %e",ssq);
+  endif
 endfunction;
