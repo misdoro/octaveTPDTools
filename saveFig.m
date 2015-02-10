@@ -19,7 +19,7 @@ function saveFigData(fighdl,fileprefix);
   idx=0;
   for i=1:length(plots);
     refi=plots(i);
-    objtype=get(refi,'type')
+    objtype=get(refi,'type');
     if (strcmp(objtype,'line'))
       saveCurveData(refi,fileprefix,++idx);
     endif;
