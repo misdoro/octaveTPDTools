@@ -1,5 +1,5 @@
 function fitpar=fitPartCoverages(tpd,fitpar,\
-fitopts=optimset("Display","final","MaxIter",3000,"TolX",1e-5))
+fitopts=optimset("Display","final","MaxIter",3000,"TolX",1e-5),debug=0)
 %Fit partial coverages of the energy distribution
 %function fitpar=fitCoverages(tpd,fitpar)
 printf("Optimising energy distribution\n");

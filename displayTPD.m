@@ -92,8 +92,8 @@ function result=plotTPD(mytpd,param,result,press,dose);
 	endif;
 	text(maxT,maxi,txt);
 	fn=strrep(mytpd.filename,"_","-");
-	legendtext=strcat(txt,":",fn,"(",num2str(mytpd.intg/param.monolayer,"%3.2f"),"ML)");
-	
+	#legendtext=strcat(txt,":",fn,"(",num2str(mytpd.intg/param.monolayer,"%3.2f"),"ML)");
+	legendtext=sprintf("%d: %d K/min (%3.2f ML)",mytpd.idx,mytpd.rate*60,mytpd.intg/param.monolayer);
 	result=retAppend(result,"legend",legendtext);
 	
 	doseintg=0;
@@ -108,10 +108,10 @@ function result=plotTPD(mytpd,param,result,press,dose);
 	printf("TPD integral: %.3e\n",mytpd.intg);
 	printf("Dose integral: %.3e\n",doseintg);
 	printf("Itpd/Idose: %.3f\n",mytpd.intg/doseintg);
-  if (index(param.tools,'s'))
-    table=[mytpd.t-mytpd.t(1),mytpd.T,mytpd.i,mytpd.pi];
-    save("-text",strcat(mytpd.filename,".asc"),"table");
-  endif
+  #if (index(param.tools,'s'))
+  #  table=[mytpd.t-mytpd.t(1),mytpd.T,mytpd.i,mytpd.pi];
+  #  save("-text",strcat(mytpd.filename,".asc"),"table");
+  #endif
 endfunction
 
 if (index(param.tools,'d'))
@@ -392,61 +392,18 @@ endfunction;
 
 #Save all figures in the end, since they may be updated during the processing
 if(isfield(param,"fig"))
-	input("Adjust figures if needed, then press enter to save, ctrl-c to exit");
-	if (isfield(param.fig,"disp"))
-		print(param.fig.disp,"desorption.png","-dpng","-r300");
-		printf("Saved desorption image\n");
-	endif;
-	
-	if (isfield(param.fig,"doses"))
-		print(param.fig.doses,"sticking.png","-dpng","-r300");
-		printf("Saved sticking graph image\n");
-	endif;
-	if (isfield(param.fig,"doseext"))
-		print(param.fig.doseext,"doses.png","-dpng","-r300");
-		printf("Saved dose information image\n");
-	endif;
-	
-	if (isfield(param.fig,"log"))
-		print(param.fig.log,"logplot.png","-dpng","-r300");
-		printf("Saved log fit image\n");
-	endif;
-	if (isfield(param.fig,"eads"))
-		print(param.fig.eads,"eadsest.png","-dpng","-r300");
-		printf("Saved Ea inversion image\n");
-	endif;
-	if (isfield(param.fig,"blf"))
-		print(param.fig.blf,"baselinefix.png","-dpng","-r300");
-		printf("Saved the baseline-corrected image\n");
-	endif;
-	if (isfield(param.fig,"blcalib"))
-		print(param.fig.blcalib,"baselinecal.png","-dpng","-r300");
-		printf("Saved the baseline calibration image\n");
-	endif;
-	if (isfield(param.fig,"press"))
-		print(param.fig.press,"pressure.png","-dpng","-r300");
-		printf("Saved the pressure vs T image\n");
-	endif;
-	if (isfield(param.fig,"qipress"))
-		print(param.fig.qipress,"qms-pressure.png","-dpng","-r300");
-		printf("Saved the Iqms vs pressure image\n");
-	endif;
-  if (isfield(param.fig,"user"))
-		print(param.fig.user,"user.png","-dpng","-r300");
-		printf("Saved the user-specified image\n");
-	endif;
-  if (isfield(param.fig,"IR"))
-		print(param.fig.IR,"FTIR.png","-dpng","-r300");
-		printf("Saved the FTIR image\n");
-	endif;
-  if (isfield(param.fig,"modelediff"))
-    print(param.fig.modelediff,"prefactor.png","-dpng","-r300");
-		printf("Saved the prefactor fit image\n");
-  endif;
-  if (isfield(param.fig,"Tfitq"))
-    print(param.fig.Tfitq,"Trampqual.png","-dpng","-r300");
-		printf("Saved the ramp quality image\n");
-  endif;
+  input("Adjust figures if needed, then press enter to save, ctrl-c to exit");
+  saveFig(param,'disp',"desorption");
+  saveFig(param,'doses','sticking');
+  saveFig(param,'doseext','doses');
+  saveFig(param,'log','logplot');
+  saveFig(param,'eads','eadsest');
+  saveFig(param,'press','pressure');
+  saveFig(param,'qipress','qms-pressure');
+  saveFig(param,'user','user');
+  saveFig(param,'IR','FTIR');
+  saveFig(param,'modelediff','prefactor');
+  saveFig(param,'Tfitq','Trampqual');
 endif;
 exit(0);
 

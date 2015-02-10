@@ -67,10 +67,10 @@ function result=fitModel(mytpd,param,result,press,dose,fitparam);
         #opts=optimset("Display","final","TolX",1e-9);
         opts=optimset("Display","final","TolX",1e-5);
         
-        [para,ssq]=optimEa(opts,para,mytpd,par);
+        #[para,ssq]=optimEa(opts,para,mytpd,par);
         #plotoptimres(mytpd,para,par);
         
-        [para,ssq]=optimCoverage(opts,para,mytpd,par);
+        #[para,ssq]=optimCoverage(opts,para,mytpd,par);
         #plotoptimres(mytpd,para,par);
         
         if (isfield(par,"fitde")&& par.fitde~=0)
