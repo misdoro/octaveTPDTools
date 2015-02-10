@@ -108,10 +108,6 @@ function result=plotTPD(mytpd,param,result,press,dose);
 	printf("TPD integral: %.3e\n",mytpd.intg);
 	printf("Dose integral: %.3e\n",doseintg);
 	printf("Itpd/Idose: %.3f\n",mytpd.intg/doseintg);
-  #if (index(param.tools,'s'))
-  #  table=[mytpd.t-mytpd.t(1),mytpd.T,mytpd.i,mytpd.pi];
-  #  save("-text",strcat(mytpd.filename,".asc"),"table");
-  #endif
 endfunction
 
 if (index(param.tools,'d'))
