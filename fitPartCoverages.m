@@ -14,6 +14,6 @@ function ssq=fitcovs(tpd,fitpar,thetas)
   p=modelTPDmc(tpd.T,fitpar);
 	ssq=sumsq(p-tpd.i);
   if isfield(fitpar,'debug')
-    printf("SSQ %e",ssq);
+    printf("SSQ %e\n",ssq);
   endif
 endfunction;
