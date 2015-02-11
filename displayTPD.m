@@ -75,7 +75,8 @@ function result=plotTPD(mytpd,param,result,press,dose);
 	if (index(param.tools,'r'))
 		mytpd.i_sm=mytpd.i;
 	else
-		mytpd.i_sm=supsmu(mytpd.T,mytpd.i,'spa',0.005);
+    smooth=getOptionValue(param,mytpd.filename,"smooth",0.005);
+		mytpd.i_sm=supsmu(mytpd.T,mytpd.i,'spa',smooth);
 	endif;
 	ls="-";
 	if (isfield(mytpd,"model")&& mytpd.model>0);
@@ -108,6 +109,11 @@ function result=plotTPD(mytpd,param,result,press,dose);
 	printf("TPD integral: %.3e\n",mytpd.intg);
 	printf("Dose integral: %.3e\n",doseintg);
 	printf("Itpd/Idose: %.3f\n",mytpd.intg/doseintg);
+  
+  #Rate and maximum position
+  printf("TPD rate %.2f K/s\n",mytpd.rate);
+  [maxi, maxin]=max(mytpd.i_sm);
+  printf("Temperature of maximum: %3.2f K\n",mytpd.T(maxin));
 endfunction
 
 if (index(param.tools,'d'))
