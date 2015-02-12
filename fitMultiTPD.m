@@ -112,8 +112,10 @@ figure(2);
 clf;
 hold on;
 colors={'green','blue','red'}
+if (~isfield(fitpar,'stds'))
+vs=logspace(log10(fitpar.estv/1000),log10(fitpar.estv*1000),11)
+
 for vidx=[1,2,3]
-  vs=logspace(log10(fitpar.estv/1000),log10(fitpar.estv*1000),11)
   Efits=[];
   for v=vs
     Eline=[];
@@ -149,12 +151,30 @@ for vidx=[1,2,3]
   stds{vidx}=std(Efits,0,2);
   legendtxt{vidx}=sprintf('v=%.1e',fitpar.defits{vidx}.v);
   figure(2);
-  plot(vs,stds{vidx},'color',vidx);
+  hold on;
+  semilogx(vs,stds{vidx},'color',colors{vidx});
   legend(legendtxt);
   drawnow;
+  fitpar.stds=stds;
+  save("-text","fit.par","fitpar");
 endfor
-fitpar.stds=stds;
-save("-text","fit.par","fitpar");
+
+else
+  printf("Using previous fit errors\n");
+  fitpar.stds
+  colors={'green','blue','red'}
+  figure(2);
+  clf();
+  hold on;
+  vs=logspace(log10(fitpar.estv/1000),log10(fitpar.estv*1000),11)
+  
+  for vidx=[1,2,3]
+    legendtxt{vidx}=sprintf('v=%.1e',fitpar.defits{vidx}.v);
+    semilogx(vs,fitpar.stds{vidx},'color',colors{vidx});
+    legend(legendtxt);
+    drawnow;
+  endfor;
+endif
 
 endfunction;
 
