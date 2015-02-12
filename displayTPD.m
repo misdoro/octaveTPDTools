@@ -1,10 +1,6 @@
 #!/usr/bin/octave -qi
 #Arguments: mid, min T, max T, display, monolayer
 
-indata.filenames=findDatFiles(pwd);
-
-
-
 if (nargin==0)
 	printf("\n\
   ################################################################\n\
@@ -12,7 +8,7 @@ if (nargin==0)
   ################################################################\n\
   #Usage: display.m act [M1,M2,MN startTemp endTemp monolayer]   #\n\
   #Actions:                                                      #\n\
-  #-----------display --------------                             #\n\  
+  #-----------display --------------                             #\n\
   #d = plot TPDs                                                 #\n\
   #r = plot real non-smooth data                                 #\n\
   #x = extract the baseline from the data                        #\n\
@@ -27,6 +23,7 @@ if (nargin==0)
   #l = log plot of i over 1/T                                    #\n\
   #e = energy estimation using inversion plot over coverage      #\n\
   #t = plot temperature points on the inversion curves every 5K  #\n\
+  #V = perform a search of prefactor based on multi-rate TPDs    #\n\
   #m = model TPD with 1-st order process                         #\n\
   #F = Fit model parameters                                      #\n\
   #-----------Fine tune, misc.------                             #\n\
@@ -39,16 +36,14 @@ if (nargin==0)
   ################################################################\n\n");
 endif
 
-param.monolayer=3.2e-09;#Xe /crystal
-param.monolayer=1.65e-09;#Xe/HOPG
 param.monolayer=2e-08;#Xe /amorph 1,2e-6 A*s 100K
-#param.monolayer=1e-5;#H2O
 param.monolayer=useArgument(argv(),5,param.monolayer);
 param=loadParamFile(param);
 
-
-#By default, use the first MID and available temperature range from the first input file.
-param=getFileInfo(indata,param);
+datindex.filenames=findDatFiles(pwd);
+#By default, use the last MID (most precise timestamp) and available 
+#temperature range from the first input file.
+param=getFileInfo(datindex,param);
 param.displayT.min=useArgument(argv(),3,param.displayT.min);
 param.displayT.max=useArgument(argv(),4,param.displayT.max);
 param.mass=useArgument(argv(),2,param.mass);
@@ -57,10 +52,7 @@ for midx=1:length(param.mass)
 	,param.displayT.min,param.displayT.max,param.mass(midx));
 end
 
-indata.doses=loadDoses(indata.filenames,param.mass(1));
-
-indata.sorted=sortrows(indata.doses,2);
-
+datindex=indexDatFiles(datindex,param);
 
 param.tools=useArgument(argv(),1,"i");
 param.figindex=0;%Current figure index, to be autoincremented by processings
@@ -120,7 +112,7 @@ if (index(param.tools,'d'))
 	param.fig.disp=++param.figindex;
 	figure(param.fig.disp);
 	hold on;
-	ret=iterateTpd(indata,param,@plotTPD);
+	ret=iterateTpd(datindex,param,@plotTPD);
   if (index(param.tools,'N'))
     ylabel("Desorption flow (ML/K)");
   else
@@ -163,7 +155,7 @@ if (index(param.tools,'u'))
     if (init.err>=0);
       source("init.m");
     endif;
-    ret=iterateTpd(indata,param,@iterTPD);
+    ret=iterateTpd(datindex,param,@iterTPD);
     
     if (fin.err>=0);
       source("final.m");
@@ -192,7 +184,7 @@ if (index(param.tools,'D'))
 	hold on;
 	ylabel("Dose current (arb.u.)");
 	xlabel("Time (s)");
-	ret=iterateTpd(indata,param,@plotDoses);
+	ret=iterateTpd(datindex,param,@plotDoses);
 endif;
 #################################################
 # Plot gauge pressure
@@ -210,7 +202,7 @@ if (index(param.tools,'p'))
 	param.fig.press=++param.figindex;
 	figure(param.fig.press);
 	hold on;
-	ret=iterateTpd(indata,param,@plotP);
+	ret=iterateTpd(datindex,param,@plotP);
 	ylabel("Pressure (torr)");
 	xlabel("Temperature (K)");
 	if (isfield(ret,"legend"))
@@ -229,7 +221,7 @@ if (index(param.tools,'P'))
 	hold off;
 	ylabel("Iqms, A");
 	xlabel("Pressure (torr)");
-	ret=iterateTpd(indata,param,@dispplotqP);
+	ret=iterateTpd(datindex,param,@dispplotqP);
 	if (isfield(ret,"legend"))
 		legend("boxon");
 		legend(ret.legend);
@@ -246,7 +238,7 @@ if (index(param.tools,'f'))
 	hold on;
 	ylabel("T ramp fit error, K");
 	xlabel("T, K");
-	ret=iterateTpd(indata,param,@dispTfitq);
+	ret=iterateTpd(datindex,param,@dispTfitq);
 	if (isfield(ret,"legend"))
 		legend("boxon");
 		legend(ret.legend);
@@ -287,7 +279,7 @@ if (index(param.tools,'l'))
 	ylabel("log(i)")
 	xlabel("Inverse Temperature (1/T)")
 	
-	iterateTpd(indata,param,@plotInvT);
+	iterateTpd(datindex,param,@plotInvT);
 	
 	
 	
@@ -303,9 +295,15 @@ if (index(param.tools,'e'))
 	hold on;
 	ylabel("Ea (eV)")
 	xlabel("Coverage (ML)")
-	ret3=iterateTpd(indata,param,@plotEAds);
+	ret3=iterateTpd(datindex,param,@plotEAds);
 endif
 
+#################################################################
+# Fit multi-rate TPDs to find prefactor and energy distribution #
+#################################################################
+if (index(param.tools,'V'))
+  
+endif
 #######################################################
 # TPD modeling, uses (user-defined) function fitModel #
 #######################################################
@@ -317,7 +315,7 @@ if (index(param.tools,'m'));
 	figure(param.fig.model);
 	hold on;
 	pkg load odepkg;
-	iterateTpd(indata,param,@fitModel);
+	iterateTpd(datindex,param,@fitModel);
   figure(param.fig.model);
 	xlabel("Temperature (K)")
 	ylabel("Desorption signal");
@@ -348,7 +346,7 @@ endif
 ########################################################
 
 if (index(param.tools,'i'));
-	printInfo(indata,param);
+	printInfo(datindex,param);
 endif
 
 ########################################################
@@ -358,7 +356,7 @@ endif
 if (index(param.tools,'T'));
 	figure(++param.figindex);
 	hold on;
-	baseparam=iterateTpd(indata,param,@treatIsotherm);
+	baseparam=iterateTpd(datindex,param,@treatIsotherm);
 endif
 
 ########################################################
@@ -373,7 +371,7 @@ if (index(param.tools,'R'));
   [f.info, f.err, f.msg]=stat("IR.irdat");
 	if (f.err>=0);
     load ("IR.irdat");
-	  points=iterateTpd(indata,param,@plotIRData,IRDAT);
+	  points=iterateTpd(datindex,param,@plotIRData,IRDAT);
   endif
 endif
 

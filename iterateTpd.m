@@ -9,11 +9,11 @@
 #Calls: function(cutdat,param,prevresult)
 function result=iterateTpd(indata,param,funcName,varargin);
 	result.idx=[];
-  filesCount=rows(indata.sorted);
+  filesCount=rows(indata.ordDoses);
   plotCount=length(param.mass)*filesCount;
 	counter=0;
 	for idx=1:filesCount;
-		filename=indata.filenames{indata.sorted(idx,1)};
+		filename=indata.filenames{indata.ordDoses(idx,1)};
 		printf("\n-----------------\n%s\n",filename);
 		load(filename);
 		if (!exist("dose","var") || !isstruct(dose));
