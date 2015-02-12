@@ -38,6 +38,7 @@ endif
 
 param.monolayer=2e-08;#Xe /amorph 1,2e-6 A*s 100K
 param.monolayer=useArgument(argv(),5,param.monolayer);
+param.debug=0;
 param=loadParamFile(param);
 
 datindex.filenames=findDatFiles(pwd);
@@ -302,7 +303,7 @@ endif
 # Fit multi-rate TPDs to find prefactor and energy distribution #
 #################################################################
 if (index(param.tools,'V'))
-  
+  fitMultiTPD(datindex,param);
 endif
 #######################################################
 # TPD modeling, uses (user-defined) function fitModel #
