@@ -194,6 +194,7 @@ else
   hold on;
   vs=fitpar.vsfine;
   mins=[];
+  legendtxt={}
   for vidx=[1,2,3]
     legendtxt{vidx}=sprintf('v=%.1e',fitpar.defits{vidx}.v);
     semilogx(vs,fitpar.stds{vidx},'color',colors{vidx});
