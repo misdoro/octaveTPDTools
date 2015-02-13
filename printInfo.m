@@ -1,6 +1,6 @@
 function printInfo(input,param);
-	for idx=1:rows(input.sorted);
-		filename=input.filenames{input.sorted(idx,1)};
+	for idx=1:rows(input.ordDoses);
+		filename=input.filenames{input.ordDoses(idx,1)};
 		printf("\n-----------------\n%s\n",filename);
 		load(filename);
     if (isfield(tpd,"version")&& tpd.version>=20140709)

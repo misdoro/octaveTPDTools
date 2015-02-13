@@ -1,6 +1,6 @@
 #Iterate through sorted TPD files, call function on each one. returns function call result structure.
 #Uses:	indata.filenames,
-#	indata.sorted,
+#	indata.ordDoses,
 #	param.displayT,
 #	param.mass
 #Sets:	cutdat.filename
