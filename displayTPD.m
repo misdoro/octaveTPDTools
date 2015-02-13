@@ -170,7 +170,8 @@ endif;
 function result=plotDoses(mytpd,param,result,press,dose);
 	dose=getMassData(dose,[],param.selectedmass);
 	plot(dose.t,dose.i*1e10,"linewidth",2,"color",mytpd.color);
-	dosi=calculateDoseIntegral(dose,0);
+	[dosi,endpt]=calculateDoseIntegral(dose,0);
+  plot(dose.t(endpt),dose.i(endpt)*1e10,"o")
 	printf("Dose integral %.2e\n",dosi);
 	
 	[maxi,maxidx]=max(dose.i);
