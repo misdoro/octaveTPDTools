@@ -76,6 +76,26 @@ if (~isfield(fitpar,'estv'))
   save("-text","fit.par","fitpar");
 else
   printf("Skipping prefactor coarse search, use saved value of %.1e\n",fitpar.estv);
+  figure(getFigIndex("fit_1Efit"));
+  hold on;
+  xlabel("Temperature, K");
+  ylabel("desorption signal, ML/K");
+  for idx=1:filesCount;
+      filename=dats.filenames{dats.ordRates(idx,1)};
+      mytpd=loadTPD(filename,param);
+      fit=initFitParam(mytpd,param,fitpar.estv)
+      fit=fitCovScale(mytpd,fit)
+      fit=fitE0(mytpd,fit)
+      legendtxt{idx*2-1}=sprintf("exp, %d K/min",mytpd.rate*60);
+      legendtxt(idx*2)=sprintf("mod.1E,v=%.1e, %d K/min",fitpar.estv,mytpd.rate*60);
+      ydat=mytpd.i./(param.monolayer.*(mytpd.rate));
+      plot(mytpd.T,ydat,'color','blue',"marker","x");
+      ydat=modelTPDmc(mytpd.T,fit)./(param.monolayer.*(mytpd.rate));
+      plot(mytpd.T,ydat,'color','green');
+      drawnow();
+  endfor;
+  h=legend(legendtxt);
+  set (h, 'fontsize', 10);
 endif;
 
 #Fit ea distribution for Vopt, Vopt*100, Vopt/100
@@ -158,7 +178,8 @@ if (~isfield(fitpar,'stds'))
    xlabel("Prefactor value");
    ylabel("Fitted energy stddev");
    semilogx(vs,fitpar.stds{vidx},'color',colors{vidx});
-   legend(legendtxt);
+   h=legend(legendtxt);
+   set (h, 'fontsize', 10);
    drawnow;
    
    fitpar.bestv=mean(mins);
@@ -174,14 +195,18 @@ else
   vs=fitpar.vsfine;
   mins=[];
   for vidx=[1,2,3]
-    legendtxt{vidx+1}=sprintf('v=%.1e',fitpar.defits{vidx}.v);
+    legendtxt{vidx}=sprintf('v=%.1e',fitpar.defits{vidx}.v);
     semilogx(vs,fitpar.stds{vidx},'color',colors{vidx});
-    legend(legendtxt);
-    drawnow;
+    
     [minstd,minstdi]=min(fitpar.stds{vidx});
     minv=vs(minstdi);
     mins=[mins,minv];
   endfor;
+  h=legend(legendtxt);
+  set (h, 'fontsize', 10);
+  ylabel("Energy fit stddev");
+  xlabel("Prefactor value");
+  drawnow;
   fitpar.bestv=mean(mins)
   save("-text","fit.par","fitpar");
 endif
@@ -212,6 +237,27 @@ endif
   xlabel("Ea, eV");
   ylabel("Theta_i, ML");
 
+  figure(getFigIndex("fit_dEfit"));
+  hold on;
+  xlabel("Temperature, K");
+  ylabel("desorption signal, ML/K");
+  for idx=1:filesCount;
+      filename=dats.filenames{dats.ordRates(idx,1)};
+      mytpd=loadTPD(filename,param);
+      fit=fitpar.fitdE;
+      fit.rate=mytpd.rate;
+      fit=fitCovScale(mytpd,fit);
+      legendtxt{idx*2-1}=sprintf("exp, %d K/min",mytpd.rate*60);
+      legendtxt(idx*2)=sprintf("mod.1E,v=%.1e, %d K/min",fit.v,fit.rate*60);
+      ydat=mytpd.i./(param.monolayer.*(mytpd.rate));
+      plot(mytpd.T,ydat,'color','blue',"marker","x");
+      ydat=modelTPDmc(mytpd.T,fit)./(param.monolayer.*(mytpd.rate));
+      plot(mytpd.T,ydat,'color','green');
+      drawnow();
+  endfor;
+  h=legend(legendtxt);
+  set (h, 'fontsize', 10);
+  
 endfunction;
 
 function [fit,fiti,mytpd]=fitEnergyDistribution(dats,param,v)

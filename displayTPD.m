@@ -393,6 +393,12 @@ if(getFigIndex("nonsense")>1)
   saveFig(param,'IR','FTIR');
   saveFig(param,'modelediff','prefactor');
   saveFig(param,'Tfitq','Trampqual');
+  
+  saveFig(param,'fit_1Efit',"VSearch1Efit");
+  saveFig(param,'fit_dEfit',"VSearchdEfit");
+  saveFig(param,'fit_estv_stds',"VSearchEstd");
+  saveFig(param,'fit_finaldE',"VSearchdE");
+  
 endif;
 exit(0);
 
