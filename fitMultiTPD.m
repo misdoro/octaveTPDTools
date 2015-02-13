@@ -27,8 +27,6 @@ endif
 fitpar=loadFitPar();
 
 if (~isfield(fitpar,'estv'))
-  figure(1);
-  clf;
   vs=getOptionValue(param,"","vs",logspace(10,20,11));
   Efits=[];
   for v=vs
@@ -48,6 +46,7 @@ if (~isfield(fitpar,'estv'))
         fit=fitE0(mytpd,fit)
         
         if (param.debug)
+          figure(getFigIndex("fit_estv"));
           clf();
           hold on;
           plot(mytpd.T,mytpd.i,'color','blue');
@@ -63,6 +62,13 @@ if (~isfield(fitpar,'estv'))
     Efits=[Efits;Eline]
   endfor
   stds=std(Efits,0,2);
+  
+  figure(getFigIndex("fit_estv_stds"));
+  hold on;
+  semilogx(vs,stds,'color','black');
+  xlabel("Prefactor value");
+  ylabel("Fitted energy stddev");
+  
   [minstd,minstdi]=min(stds);
   minv=vs(minstdi);
   fitpar.estv=minv;
@@ -78,13 +84,13 @@ if (param.debug)
 endif
 if (~isfield(fitpar,'defits'))
   defits={}
-  figure(1)
   idx=0;
   for v=[fitpar.estv/100,fitpar.estv,fitpar.estv*100]
     [fit,fiti]=fitEnergyDistribution(dats,param,v);
     
     defits{++idx}=fit;
     if (param.debug)
+      figure(getFigIndex("fit_debug"));
       clf;
       hold on;
       p=modelTPDmc(mytpd.T,fiti);
@@ -103,13 +109,11 @@ else
 endif
 
 #Fine fit of prefactor using energy distribution
-figure(2);
-clf;
-hold on;
 colors={'green','blue','red'}
 if (~isfield(fitpar,'stds'))
   vs=logspace(log10(fitpar.estv/10),log10(fitpar.estv*100),20)
   fitpar.vsfine=vs;
+  legendtxt{1}="1E fit";
   for vidx=[1,2,3]#Iterate over energy distribution fits
    Efits=[];
    
@@ -132,7 +136,7 @@ if (~isfield(fitpar,'stds'))
        fit=fitE0(mytpd,fit);
        fit=fitCovScale(mytpd,fit);
        if (param.debug)
-       figure(1);
+         figure(getFigIndex("fit_debug"));
          clf();
          hold on;
          plot(mytpd.T,mytpd.i,'color','blue');
@@ -146,12 +150,17 @@ if (~isfield(fitpar,'stds'))
      
    endfor;
    fitpar.stds{vidx}=std(Efits,0,2);
-   legendtxt{vidx}=sprintf('v=%.1e',fitpar.defits{vidx}.v);
-   figure(2);
+   
+   legendtxt{vidx+1}=sprintf('v=%.1e',fitpar.defits{vidx}.v);
+   figure(getFigIndex("fit_estv_stds"));
+   clf();
    hold on;
+   xlabel("Prefactor value");
+   ylabel("Fitted energy stddev");
    semilogx(vs,fitpar.stds{vidx},'color',colors{vidx});
    legend(legendtxt);
    drawnow;
+   
    fitpar.bestv=mean(mins);
    save("-text","fit.par","fitpar");
   endfor
@@ -159,13 +168,13 @@ else
   printf("Using previous fit errors\n");
   fitpar.stds
   colors={'green','blue','red'}
-  figure(2);
+  figure(getFigIndex("fit_estv_stds"));
   clf();
   hold on;
   vs=fitpar.vsfine;
   mins=[];
   for vidx=[1,2,3]
-    legendtxt{vidx}=sprintf('v=%.1e',fitpar.defits{vidx}.v);
+    legendtxt{vidx+1}=sprintf('v=%.1e',fitpar.defits{vidx}.v);
     semilogx(vs,fitpar.stds{vidx},'color',colors{vidx});
     legend(legendtxt);
     drawnow;
@@ -182,7 +191,7 @@ if (~isfield(fitpar,'fitdE'))
   printf("Fitting energy distribution for the best prefactor of v=%.1e\n",fitpar.bestv);
   [fitpar.fitdE,fiti,mytpd]=fitEnergyDistribution(dats,param,fitpar.bestv);
   save("-text","fit.par","fitpar");
-  figure(3);
+  figure(getFigIndex("fit_bestfit"));
   clf;
   hold on;
   p=modelTPDmc(mytpd.T,fiti);
@@ -194,7 +203,7 @@ if (~isfield(fitpar,'fitdE'))
 endif
   printf("Showing previously prepared dE fit\n");
   fit=fitpar.fitdE
-  figure(4);
+  figure(getFigIndex("fit_finaldE"));
   clf();
   hold on;
   np=length(fit.thetas);
