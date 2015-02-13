@@ -14,7 +14,7 @@ endif;
 
 minrate=dats.ordRates(1,2);
 maxrate=dats.ordRates(end,2);
-if (minrate*5>maxrate)
+if (minrate*4>=maxrate)
   printf("Insufficient range of heating rates!\n");
   return;
 endif
@@ -81,24 +81,19 @@ if (~isfield(fitpar,'defits'))
   figure(1)
   idx=0;
   for v=[fitpar.estv/100,fitpar.estv,fitpar.estv*100]
-    #Work with the lowest-rate TPD to get the most accurate data.
-    filename=dats.filenames{dats.ordRates(1,1)};
-    mytpd=loadTPD(filename,param);
-    fit=initFitParam(mytpd,param,v);
-    fit.E0-=4*fit.dE;
-    fit.thetas=0.01*ones(15,1);
-    fiti=fit
-    fit=fitPartCoverages(mytpd,fit)
+    [fit,fiti]=fitEnergyDistribution(dats,param,v);
     
     defits{++idx}=fit;
-    clf;
-    hold on;
-    p=modelTPDmc(mytpd.T,fiti);
-    po=modelTPDmc(mytpd.T,fit);
-    plot(mytpd.T,p,'color','red');
-    plot(mytpd.T,mytpd.i,'color','blue');
-    plot(mytpd.T,po,'color','green');
-    drawnow();
+    if (param.debug)
+      clf;
+      hold on;
+      p=modelTPDmc(mytpd.T,fiti);
+      po=modelTPDmc(mytpd.T,fit);
+      plot(mytpd.T,p,'color','red');
+      plot(mytpd.T,mytpd.i,'color','blue');
+      plot(mytpd.T,po,'color','green');
+      drawnow();
+    endif
   endfor
   fitpar.defits=defits;
   save("-text","fit.par","fitpar");
@@ -112,54 +107,54 @@ figure(2);
 clf;
 hold on;
 colors={'green','blue','red'}
-#if (~isfield(fitpar,'stds'))
-vs=logspace(log10(fitpar.estv/1000),log10(fitpar.estv*1000),11)
-
-for vidx=[1,2,3]
-  Efits=[];
-  for v=vs
-    Eline=[];
-    for idx=1:filesCount;
-      filename=dats.filenames{dats.ordRates(idx,1)};
-      if (param.debug)
-        printf("step vidx=%d ",vidx);
-        printf("v=%.1e filename:%s\n",v,filename);      
-      endif 
-      mytpd=loadTPD(filename,param);
-      fit=fitpar.defits{vidx}
-      fit.v=v;
-      fit.E0=estimE0(v,mytpd)-4*fit.dE;
-      fit.rate=mytpd.rate;
-      fiti=fit;
-      fit=fitE0(mytpd,fit);
-      fit=fitCovScale(mytpd,fit);
-      fit=fitE0(mytpd,fit);
-      fit=fitCovScale(mytpd,fit);
-      if (param.debug)
-      figure(1);
-        clf();
-        hold on;
-        plot(mytpd.T,mytpd.i,'color','blue');
-        plot(mytpd.T,modelTPDmc(mytpd.T,fiti),'color','red');
-        plot(mytpd.T,modelTPDmc(mytpd.T,fit),'color','green');
-        drawnow();
-      endif
-      Eline=[Eline,fit.E0];
-    endfor;
-    Efits=[Efits;Eline]
-    
-  endfor;
-  stds{vidx}=std(Efits,0,2);
-  legendtxt{vidx}=sprintf('v=%.1e',fitpar.defits{vidx}.v);
-  figure(2);
-  hold on;
-  semilogx(vs,stds{vidx},'color',colors{vidx});
-  legend(legendtxt);
-  drawnow;
-  fitpar.stds=stds;
-  save("-text","fit.par","fitpar");
-endfor
-if(1==1)
+if (~isfield(fitpar,'stds'))
+  vs=logspace(log10(fitpar.estv/10),log10(fitpar.estv*100),20)
+  fitpar.vsfine=vs;
+  for vidx=[1,2,3]#Iterate over energy distribution fits
+   Efits=[];
+   
+   for v=vs#Iterate over prefactors in range
+     Eline=[];
+     for idx=1:filesCount;#Iterate over available files
+       filename=dats.filenames{dats.ordRates(idx,1)};
+       if (param.debug)
+         printf("step vidx=%d ",vidx);
+         printf("v=%.1e filename:%s\n",v,filename);      
+       endif 
+       mytpd=loadTPD(filename,param);
+       fit=fitpar.defits{vidx}
+       fit.v=v;
+       fit.E0=estimE0(v,mytpd)-4*fit.dE;
+       fit.rate=mytpd.rate;
+       fiti=fit;
+       fit=fitE0(mytpd,fit);
+       fit=fitCovScale(mytpd,fit);
+       fit=fitE0(mytpd,fit);
+       fit=fitCovScale(mytpd,fit);
+       if (param.debug)
+       figure(1);
+         clf();
+         hold on;
+         plot(mytpd.T,mytpd.i,'color','blue');
+         plot(mytpd.T,modelTPDmc(mytpd.T,fiti),'color','red');
+         plot(mytpd.T,modelTPDmc(mytpd.T,fit),'color','green');
+         drawnow();
+       endif
+       Eline=[Eline,fit.E0];
+     endfor;
+     Efits=[Efits;Eline]
+     
+   endfor;
+   fitpar.stds{vidx}=std(Efits,0,2);
+   legendtxt{vidx}=sprintf('v=%.1e',fitpar.defits{vidx}.v);
+   figure(2);
+   hold on;
+   semilogx(vs,fitpar.stds{vidx},'color',colors{vidx});
+   legend(legendtxt);
+   drawnow;
+   fitpar.bestv=mean(mins);
+   save("-text","fit.par","fitpar");
+  endfor
 else
   printf("Using previous fit errors\n");
   fitpar.stds
@@ -167,17 +162,59 @@ else
   figure(2);
   clf();
   hold on;
-  vs=logspace(log10(fitpar.estv/1000),log10(fitpar.estv*1000),11)
-  
+  vs=fitpar.vsfine;
+  mins=[];
   for vidx=[1,2,3]
     legendtxt{vidx}=sprintf('v=%.1e',fitpar.defits{vidx}.v);
     semilogx(vs,fitpar.stds{vidx},'color',colors{vidx});
     legend(legendtxt);
     drawnow;
+    [minstd,minstdi]=min(fitpar.stds{vidx});
+    minv=vs(minstdi);
+    mins=[mins,minv];
   endfor;
+  fitpar.bestv=mean(mins)
+  save("-text","fit.par","fitpar");
 endif
 
+if (~isfield(fitpar,'fitdE'))
+  #Final fit of the energy distribution
+  printf("Fitting energy distribution for the best prefactor of v=%.1e\n",fitpar.bestv);
+  [fitpar.fitdE,fiti,mytpd]=fitEnergyDistribution(dats,param,fitpar.bestv);
+  save("-text","fit.par","fitpar");
+  figure(3);
+  clf;
+  hold on;
+  p=modelTPDmc(mytpd.T,fiti);
+  po=modelTPDmc(mytpd.T,fitpar.fitdE);
+  plot(mytpd.T,p,'color','red');
+  plot(mytpd.T,mytpd.i,'color','blue');
+  plot(mytpd.T,po,'color','green');
+  drawnow();
+endif
+  printf("Showing previously prepared dE fit\n");
+  fit=fitpar.fitdE
+  figure(4);
+  clf();
+  hold on;
+  np=length(fit.thetas);
+  Epts=linspace(fit.E0,fit.E0+(np-1)*fit.dE,np);
+  plot(Epts,fit.thetas,"linewidth",2);
+  xlabel("Ea, eV");
+  ylabel("Theta_i, ML");
+
 endfunction;
+
+function [fit,fiti,mytpd]=fitEnergyDistribution(dats,param,v)
+  #Work with the lowest-rate TPD to get the most accurate data.
+  filename=dats.filenames{dats.ordRates(1,1)};
+  mytpd=loadTPD(filename,param);
+  fit=initFitParam(mytpd,param,v);
+  fit.E0-=4*fit.dE;
+  fit.thetas=0.01*ones(15,1);
+  fiti=fit
+  fit=fitPartCoverages(mytpd,fit)
+endfunction
 
 function ret=estimE0(v,mytpd)
   [maxi,maxii]=max(mytpd.i);
