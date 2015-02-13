@@ -1,8 +1,7 @@
 function ret=saveFig(param,label,fileprefix)
   %A function to save a figure as image and its plot data as ascii
-  figures=param.fig;
-  if isstruct(figures) && isfield(figures,label)
-    hdl=getfield(figures,label);
+  hdl=getFigIndex(label,0);
+  if (hdl)
     %Save figure as image
     print(hdl,fileprefix,"-dpng","-r300");
     printf("Saved %s.png\n",fileprefix);

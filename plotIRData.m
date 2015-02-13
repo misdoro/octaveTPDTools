@@ -1,13 +1,4 @@
 function result=plotIRData(mytpd,param,result,press,dose,varargin)
-%  IRDAT=loadIRData();
-%  figure(1);
-%  clf();
-%  hold on;
-%  colors=linspace(1,4,IRDAT.count);
-%  for i=1:IRDAT.count;
-%    data=IRDAT.data{i};
-%    plot(data.wl,data.abs,'color',getLineColor(colors(i),1,2));
-%  endfor;
 % Some initial tests
 if (length(varargin)<1)
   printf("Need an IRDAT argument\n");
@@ -31,8 +22,7 @@ count=0;
 irplot={};
 
 for i=1:irdat.count
-#  irtime=mktime(irdat.data{i}.time)-2700; #Time delay for old data
-  irtime=mktime(irdat.data{i}.time);% Clock synchronized after 7 jun 2014
+  irtime=mktime(irdat.data{i}.time);
   if (irtime>=tpd.mintime && irtime<=tpd.maxtime)
     count++;
     irplot{count}=irdat.data{i};
@@ -44,10 +34,10 @@ irpoints={};
 if (count>0)
   for i=1:count
     color=getLineColor(4*i/count,1,2);
-    figure(param.fig.IR);
+    figure(getFigIndex("IR"));
     plot(irplot{i}.wl,irplot{i}.abs,'color',color);
-    if (isfield(param.fig,"disp"))
-      figure(param.fig.disp);
+    if (getFigIndex("disp",0))
+      figure(getFigIndex("disp"));
       tpdtime=mktime(mytpd.time);
       irt=irtimes(i)-tpdtime;
       idx=min(find(mytpd.t>irt));

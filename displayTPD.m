@@ -110,8 +110,7 @@ function result=plotTPD(mytpd,param,result,press,dose);
 endfunction
 
 if (index(param.tools,'d'))
-	param.fig.disp=++param.figindex;
-	figure(param.fig.disp);
+	figure(getFigIndex("disp"));
 	hold on;
 	ret=iterateTpd(datindex,param,@plotTPD);
   if (index(param.tools,'N'))
@@ -129,8 +128,7 @@ if (index(param.tools,'d'))
 	
 	#Plot doses
 	if (isfield(ret,"doses"))
-		param.fig.doses=++param.figindex;
-		figure(param.fig.doses);
+		figure(getFigIndex("doses"));
 		plotDoses(ret);
 	endif;
 endif;
@@ -149,8 +147,7 @@ if (index(param.tools,'u'))
   [fin.info, fin.err, fin.msg]=stat("final.m");
 	if (iter.err>=0);
     #Prepare the user figure
-    param.fig.user=++param.figindex;
-    figure(param.fig.user);
+    figure(getFigIndex("user"));
 	
     #First check if we have the iteration script
     if (init.err>=0);
@@ -181,8 +178,7 @@ endfunction;
 
 
 if (index(param.tools,'D'))
-	param.fig.doseext=++param.figindex;
-	figure(param.fig.doseext);
+	figure(getFigIndex("doseext"));
 	hold on;
 	ylabel("Dose current (arb.u.)");
 	xlabel("Time (s)");
@@ -201,8 +197,7 @@ function result=plotP(mytpd,param,result);
 endfunction
 
 if (index(param.tools,'p'))
-	param.fig.press=++param.figindex;
-	figure(param.fig.press);
+	figure(getFigIndex("press"));
 	hold on;
 	ret=iterateTpd(datindex,param,@plotP);
 	ylabel("Pressure (torr)");
@@ -218,8 +213,7 @@ endif;
 # Plot QMS current vs pressure 
 #################################################
 if (index(param.tools,'P'))
-	param.fig.qipress=++param.figindex;
-	figure(param.fig.qipress);
+	figure(getFigIndex("qipress"));
 	hold off;
 	ylabel("Iqms, A");
 	xlabel("Pressure (torr)");
@@ -235,8 +229,7 @@ endif;
 # Plot temperature fit quality
 #################################################
 if (index(param.tools,'f'))
-	param.fig.Tfitq=++param.figindex;
-	figure(param.fig.Tfitq);
+	figure(getFigIndex("Tfitq"));
 	hold on;
 	ylabel("T ramp fit error, K");
 	xlabel("T, K");
@@ -255,7 +248,7 @@ function result=plotInvT(mytpd,param,result);
 	mytpd.invT=1./mytpd.T;
 	mytpd.logi=log(mytpd.i);
 	
-	figure(param.fig.log);
+	figure(getFigIndex("log"));
 	plot(mytpd.invT,mytpd.logi,"linewidth",2,"color",mytpd.color);
 
 	[eads,lnv,win]=findLogEAds(mytpd);
@@ -267,7 +260,7 @@ function result=plotInvT(mytpd,param,result);
 	text(txtx,txty,strcat("<",num2str(mytpd.idx)));
 	
 	if(isfield(param,"fig") && isfield(param.fig,"disp"))
-		figure(param.fig.disp);
+		figure(getFigIndex("disp"));
 		plot(mytpd.T(win.istart),mytpd.i(win.istart),"o");
 		plot(mytpd.T(win.iend),mytpd.i(win.iend),"o");
 	endif;
@@ -275,8 +268,7 @@ function result=plotInvT(mytpd,param,result);
 endfunction
 
 if (index(param.tools,'l'))
-	param.fig.log=++param.figindex;
-	figure(param.fig.log);
+	figure(getFigIndex("log"));
 	hold on;
 	ylabel("log(i)")
 	xlabel("Inverse Temperature (1/T)")
@@ -292,8 +284,7 @@ endif;
 #Eads inversion	                          			 #
 ##################################################
 if (index(param.tools,'e'))
-	param.fig.eads=++param.figindex;
-	figure(param.fig.eads);
+	figure(getFigIndex("eads"));
 	hold on;
 	ylabel("Ea (eV)")
 	xlabel("Coverage (ML)")
@@ -311,21 +302,18 @@ endif
 #######################################################
 
 if (index(param.tools,'m'));
-  param.fig.model=++param.figindex;
-  param.fig.modelfit=++param.figindex;
-  param.fig.modelediff=++param.figindex;
-	figure(param.fig.model);
+	figure(getFigIndex("model"));
 	hold on;
 	pkg load odepkg;
 	iterateTpd(datindex,param,@fitModel);
-  figure(param.fig.model);
+  figure(getFigIndex("model"));
 	xlabel("Temperature (K)")
 	ylabel("Desorption signal");
   
   #Plot fit results, if any
   fitfiles=findDatFiles(pwd,"fit");
   if (length(fitfiles)>1)
-    figure(param.fig.modelediff);
+    figure(getFigIndex("modelediff"));
     toplotv=[];
     toplote=[];
     for filen=fitfiles;
@@ -356,7 +344,7 @@ endif
 ########################################################
 	
 if (index(param.tools,'T'));
-	figure(++param.figindex);
+	figure(getFigIndex("isotherm"));
 	hold on;
 	baseparam=iterateTpd(datindex,param,@treatIsotherm);
 endif
@@ -365,8 +353,7 @@ endif
 # Infra-red spectrum plot, with colour points on TPD   #
 ########################################################
 if (index(param.tools,'R'));
-	param.fig.IR=++param.figindex;
-  figure(param.fig.IR);
+  figure(getFigIndex("IR"));
   ylabel("Absorbance")
 	xlabel("Wavelength (cm-1)")
 	hold on;
@@ -393,9 +380,9 @@ endfunction;
 
 
 #Save all figures in the end, since they may be updated during the processing
-if(isfield(param,"fig"))
+if(getFigIndex("nonsense")>1)
   input("Adjust figures if needed, then press enter to save, ctrl-c to exit");
-  saveFig(param,'disp',"desorption");
+  saveFig(param,"disp","desorption");
   saveFig(param,'doses','sticking');
   saveFig(param,'doseext','doses');
   saveFig(param,'log','logplot');
