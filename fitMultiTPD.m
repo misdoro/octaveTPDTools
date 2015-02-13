@@ -112,7 +112,7 @@ figure(2);
 clf;
 hold on;
 colors={'green','blue','red'}
-if (~isfield(fitpar,'stds'))
+#if (~isfield(fitpar,'stds'))
 vs=logspace(log10(fitpar.estv/1000),log10(fitpar.estv*1000),11)
 
 for vidx=[1,2,3]
@@ -128,6 +128,7 @@ for vidx=[1,2,3]
       mytpd=loadTPD(filename,param);
       fit=fitpar.defits{vidx}
       fit.v=v;
+      fit.E0=estimE0(v,mytpd)-4*fit.dE;
       fit.rate=mytpd.rate;
       fiti=fit;
       fit=fitE0(mytpd,fit);
@@ -158,7 +159,7 @@ for vidx=[1,2,3]
   fitpar.stds=stds;
   save("-text","fit.par","fitpar");
 endfor
-
+if(1==1)
 else
   printf("Using previous fit errors\n");
   fitpar.stds
@@ -178,11 +179,15 @@ endif
 
 endfunction;
 
-function fit=initFitParam(mytpd,param,v)
+function ret=estimE0(v,mytpd)
   [maxi,maxii]=max(mytpd.i);
   maxT=mytpd.T(maxii);
+  ret=estimEaVTm(v,maxT,mytpd.rate);
+endfunction
+
+function fit=initFitParam(mytpd,param,v)
   fit.v=v;
-  fit.E0=estimEaVTm(v,maxT,mytpd.rate);
+  fit.E0=estimE0(v,mytpd);
   fit.dE=0.01;
   fit.thetas=0.1;
   fit.scale=1;
