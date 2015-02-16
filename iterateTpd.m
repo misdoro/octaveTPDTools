@@ -27,6 +27,9 @@ function result=iterateTpd(indata,param,funcName,varargin);
 				param.selectedmass=param.mass(midx);
 				cutdat=getMassData(tpd,param.displayT,param.selectedmass);
 			  if (length(cutdat.i)>0)
+          if (~isfield(cutdat,"rate"))
+            cutdat.rate=0;
+          endif
           if (index(param.tools,'x'))
             #cutdat=findBaseLine(cutdat,1);
             baseline=getOptionValue(param,filename,"bline",0);

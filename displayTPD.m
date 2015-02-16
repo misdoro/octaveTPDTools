@@ -104,7 +104,7 @@ function result=plotTPD(mytpd,param,result,press,dose);
 	printf("Itpd/Idose: %.3f\n",mytpd.intg/doseintg);
   
   #Rate and maximum position
-  printf("TPD rate %.2f K/s\n",mytpd.rate);
+  printf("TPD rate %.2f K/s (%.1f K/min)\n",mytpd.rate,mytpd.rate*60);
   [maxi, maxin]=max(mytpd.i_sm);
   printf("Temperature of maximum: %3.2f K\n",mytpd.T(maxin));
 endfunction

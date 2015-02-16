@@ -12,7 +12,11 @@ function result=loadRates(filenames)
 	result=[];
 	for idx=1:length(filenames);
 		load(filenames{idx});
-		result=[result; idx, tpd.rate];
+    if (isfield(tpd,"rate"))
+		  result=[result; idx, tpd.rate];
+    else
+      result=[result; idx, 0];
+    endif
 	endfor;
 endfunction;
 
