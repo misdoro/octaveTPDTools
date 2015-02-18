@@ -4,9 +4,24 @@
 par.bline=0;
 par.scale=1;
 par.ml=2e-8;
-par=loadParamFile(par);
-fields={'mid','rate','npT','minT','maxT','v','E0','dE','thetas','bline'};
 
+
+#Load fit data if available
+fit=loadFitFile();
+if (isfield(fit,"fitdE"))
+  fdE=fit.fitdE;
+  par.v=fdE.v;
+  par.E0=fdE.E0;
+  par.dE=fdE.dE;
+  par.thetas=fdE.thetas;
+  par.rate=fdE.rate;
+endif
+
+#Load param file to override fit data
+par=loadParamFile(par);
+
+#Verify all required fields
+fields={'mid','rate','npT','minT','maxT','v','E0','dE','thetas','bline'};
 for i=1:length(fields)
   if (~isfield(par,fields(i)))
     printf("Param %s is missing",fields{i});
@@ -30,7 +45,9 @@ for i=1:length(fields)
     exit(0);
   endif
 endfor
-par.rate=useArgument(argv(),2,par.rate);
+
+#Rate may be specified as second command-line parameter
+par.rate=useArgument(argv(),2,par.rate*60)/60;
 pkg load odepkg
 pkg load general
 

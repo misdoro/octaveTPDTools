@@ -24,7 +24,7 @@ if (param.debug)
   printf("Coarse 1E search for prefactor\n")
 endif
 
-fitpar=loadFitPar();
+fitpar=loadFitFile();
 
 if (~isfield(fitpar,'estv'))
   vs=getOptionValue(param,"","vs",logspace(10,20,11));
@@ -300,16 +300,4 @@ function mytpd=loadTPD(filename,param,decimate=1)
     factor = round(length(mytpd.i)/50);
     mytpd=decimateTPD(mytpd,factor);
   endif;
-endfunction;
-
-function ret=loadFitPar()
-  [f.info, f.err, f.msg]=stat("fit.par");
-  if (f.err>=0);
-    load "fit.par";
-  endif;
-  if (exist("fitpar","var"))
-    ret=fitpar;
-  else
-    ret=struct();
-  endif
 endfunction;
