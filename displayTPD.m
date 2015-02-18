@@ -314,32 +314,7 @@ function result=dispFitCoverages(mytpd,param,result);
       fdE=fit.fitdE;
       fitpar=fit.fitdE;
       fitpar.dE/=2;
-      fitpar.thetas=0.01*ones(25,1);
-      fitpar.thetas=[1.2622e-07
-   1.2268e-05
-   2.3901e-03
-   8.3226e-03
-   1.7427e-02
-   2.6647e-02
-   3.3431e-02
-   3.5488e-02
-   3.2850e-02
-   2.6876e-02
-   2.0438e-02
-   1.5421e-02
-   1.3033e-02
-   1.1233e-02
-   9.8142e-03
-   9.0330e-03
-   7.5762e-03
-   6.1276e-03
-   4.5738e-03
-   3.3273e-03
-   2.4324e-03
-   2.2033e-03
-   3.2328e-03
-   6.4049e-03
-   1.1576e-02];
+      fitpar.thetas=0.01*ones(30,1);
     else
       fitpar.v=param.v;
       fitpar.E0=param.E0;
@@ -351,7 +326,7 @@ function result=dispFitCoverages(mytpd,param,result);
     fitpar.penalty=param.fitpenalty;
   endif
   fitpar.rate=mytpd.rate
-  fitopts=optimset("Display","iter","MaxIter",500,"TolX",1e-5)
+  fitopts=optimset("Display","iter","MaxIter",1500,"TolX",1e-5)
   fitcov=fitPartCoverages(mytpd,fitpar,fitopts);
   np=length(fitcov.thetas);
   Epts=linspace(fitcov.E0,fitcov.E0+(np-1)*fitcov.dE,np);
@@ -363,7 +338,8 @@ function result=dispFitCoverages(mytpd,param,result);
   figure(getFigIndex("covfits"));
   plot(mytpd.T,mytpd.i,"color",mytpd.color);
   plot(mytpd.T,p,"color",mytpd.color,"linestyle","--");
-  
+  drawnow();
+  #input("proceed to next figure");
   result.fitcov{mytpd.idx}=fitcov;
 endfunction;
 
