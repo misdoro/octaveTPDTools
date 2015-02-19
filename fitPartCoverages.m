@@ -11,6 +11,7 @@ endfunction
 
 function ssq=fitcovs(tpd,fitpar,thetas)
   fitpar.thetas=abs(thetas);
+  #dbg=fitpar.thetas
   p=modelTPDmc(tpd.T,fitpar);
 	ssq=sumsq(p-tpd.i);
   ssqi=ssq;
@@ -18,11 +19,11 @@ function ssq=fitcovs(tpd,fitpar,thetas)
     ssq+=fitpar.penalty*penalty(fitpar.thetas,fitpar.dE);
   endif
   if isfield(fitpar,'debug')
-    #printf("SSQ %e +penalty%e\n",ssqi,ssq);
+    printf("SSQ %e (+penalty=%e)\n",ssqi,ssq);
   endif
 endfunction;
 
 function result=penalty(thetas,dE,debug=0);
   result=sumsq(diff(thetas,2));
-  printf("penalty%e\n",result);
+  #printf("penalty%e\n",result);
 endfunction;
