@@ -452,25 +452,26 @@ endfunction;
 #Save all figures in the end, since they may be updated during the processing
 if(getFigIndex("nonsense")>1)
   input("Adjust figures if needed, then press enter to save, ctrl-c to exit");
-  saveFig(param,"disp","desorption");
-  saveFig(param,'doses','sticking');
-  saveFig(param,'doseext','doses');
-  saveFig(param,'log','logplot');
-  saveFig(param,'eads','eadsest');
-  saveFig(param,'press','pressure');
-  saveFig(param,'qipress','qms-pressure');
-  saveFig(param,'user','user');
-  saveFig(param,'IR','FTIR');
-  saveFig(param,'modelediff','prefactor');
-  saveFig(param,'Tfitq','Trampqual');
+  saveAsc=index(param.tools,'s')
+  saveFig("disp","desorption",saveAsc);
+  saveFig('doses','sticking',saveAsc);
+  saveFig('doseext','doses',saveAsc);
+  saveFig('log','logplot',saveAsc);
+  saveFig('eads','eadsest',saveAsc);
+  saveFig('press','pressure',saveAsc);
+  saveFig('qipress','qms-pressure',saveAsc);
+  saveFig('user','user',saveAsc);
+  saveFig('IR','FTIR',saveAsc);
+  saveFig('modelediff','prefactor',saveAsc);
+  saveFig('Tfitq','Trampqual',saveAsc);
   
-  saveFig(param,'fit_1Efit',"VSearch1Efit");
-  saveFig(param,'fit_dEfit',"VSearchdEfit");
-  saveFig(param,'fit_estv_stds',"VSearchEstd");
-  saveFig(param,'fit_finaldE',"VSearchdE");
+  saveFig('fit_1Efit',"VSearch1Efit",saveAsc);
+  saveFig('fit_dEfit',"VSearchdEfit",saveAsc);
+  saveFig('fit_estv_stds',"VSearchEstd",saveAsc);
+  saveFig('fit_finaldE',"VSearchdE",saveAsc);
   
-  saveFig(param,'covsites',"dEFitSites");
-  saveFig(param,'covfits',"dEFitModel");
+  saveFig('covsites',"dEFitSites",saveAsc);
+  saveFig('covfits',"dEFitModel",saveAsc);
   
 endif;
 exit(0);
