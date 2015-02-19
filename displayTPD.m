@@ -325,13 +325,18 @@ function result=dispFitCoverages(mytpd,param,result);
   if (isfield(param,"fitpenalty"))
     fitpar.penalty=param.fitpenalty;
   endif
+  if (isfield(param,"fitmaxiter"))
+    maxiter=param.fitmaxiter;
+  else
+    maxiter=1500;
+  endif
   fitpar.rate=mytpd.rate
-  fitopts=optimset("Display","iter","MaxIter",1500,"TolX",1e-5)
+  fitopts=optimset("Display","iter","MaxIter",maxiter,"TolX",1e-5);
   fitcov=fitPartCoverages(mytpd,fitpar,fitopts);
   np=length(fitcov.thetas);
   Epts=linspace(fitcov.E0,fitcov.E0+(np-1)*fitcov.dE,np);
  
-  figure(getFigIndex("coverages"));
+  figure(getFigIndex("covsites"));
   plot(Epts,fitcov.thetas,"linewidth",2,"color",mytpd.color);
   
   p=modelTPDmc(mytpd.T,fitcov);
@@ -347,14 +352,17 @@ endfunction;
 # Fit initial coverages for known prefactor           #
 #######################################################
 if (index(param.tools,'E'))
-  figure(getFigIndex("coverages"));
+  figure(getFigIndex("covsites"));
 	hold on;
   figure(getFigIndex("covfits"));
   hold on;
   result=iterateTpd(datindex,param,@dispFitCoverages);
-  figure(getFigIndex("coverages"));
+  figure(getFigIndex("covsites"));
   xlabel("Ea");
   ylabel("Fractional population");
+  figure(getFigIndex("covfits"));
+  xlabel("Temperature, K");
+  ylabel("Desorption signal, a.u.");
   fitcov=result.fitcov;
   save("-text","fitcov.par","fitcov");
 endif
@@ -460,6 +468,9 @@ if(getFigIndex("nonsense")>1)
   saveFig(param,'fit_dEfit',"VSearchdEfit");
   saveFig(param,'fit_estv_stds',"VSearchEstd");
   saveFig(param,'fit_finaldE',"VSearchdE");
+  
+  saveFig(param,'covsites',"dEFitSites");
+  saveFig(param,'covfits',"dEFitModel");
   
 endif;
 exit(0);
