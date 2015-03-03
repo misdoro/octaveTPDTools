@@ -94,6 +94,7 @@ else
       plot(mytpd.T,ydat,'color','green');
       drawnow();
   endfor;
+  legendtxt
   h=legend(legendtxt);
   set (h, 'fontsize', 10);
 endif;
@@ -131,7 +132,7 @@ endif
 #Fine fit of prefactor using energy distribution
 colors={'green','blue','red'}
 if (~isfield(fitpar,'stds'))
-  vs=logspace(log10(fitpar.estv/10),log10(fitpar.estv*100),20)
+  vs=logspace(log10(fitpar.estv/100),log10(fitpar.estv*100),20)
   fitpar.vsfine=vs;
   legendtxt{1}="1E fit";
   for vidx=[1,2,3]#Iterate over energy distribution fits
@@ -181,13 +182,11 @@ if (~isfield(fitpar,'stds'))
    h=legend(legendtxt);
    set (h, 'fontsize', 10);
    drawnow;
-   
-   fitpar.bestv=mean(mins);
-   save("-text","fit.par","fitpar");
-  endfor
+   endfor
 else
   printf("Using previous fit errors\n");
   fitpar.stds
+endif
   colors={'green','blue','red'}
   figure(getFigIndex("fit_estv_stds"));
   clf();
@@ -210,9 +209,9 @@ else
   drawnow;
   fitpar.bestv=mean(mins)
   save("-text","fit.par","fitpar");
-endif
 
-if (~isfield(fitpar,'fitdE'))
+
+if (~isfield(fitpar,'fitdE')||isfield(param,'refitdE'))
   #Final fit of the energy distribution
   printf("Fitting energy distribution for the best prefactor of v=%.1e\n",fitpar.bestv);
   [fitpar.fitdE,fiti,mytpd]=fitEnergyDistribution(dats,param,fitpar.bestv);
@@ -266,8 +265,8 @@ function [fit,fiti,mytpd]=fitEnergyDistribution(dats,param,v)
   filename=dats.filenames{dats.ordRates(1,1)};
   mytpd=loadTPD(filename,param);
   fit=initFitParam(mytpd,param,v);
-  fit.E0-=4*fit.dE;
-  fit.thetas=0.01*ones(15,1);
+  fit.E0-=6*fit.dE;
+  fit.thetas=0.01*ones(16,1);
   fiti=fit
   fit=fitPartCoverages(mytpd,fit)
 endfunction
