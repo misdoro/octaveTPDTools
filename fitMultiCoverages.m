@@ -15,8 +15,9 @@ function result=fitMultiCoverages(mytpd,param,result);
         printf("Using parameters from fit.par\n");
         fdE=fit.fitdE;
         fitpar=fit.fitdE;
+        fitpar.E0-=2*fitpar.dE;
         fitpar.dE/=2;
-        fitpar.thetas=0.01*ones(30,1);
+        fitpar.thetas=0.01*ones(35,1);
       else
         fitpar.v=param.v;
         fitpar.E0=param.E0;
