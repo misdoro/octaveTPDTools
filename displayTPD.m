@@ -90,7 +90,7 @@ function result=plotTPD(mytpd,param,result,press,dose);
 	if (isfield(param,"debug") && param.debug)
     legendtext=strcat(txt,":",fn,"(",num2str(mytpd.intg/param.monolayer,"%3.2f"),"ML)");
   else
-	  legendtext=sprintf("%d: %d K/min (%3.2f ML)",mytpd.idx,mytpd.rate*60,mytpd.intg/param.monolayer);
+	  legendtext=sprintf("%d: %d K/min (%3.2f ML)",mytpd.idx,round(mytpd.rate*60),mytpd.intg/param.monolayer);
   endif
 	result=retAppend(result,"legend",legendtext);
 	
