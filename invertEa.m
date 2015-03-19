@@ -1,5 +1,5 @@
 function ret=invertEa(mytpd,vi)
-  source("~/octave/constants.m");
+  constants;
   if (~isfield(mytpd,"cov"))
     mytpd.cov=trapz(mytpd.t,mytpd.i)-cumtrapz(mytpd.t,mytpd.i);
   endif

@@ -1,7 +1,7 @@
 function result=plotEAds(mytpd,param,result);
   par.vs=[1e15,1e17,1e19];
   par=loadParamFile(par);
-	source("~/octave/constants.m");
+	
 	mytpd.cov=trapz(mytpd.t,mytpd.i)-cumtrapz(mytpd.t,mytpd.i);
   cml=mytpd.cov/param.monolayer;
   
