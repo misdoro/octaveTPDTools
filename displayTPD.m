@@ -57,7 +57,6 @@ end
 datindex=indexDatFiles(datindex,param);
 
 param.tools=useArgument(argv(),1,"i");
-param.figindex=0;%Current figure index, to be autoincremented by processings
 
 pkg load optim;
 
@@ -256,6 +255,7 @@ function result=plotInvT(mytpd,param,result);
 	plot(mytpd.invT,mytpd.logi,"linewidth",2,"color",mytpd.color);
 
 	[eads,lnv,win]=findLogEAds(mytpd);
+  eads=eads*1000;%Correct because we use 1000/T
 	eVKcalmul=23.0609;
   eVKJmul=96.4869;
 	printf("Eads = %f eV, %f kcal/mol, %f kJ/mol\n",eads,eads*eVKcalmul,eads*eVKJmul);
@@ -263,7 +263,7 @@ function result=plotInvT(mytpd,param,result);
 	txty=mytpd.logi(1);
 	text(txtx,txty,strcat("<",num2str(mytpd.idx)));
 	
-	if(isfield(param,"fig") && isfield(param.fig,"disp"))
+	if(getFigIndex("disp",0))
 		figure(getFigIndex("disp"));
 		plot(mytpd.T(win.istart),mytpd.i(win.istart),"o");
 		plot(mytpd.T(win.iend),mytpd.i(win.iend),"o");
