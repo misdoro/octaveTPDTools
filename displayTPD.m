@@ -249,7 +249,7 @@ endif;
 # Log(i) over 1/T plot + linear Eads extraction  #
 ##################################################
 function result=plotInvT(mytpd,param,result);
-	mytpd.invT=1./mytpd.T;
+	mytpd.invT=1000./mytpd.T;
 	mytpd.logi=log(mytpd.i);
 	
 	figure(getFigIndex("log"));
@@ -275,7 +275,7 @@ if (index(param.tools,'l'))
 	figure(getFigIndex("log"));
 	hold on;
 	ylabel("log(i)")
-	xlabel("Inverse Temperature (1/T)")
+	xlabel("Inverse Temperature (1000/T)")
 	
 	iterateTpd(datindex,param,@plotInvT);
 	
