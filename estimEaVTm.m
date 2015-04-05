@@ -1,5 +1,5 @@
 function Ea=estimEaVTm(v,Tm,rate)
-Ea=0.1;
+Ea=0.01;
 while (getV(Tm,Ea,rate)<v)
   Ea*=1.05;
 endwhile;
