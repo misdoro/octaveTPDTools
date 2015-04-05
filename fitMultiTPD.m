@@ -1,9 +1,8 @@
 function fitMultiTPD(dats,param)
-#Fit with single Ea for different prefactors
-#File for energy distribution fit
-#Energy distribution parameters - check and display help
-#Fit energy distribution for few predefined prefactors
-#Fit with various determinded energy distributions, plot sigma(E)
+#Desorption prefactor search algorithm:
+#-Fit with single Ea for different prefactors
+#-Fit energy distribution for few predefined prefactors, based on the TPD with lowest rate
+#-Fit varying prefactor with 3 determinded energy distributions, plot sigma(E)
 
 #Check the input data:
 filesCount=rows(dats.ordRates);
@@ -14,7 +13,7 @@ endif;
 
 minrate=dats.ordRates(1,2);
 maxrate=dats.ordRates(end,2);
-if (minrate*4>=maxrate)
+if (minrate*3>=maxrate)
   printf("Insufficient range of heating rates!\n");
   return;
 endif
@@ -107,7 +106,7 @@ if (~isfield(fitpar,'defits'))
   defits={}
   idx=0;
   for v=[fitpar.estv/100,fitpar.estv,fitpar.estv*100]
-    [fit,fiti]=fitEnergyDistribution(dats,param,v);
+    [fit,fiti,mytpd]=fitEnergyDistribution(dats,param,v);
     
     defits{++idx}=fit;
     if (param.debug)
@@ -120,6 +119,7 @@ if (~isfield(fitpar,'defits'))
       plot(mytpd.T,mytpd.i,'color','blue');
       plot(mytpd.T,po,'color','green');
       drawnow();
+      #input("is the fit OK?");
     endif
   endfor
   fitpar.defits=defits;
@@ -280,10 +280,12 @@ endfunction
 function fit=initFitParam(mytpd,param,v)
   fit.v=v;
   fit.E0=estimE0(v,mytpd);
-  fit.dE=0.01;
+  #fit.dE=0.01;#good for ~300-500meV Ea range;V~1e16
+  fit.dE=0.0025;#good for E0~0.06eV;V~1e10
   fit.thetas=0.1;
   fit.scale=1;
-  fit.ml=2e-8;
+  #fit.ml=2e-8;
+  fit.ml=1e-6;
   fit.debug=param.debug;
   fit.rate=mytpd.rate;
 endfunction
