@@ -1,7 +1,10 @@
 function Ea=estimEaVTm(v,Tm,rate)
 Ea=0.01;
-while (getV(Tm,Ea,rate)<v)
-  Ea*=1.05;
+while ((dv=(getV(Tm,Ea,rate)-v))<0)
+  Ea*=1.1;
+endwhile;
+while ((dv=(getV(Tm,Ea,rate)-v))>0)
+  Ea*=0.999;
 endwhile;
 endfunction;
 
