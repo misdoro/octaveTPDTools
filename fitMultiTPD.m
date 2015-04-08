@@ -231,7 +231,8 @@ endif
   figure(getFigIndex("fit_finaldE"));
   clf();
   hold on;
-  Epts=linspace(fit.E0,fit.E0+(np-1)*fit.dE,fit.np);
+  np=length(fit.thetas);
+  Epts=linspace(fit.E0,fit.E0+(np-1)*fit.dE,np);
   bar(Epts,fit.thetas,"linewidth",2);
   xlabel("Ea, eV");
   ylabel("Theta_i, ML");
