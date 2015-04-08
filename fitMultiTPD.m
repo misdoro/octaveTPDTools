@@ -231,8 +231,7 @@ endif
   figure(getFigIndex("fit_finaldE"));
   clf();
   hold on;
-  np=length(fit.thetas);
-  Epts=linspace(fit.E0,fit.E0+(np-1)*fit.dE,np);
+  Epts=linspace(fit.E0,fit.E0+(np-1)*fit.dE,fit.np);
   bar(Epts,fit.thetas,"linewidth",2);
   xlabel("Ea, eV");
   ylabel("Theta_i, ML");
@@ -265,8 +264,9 @@ function [fit,fiti,mytpd]=fitEnergyDistribution(dats,param,v)
   filename=dats.filenames{dats.ordRates(1,1)};
   mytpd=loadTPD(filename,param);
   fit=initFitParam(mytpd,param,v);
-  fit.E0-=6*fit.dE;
-  fit.thetas=0.01*ones(16,1);
+  shift=6;
+  fit.E0-=shift*fit.dE;
+  fit.thetas=0.01*ones(fit.np+shift,1);
   fiti=fit
   fit=fitPartCoverages(mytpd,fit)
 endfunction
@@ -277,18 +277,43 @@ function ret=estimE0(v,mytpd)
   ret=estimEaVTm(v,maxT,mytpd.rate);
 endfunction
 
-function fit=initFitParam(mytpd,param,v)
-  fit.v=v;
-  fit.E0=estimE0(v,mytpd);
-  #fit.dE=0.01;#good for ~300-500meV Ea range;V~1e16
-  fit.dE=0.0025;#good for E0~0.06eV;V~1e10
+%Estimate dE of the fit
+function fitdE=estimdE(mytpd,fit)
+  %dummy fit parameters 
+  fit.dE=0.1;
   fit.thetas=0.1;
-  fit.scale=1;
-  #fit.ml=2e-8;
-  fit.ml=1e-6;
-  fit.debug=param.debug;
-  fit.rate=mytpd.rate;
+  %Define our own dense temperature grid
+  Ts=linspace(min(mytpd.T),max(mytpd.T),200);
+  moddat=modelTPDmc(Ts,fit);
+  #Find dE such that Tmax(tpd(E-dE)) is at 0.7*max(tpd(E)) on the onset
+  iend=min(find(moddat>=(max(moddat)*0.7)));
+  fitdE=abs(fit.E0-estimEaVTm(fit.v,Ts(iend),fit.rate));
 endfunction
+
+#Estimate number of point to cover the used temperature range
+function np=estimNP(mytpd,fit)
+#Find np such that max(mytpd.T)-1=Tmax(E0+np*dE)
+emax=estimEaVTm(fit.v,max(mytpd.T)-1,fit.rate);
+np=round((emax-fit.E0)/fit.dE);
+#input("break");
+endfunction
+
+function fit=initFitParam(mytpd,param,v)
+  fit.debug=param.debug;
+  fit.ml=param.monolayer;
+  fit.v=v;
+  fit.rate=mytpd.rate;
+  
+  fit.scale=1;
+  fit.E0=estimE0(v,mytpd);
+  fit.dE=estimdE(mytpd,fit);
+  fit.np=estimNP(mytpd,fit);
+  %estimdE works well for all ranges above E0=0.01
+  %fit.dE=0.01;#good for ~300-500meV Ea range;V~1e16
+  %fit.dE=0.0025;#good for E0~0.06eV;V~1e10
+  fit.thetas=0.1;
+endfunction
+
 
 function mytpd=loadTPD(filename,param,decimate=1)
   load(filename);
