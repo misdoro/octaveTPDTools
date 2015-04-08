@@ -149,7 +149,7 @@ if (~isfield(fitpar,'stds'))
        mytpd=loadTPD(filename,param);
        fit=fitpar.defits{vidx}
        fit.v=v;
-       fit.E0=estimE0(v,mytpd)-4*fit.dE;
+       fit.E0=estimE0(mytpd,fit)-4*fit.dE;
        fit.rate=mytpd.rate;
        fiti=fit;
        fit=fitE0(mytpd,fit);
@@ -271,50 +271,6 @@ function [fit,fiti,mytpd]=fitEnergyDistribution(dats,param,v)
   fiti=fit
   fit=fitPartCoverages(mytpd,fit)
 endfunction
-
-function ret=estimE0(v,mytpd)
-  [maxi,maxii]=max(mytpd.i);
-  maxT=mytpd.T(maxii);
-  ret=estimEaVTm(v,maxT,mytpd.rate);
-endfunction
-
-%Estimate dE of the fit
-function fitdE=estimdE(mytpd,fit)
-  %dummy fit parameters 
-  fit.dE=0.1;
-  fit.thetas=0.1;
-  %Define our own dense temperature grid
-  Ts=linspace(min(mytpd.T),max(mytpd.T),200);
-  moddat=modelTPDmc(Ts,fit);
-  #Find dE such that Tmax(tpd(E-dE)) is at 0.7*max(tpd(E)) on the onset
-  iend=min(find(moddat>=(max(moddat)*0.7)));
-  fitdE=abs(fit.E0-estimEaVTm(fit.v,Ts(iend),fit.rate));
-endfunction
-
-#Estimate number of point to cover the used temperature range
-function np=estimNP(mytpd,fit)
-#Find np such that max(mytpd.T)-1=Tmax(E0+np*dE)
-emax=estimEaVTm(fit.v,max(mytpd.T)-1,fit.rate);
-np=round((emax-fit.E0)/fit.dE);
-#input("break");
-endfunction
-
-function fit=initFitParam(mytpd,param,v)
-  fit.debug=param.debug;
-  fit.ml=param.monolayer;
-  fit.v=v;
-  fit.rate=mytpd.rate;
-  
-  fit.scale=1;
-  fit.E0=estimE0(v,mytpd);
-  fit.dE=estimdE(mytpd,fit);
-  fit.np=estimNP(mytpd,fit);
-  %estimdE works well for all ranges above E0=0.01
-  %fit.dE=0.01;#good for ~300-500meV Ea range;V~1e16
-  %fit.dE=0.0025;#good for E0~0.06eV;V~1e10
-  fit.thetas=0.1;
-endfunction
-
 
 function mytpd=loadTPD(filename,param,decimate=1)
   load(filename);

@@ -8,22 +8,9 @@ function result=fitMultiCoverages(mytpd,param,result);
     if (isfield(result,"fitcov"))
       printf("Using parameters from previous fit iteration\n");
       fitpar=result.fitcov{mytpd.idx-1};
+      fitpar.rate=mytpd.rate
     else
-      fit=loadFitFile();
-      fitpar=struct();
-      if (isfield(fit,"fitdE"))
-        printf("Using parameters from fit.par\n");
-        fdE=fit.fitdE;
-        fitpar=fit.fitdE;
-        fitpar.E0-=2*fitpar.dE;
-        fitpar.dE/=2;
-        fitpar.thetas=0.01*ones(35,1);
-      else
-        fitpar.v=param.v;
-        fitpar.E0=param.E0;
-        fitpar.dE=param.dE;
-        fitpar.thetas=param.thetas;
-      endif
+      fitpar=myInitFitPar(mytpd,param)
     endif
     if (isfield(param,"fitpenalty"))
       fitpar.penalty=param.fitpenalty;
@@ -33,8 +20,12 @@ function result=fitMultiCoverages(mytpd,param,result);
     else
       maxiter=1500;
     endif
-    fitpar.rate=mytpd.rate
-    fitopts=optimset("Display","iter","MaxIter",maxiter,"TolX",1e-5);
+    if (isfield(param,"debug"))
+      fod="iter"
+    else
+      fod="final"
+    endif
+    fitopts=optimset("Display",fod,"MaxIter",maxiter,"TolX",1e-5);
     fitcov=fitPartCoverages(mytpd,fitpar,fitopts);
   endif
   np=length(fitcov.thetas);
@@ -51,3 +42,23 @@ function result=fitMultiCoverages(mytpd,param,result);
   #input("proceed to next figure");
   result.fitcov{mytpd.idx}=fitcov;
 endfunction;
+
+
+function fitpar=myInitFitPar(mytpd,param)
+  fit=loadFitFile();
+  fitpar=struct();
+  if (isfield(fit,"fitdE"))
+    printf("Using best fit prefactor from fit.par\n");
+    %fitpar=initFitParam(mytpd,param,)
+    fitpar=fit.fitdE;
+    fitpar.E0-=2*fitpar.dE;
+    fitpar.dE=estimdE(mytpd,fitpar);
+    fitpar.np=estimNP(mytpd,fitpar);
+    fitpar.thetas=0.01*ones(fitpar.np,1);
+  else
+    fitpar=initFitParam(mytpd,param)
+    fitpar.E0-=6*fitpar.dE;
+    fitpar.thetas=0.01*ones(fitpar.np+6,1);
+  endif
+endfunction
+    
