@@ -52,8 +52,8 @@ function fitpar=myInitFitPar(mytpd,param)
     %fitpar=initFitParam(mytpd,param,)
     fitpar=fit.fitdE;
     fitpar.E0-=2*fitpar.dE;
-    fitpar.dE=estimdE(mytpd,fitpar);
-    fitpar.np=estimNP(mytpd,fitpar);
+    fitpar.dE=estimdE(mytpd,fitpar)/2;
+    fitpar.np=estimNP(mytpd,fitpar)*2;
     fitpar.thetas=0.01*ones(fitpar.np,1);
   else
     fitpar=initFitParam(mytpd,param)
