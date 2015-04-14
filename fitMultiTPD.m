@@ -85,8 +85,8 @@ else
       fit=initFitParam(mytpd,param,fitpar.estv)
       fit=fitCovScale(mytpd,fit)
       fit=fitE0(mytpd,fit)
-      legendtxt{idx*2-1}=sprintf("exp, %d K/min",mytpd.rate*60);
-      legendtxt(idx*2)=sprintf("mod. Eo=%.3f,v=%.1e, %d K/min",fit.E0,fitpar.estv,mytpd.rate*60);
+      legendtxt{idx*2-1}=sprintf("exp, %d K/min",round(mytpd.rate*60));
+      legendtxt(idx*2)=sprintf("mod. Eo=%.3f,v=%.1e, %d K/min",fit.E0,fitpar.estv,round(mytpd.rate*60));
       ydat=mytpd.i./(param.monolayer.*(mytpd.rate));
       plot(mytpd.T,ydat,'color','blue',"marker","x");
       ydat=modelTPDmc(mytpd.T,fit)./(param.monolayer.*(mytpd.rate));
@@ -247,8 +247,8 @@ endif
       fit=fitpar.fitdE;
       fit.rate=mytpd.rate;
       fit=fitCovScale(mytpd,fit);
-      legendtxt{idx*2-1}=sprintf("exp, %d K/min",mytpd.rate*60);
-      legendtxt(idx*2)=sprintf("mod.1E,v=%.1e, %d K/min",fit.v,fit.rate*60);
+      legendtxt{idx*2-1}=sprintf("exp, %d K/min",round(mytpd.rate*60));
+      legendtxt(idx*2)=sprintf("mod.1E,v=%.1e, %d K/min",fit.v,round(fit.rate*60));
       ydat=mytpd.i./(param.monolayer.*(mytpd.rate));
       plot(mytpd.T,ydat,'color','blue',"marker","x");
       ydat=modelTPDmc(mytpd.T,fit)./(param.monolayer.*(mytpd.rate));
