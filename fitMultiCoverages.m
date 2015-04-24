@@ -60,5 +60,6 @@ function fitpar=myInitFitPar(mytpd,param)
     fitpar.E0-=6*fitpar.dE;
     fitpar.thetas=0.01*ones(fitpar.np+6,1);
   endif
+  fitpar.rate=mytpd.rate;
 endfunction
     
