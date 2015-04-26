@@ -1,4 +1,4 @@
-#!/usr/bin/octave --persist
+#!/usr/bin/octave -q
 #Model a TPD dat file
 
 par.bline=0;
@@ -96,6 +96,29 @@ dose.t=linspace(0,dose.time,dose.np)';
 dose.i=dose.integral./10.*ones(1,dose.np)';
 dose.iN=dose.i;
 
+
+function printTPDInfo(par)
+	printf("\nkey TPD parameters:\n\
+          rate=%f\n\
+          v=%e\n\
+          E0=%f\n",par.rate,par.v,par.E0);
+  if ((np=length(par.thetas))>1)
+    printf("          Ei=[");
+    printf(" %.3f ",linspace(par.E0,par.E0+(np-1)*par.dE,np));
+    printf("]\n");
+    
+    printf("          thetas=[");
+    printf(" %.3f ",par.thetas);
+    printf("]\n");
+    
+    
+  else
+    printf("          theta=%f\n",par.thetas);
+    
+  endif
+endfunction;
+
+
 ##########################
 #Output data truncation and save
 if (nargin>=1);
@@ -103,6 +126,8 @@ if (nargin>=1);
 	if (!isempty(strfind(filename,".dat" )))
 		tpd.version=20140120;
 		save("-binary",filename,"tpd","dose","press");
+		printf("Saved TPD model curve to %s",filename);
+		printTPDInfo(par);
 	endif
 else
 	printf("Usage: modelTPD filename rate");
