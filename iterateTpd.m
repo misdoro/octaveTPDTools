@@ -12,7 +12,8 @@ function result=iterateTpd(indata,param,funcName,varargin);
   filesCount=rows(indata.ordDoses);
   plotCount=length(param.mass)*filesCount;
 	counter=0;
-	for idx=1:filesCount;
+	for i=1:filesCount;
+    idx=filesCount+1-i;
 		filename=indata.filenames{indata.ordDoses(idx,1)};
 		printf("\n-----------------\n%s\n",filename);
 		load(filename);
@@ -44,12 +45,13 @@ function result=iterateTpd(indata,param,funcName,varargin);
           cutdat.doseintg=dose.integral;
 				  cutdat.filename=filename;
 					cutdat.idx=++counter;
+          cutdat.fileidx=idx;
           
           #Define plot color
 					if (index(param.tools,'c'))
             cutdat.color=getLineColor(cutdat.intg,param.monolayer);
 					else
-            cutdat.color=getLineColor(4*counter/plotCount,1,2);
+            cutdat.color=getLineColor(4*(1-counter/plotCount),1,2);
 					endif;
           
           #Check if we are asked to convert the data in ML/K units

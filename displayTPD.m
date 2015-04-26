@@ -76,22 +76,24 @@ function result=plotTPD(mytpd,param,result,press,dose);
 		ls=":";
 	endif;
 	
-	plot(mytpd.T,mytpd.i_sm,"linewidth",2,"linestyle",ls,"color",mytpd.color);
+	plt=plot(mytpd.T,mytpd.i_sm,"linewidth",2,"linestyle",ls,"color",mytpd.color);
 	
 	[maxi,maxidx]=max(mytpd.i_sm);
 	maxT=mytpd.T(maxidx);
-	txt=num2str(mytpd.idx);
 	if (length(param.mass)>1)
-		txt=strcat(txt,":M=",num2str(mytpd.mass))
-	endif;
+		txt=sprintf("%d:M=",mytpd.idx,mytpd.mass)
+  else
+    txt=sprintf("%d",mytpd.fileidx)
+	endif
 	text(maxT,maxi,txt);
 	fn=strrep(mytpd.filename,"_","-");
 	if (isfield(param,"publish"))
-    legendtext=sprintf("%s: %d K/min (%3.2f ML)",txt,round(mytpd.rate*60),mytpd.intg/param.monolayer);
+    legendtext=sprintf("%s: %3.2f ML @ %d K/min ",txt,mytpd.intg/param.monolayer,round(mytpd.rate*60));
   else
     legendtext=sprintf("%s:%s(%3.2f ML)",txt,fn,mytpd.intg/param.monolayer);
   endif
 	result=retAppend(result,"legend",legendtext);
+  result=retAppend(result,"plothdl",plt);
 	
 	doseintg=0;
 	if (isfield(mytpd,"version") && mytpd.version>=20140120 && ~mytpd.model)
@@ -123,8 +125,8 @@ if (index(param.tools,'d'))
   endif
 	xlabel("Temperature (K)");
 	if (isfield(ret,"legend"))
-		legend("boxon");
-		h=legend(ret.legend);
+		legend("boxon","right");
+		h=legend(ret.legend,"location","northwest");
 		set (h, 'fontsize', 10);
 	endif;
 	
@@ -409,25 +411,30 @@ endfunction;
 if(getFigIndex("nonsense")>1)
   input("Adjust figures if needed, then press enter to save, ctrl-c to exit");
   saveAsc=index(param.tools,'s')
-  saveFig("disp","desorption",saveAsc);
-  saveFig('doses','sticking',saveAsc);
-  saveFig('doseext','doses',saveAsc);
-  saveFig('log','logplot',saveAsc);
-  saveFig('eads','eadsest',saveAsc);
-  saveFig('press','pressure',saveAsc);
-  saveFig('qipress','qms-pressure',saveAsc);
-  saveFig('user','user',saveAsc);
-  saveFig('IR','FTIR',saveAsc);
-  saveFig('modelediff','prefactor',saveAsc);
-  saveFig('Tfitq','Trampqual',saveAsc);
+  format="png";
+  if (isfield(param,"imgformat"))
+    format=param.imgformat;
+  endif;
+    
+  saveFig("disp","desorption",saveAsc,format);
+  saveFig('doses','sticking',saveAsc,format);
+  saveFig('doseext','doses',saveAsc,format);
+  saveFig('log','logplot',saveAsc,format);
+  saveFig('eads','eadsest',saveAsc,format);
+  saveFig('press','pressure',saveAsc,format);
+  saveFig('qipress','qms-pressure',saveAsc,format);
+  saveFig('user','user',saveAsc,format);
+  saveFig('IR','FTIR',saveAsc,format);
+  saveFig('modelediff','prefactor',saveAsc,format);
+  saveFig('Tfitq','Trampqual',saveAsc,format);
   
-  saveFig('fit_1Efit',"VSearch1Efit",saveAsc);
-  saveFig('fit_dEfit',"VSearchdEfit",saveAsc);
-  saveFig('fit_estv_stds',"VSearchEstd",saveAsc);
-  saveFig('fit_finaldE',"VSearchdE",saveAsc);
+  saveFig('fit_1Efit',"VSearch1Efit",saveAsc,format);
+  saveFig('fit_dEfit',"VSearchdEfit",saveAsc,format);
+  saveFig('fit_estv_stds',"VSearchEstd",saveAsc,format);
+  saveFig('fit_finaldE',"VSearchdE",saveAsc,format);
   
-  saveFig('covsites',"dEFitSites",saveAsc);
-  saveFig('covfits',"dEFitModel",saveAsc);
+  saveFig('covsites',"dEFitSites",saveAsc,format);
+  saveFig('covfits',"dEFitModel",saveAsc,format);
   
 endif;
 exit(0);

@@ -1,10 +1,10 @@
-function ret=saveFig(label,fileprefix,saveAscii=0)
+function ret=saveFig(label,fileprefix,saveAscii=0,format="png")
   %A function to save a figure as image and its plot data as ascii
   hdl=getFigIndex(label,0);
   if (hdl)
     %Save figure as image
-    print(hdl,fileprefix,"-dpng","-r300");
-    printf("Saved %s.png\n",fileprefix);
+    print(hdl,fileprefix,strcat("-d",format),"-r300");
+    printf("Saved %s.%s\n",fileprefix,format);
     %Extract and save figure data
     if (saveAscii)
       saveFigData(hdl,fileprefix);
