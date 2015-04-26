@@ -126,7 +126,7 @@ if (nargin>=1);
 	if (!isempty(strfind(filename,".dat" )))
 		tpd.version=20140120;
 		save("-binary",filename,"tpd","dose","press");
-		printf("Saved TPD model curve to %s",filename);
+		printf("Saved %s",filename);
 		printTPDInfo(par);
 	endif
 else
