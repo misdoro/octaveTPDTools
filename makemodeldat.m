@@ -58,9 +58,6 @@ maxt=(par.maxT-par.minT)/par.rate;
 tpd.t=linspace(0,maxt,par.npT)';
 tpd.T=linspace(par.minT,par.maxT,par.npT)';
 
-#parv=[par.v,par.theta,par.monolay*par.rate,par.E];
-#tpd.i=calcP1(tpd,parv)+par.bline;
-#tpd.i=calcPn(tpd,parv,par)+par.bline;
 tpd.i=modelTPDmc(tpd.T,par)+par.bline;
 if(isfield(par,"noise")&& par.noise)
   snr=1000;

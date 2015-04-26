@@ -50,5 +50,6 @@ endfunction;
 function dthetadT = odemlde(thetavec,T,param)
 	nuovera=param.nuoa;
   Eoverk=param.ek1;
-  dthetadT = (thetavec>eps)'.*(-nuovera).*thetavec'.*exp(-Eoverk./(T+eps));
+  #dthetadT = (thetavec>eps)'.*(-nuovera).*thetavec'.*exp(-Eoverk./(T+eps));
+  dthetadT = (thetavec>eps)'.*(-nuovera).*min(thetavec,1)'.*exp(-Eoverk./(T+eps));
 endfunction;
