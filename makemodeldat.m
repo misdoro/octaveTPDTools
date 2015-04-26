@@ -1,5 +1,6 @@
 #!/usr/bin/octave -q
 #Model a TPD dat file
+printf("Usage: $ modelTPD filename rate");
 
 par.bline=0;
 par.scale=1;
@@ -78,10 +79,12 @@ press.p=tpd.i*23;
 
 tpd.pi=interp1(press.t,press.p,tpd.t);
 
-figure(1);
-hold on;
-plot(press.T,press.p,"color","red",'linewidth',2);
-plot(tpd.T,tpd.i,"color","green",'linewidth',2);
+if (isfield(par,"debug"))
+  figure(1);
+  hold on;
+  plot(press.T,press.p,"color","red",'linewidth',2);
+  plot(tpd.T,tpd.i,"color","green",'linewidth',2);
+endif;
 
 tpd.integral=trapz(tpd.t,tpd.i);
 tpd.model=1;
@@ -118,18 +121,22 @@ function printTPDInfo(par)
   endif
 endfunction;
 
-
+function ret=makefilename(par)
+  covs=sprintf("%.2f_",par.thetas);
+  ret=sprintf("m%dkm%s.dat",round(par.rate*60),covs);
+endfunction;
+  
 ##########################
 #Output data truncation and save
-if (nargin>=1);
-	filename=useArgument(argv(),1,'output.dat');
-	if (!isempty(strfind(filename,".dat" )))
-		tpd.version=20140120;
-		save("-binary",filename,"tpd","dose","press");
-		printf("Saved %s",filename);
-		printTPDInfo(par);
-	endif
-else
-	printf("Usage: modelTPD filename rate");
+filename=useArgument(argv(),1,makefilename(par));
+if (!isempty(strfind(filename,".dat" )))
+	tpd.version=20140120;
+	save("-binary",filename,"tpd","dose","press");
+	printf("Saved %s",filename);
+	printTPDInfo(par);
+endif
+
+if (isfield(par,"debug"))
+  input("check the plot, enter to close")
 endif
 exit(0);
