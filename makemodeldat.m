@@ -122,7 +122,7 @@ function printTPDInfo(par)
 endfunction;
 
 function ret=makefilename(par)
-  covs=sprintf("%.2f_",par.thetas);
+  covs=sprintf("_%.2f",par.thetas);
   ret=sprintf("m%dkm%s.dat",round(par.rate*60),covs);
 endfunction;
   
