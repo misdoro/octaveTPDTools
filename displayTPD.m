@@ -125,8 +125,12 @@ if (index(param.tools,'d'))
   endif
 	xlabel("Temperature (K)");
 	if (isfield(ret,"legend"))
+    legloc="northeast";
+    if (isfield(param,"legendloc"))
+      legloc=param.legendloc;
+    endif;
 		legend("boxon","right");
-		h=legend(ret.legend,"location","northwest");
+		h=legend(ret.legend,"location",legloc);
 		set (h, 'fontsize', 10);
 	endif;
 	
