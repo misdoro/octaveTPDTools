@@ -175,21 +175,24 @@ endif;
 #################################################
 function result=plotDoses(mytpd,param,result,press,dose);
 	dose=getMassData(dose,[],param.selectedmass);
-	plot(dose.t,dose.i*1e10,"linewidth",2,"color",mytpd.color);
+  normdosi=dose.i*1e10;
+  figure(getFigIndex("doseext"));
+	semilogy(dose.t,normdosi,"linewidth",2,"color",mytpd.color);
 	[dosi,endpt]=calculateDoseIntegral(dose,0);
-  plot(dose.t(endpt),dose.i(endpt)*1e10,"o")
+  plot(dose.t(endpt),normdosi(endpt),"o")
 	printf("Dose integral %.2e\n",dosi);
 	
-	[maxi,maxidx]=max(dose.i);
+	[maxi,maxidx]=max(normdosi);
 	maxt=dose.t(maxidx);
-	text(maxt,maxi*1e10,strcat(num2str(mytpd.idx)));
+	#text(maxt,maxi,num2str(mytpd.fileidx));
+  
 endfunction;
 
 
 if (index(param.tools,'D'))
 	figure(getFigIndex("doseext"));
 	hold on;
-	ylabel("Dose current (arb.u.)");
+	ylabel("Dose current, Ax10^-10");
 	xlabel("Time (s)");
 	ret=iterateTpd(datindex,param,@plotDoses);
 endif;
