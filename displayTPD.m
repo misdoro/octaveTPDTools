@@ -245,12 +245,25 @@ if (index(param.tools,'f'))
 	hold on;
 	ylabel("T ramp fit error, K");
 	xlabel("T, K");
+  
+  figure(getFigIndex("Tramp"));
+	hold on;
+	ylabel("Temperature, K");
+	xlabel("Time, s");
+  
 	ret=iterateTpd(datindex,param,@dispTfitq);
-	if (isfield(ret,"legend"))
+  
+	figure(getFigIndex("Tfitq"));
+  if (isfield(ret,"legend"))
 		legend("boxon");
 		legend(ret.legend);
 	endif;
-	
+  
+  figure(getFigIndex("Tramp"));
+  if (isfield(ret,"legend"))
+		legend("boxon");
+		legend(ret.legend);
+	endif;
 endif;
 
 ##################################################
@@ -434,6 +447,7 @@ if(getFigIndex("nonsense")>1)
   saveFig('IR','FTIR',saveAsc,format);
   saveFig('modelediff','prefactor',saveAsc,format);
   saveFig('Tfitq','Trampqual',saveAsc,format);
+  saveFig('Tramp','Tramp',saveAsc,format);
   
   saveFig('fit_1Efit',"VSearch1Efit",saveAsc,format);
   saveFig('fit_dEfit',"VSearchdEfit",saveAsc,format);
