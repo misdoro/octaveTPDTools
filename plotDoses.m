@@ -12,6 +12,8 @@ for idx=1:np
 	text(inp.doses(idx),inp.integrals(idx),sprintf(" <%d",np+1-idx));
 end
 
+printf("Itpd/Idose=%.2f\n",collage(1));
+printf("offset=%.2f\n",collage(2));
 xlabel("Dose integrals, ×10-10 AS");
 ylabel("TPD integrals, ×10-10 AS");
 endfunction;
