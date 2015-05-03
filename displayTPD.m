@@ -181,7 +181,8 @@ function result=plotDoses(mytpd,param,result,press,dose);
 	semilogy(dose.t,normdosi,"linewidth",2,"color",mytpd.color);
 	[dosi,endpt]=calculateDoseIntegral(dose,0);
   plot(dose.t(endpt),normdosi(endpt),"o")
-	printf("Dose integral %.2e\n",dosi);
+	printf("Dose temperature %.2f K\n", mean(dose.T));
+  printf("Dose integral %.2e\n",dosi);
 	
 	[maxi,maxidx]=max(normdosi);
 	maxt=dose.t(maxidx);
