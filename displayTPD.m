@@ -124,6 +124,7 @@ if (index(param.tools,'d'))
 	  ylabel("Desorption flow (arb.u.)");
   endif
 	xlabel("Temperature (K)");
+  
 	if (isfield(ret,"legend"))
     legloc="northeast";
     if (isfield(param,"legendloc"))
@@ -133,7 +134,7 @@ if (index(param.tools,'d'))
 		h=legend(ret.legend,"location",legloc);
 		set (h, 'fontsize', 10);
 	endif;
-	
+	xlim([param.displayT.min,param.displayT.max]);
 	
 	#Plot doses
 	if (isfield(ret,"doses"))
