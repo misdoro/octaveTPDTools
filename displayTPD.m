@@ -130,7 +130,7 @@ if (index(param.tools,'d'))
     if (isfield(param,"legendloc"))
       legloc=param.legendloc;
     endif;
-		legend("boxon","right");
+		#legend("boxon","right");
 		h=legend(ret.legend,"location",legloc);
 		set (h, 'fontsize', 10);
 	endif;
@@ -293,17 +293,28 @@ function result=plotInvT(mytpd,param,result);
 		plot(mytpd.T(win.iend),mytpd.i(win.iend),"o");
 	endif;
 	
+  ltxt=sprintf("exp. θ_0=%.2f ML",mytpd.intg/param.monolayer);
+  result=retAppend(result,"legend",ltxt);
+  ltxt=sprintf("lin. fit,Ea=%.2f eV",eads);
+  result=retAppend(result,"legend",ltxt);
+  ltxt="fit error x1000";
+  result=retAppend(result,"legend",ltxt);
+  
+  
 endfunction
 
 if (index(param.tools,'l'))
 	figure(getFigIndex("log"));
 	hold on;
-	ylabel("log(i)")
+	ylabel("ln(Φdes)")
 	xlabel("Inverse Temperature (1000/T)")
 	
-	iterateTpd(datindex,param,@plotInvT);
+	ret=iterateTpd(datindex,param,@plotInvT);
 	
-	
+	if (isfield(ret,"legend"))
+    figure(getFigIndex("log"));
+		legend(ret.legend);
+	endif;
 	
 endif;
 

@@ -26,7 +26,7 @@ function [eads,lnv,win]=findLogEAds(mytpd)
 	end
 	
 	[sp,rmsv]=findSplitPoint(mytpd,win,1);
-	plot(mytpd.invT(spvec),mytpd.logi(spvec),"x");
+	#plot(mytpd.invT(spvec),mytpd.logi(spvec),"x");
 	drawnow();
 	
 	R_eV=5.189e19;
@@ -45,7 +45,8 @@ function [maxei,rms,pf]=findSplitPoint(mytpd,win,doplot=false)
 	rms=S.normr^2;
 	[maxe,maxei]=max(sqe);
 	if(doplot>0);
-		plot(ctpd.invT,S.yf,"color","black",ctpd.invT,sqe*1000,"color","red");
+		plot(ctpd.invT,S.yf,"linewidth",2,"color","blue")
+    plot(ctpd.invT,sqe*1000,"linewidth",2,"color","red");
 	endif
 	maxei+=win.istart-1;
 endfunction;
