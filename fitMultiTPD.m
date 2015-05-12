@@ -3,7 +3,7 @@ function fitMultiTPD(dats,param)
 #-Fit with single Ea for different prefactors
 #-Fit energy distribution for few predefined prefactors, based on the TPD with lowest rate
 #-Fit varying prefactor with 3 determinded energy distributions, plot sigma(E)
-
+#-minimum of sigma(E) gives a good prefactor value
 #Check the input data:
 filesCount=rows(dats.ordRates);
 if (filesCount<2)
@@ -26,6 +26,7 @@ endif
 fitpar=loadFitFile();
 
 if (~isfield(fitpar,'estv'))
+#No previous fit data found, initiate the coarse prefactor search
   vs=getOptionValue(param,"","vs",logspace(10,20,11));
   Efits=[];
   for v=vs
@@ -61,16 +62,11 @@ if (~isfield(fitpar,'estv'))
     Efits=[Efits;Eline]
   endfor
   stds=std(Efits,0,2);
-  
-  figure(getFigIndex("fit_estv_stds"));
-  hold on;
-  semilogx(vs,stds,'color','black');
-  xlabel("Prefactor value");
-  ylabel("Fitted energy stddev");
-  
   [minstd,minstdi]=min(stds);
   minv=vs(minstdi);
   fitpar.estv=minv;
+  fitpar.Efits=Efits;
+  fitpar.vs=vs;
   printf("Found optimum prefactor to be %.1e\n",fitpar.estv);
   save("-text","fit.par","fitpar");
 else
@@ -97,6 +93,14 @@ else
   h=legend(legendtxt);
   set (h, 'fontsize', 10);
 endif;
+
+vs=getOptionValue(param,"","vs",logspace(10,20,11));
+stds=std(fitpar.Efits,0,2);
+figure(getFigIndex("fit_estv_stds"));
+hold on;
+semilogx(vs,stds,'color','black');
+xlabel("Prefactor value");
+ylabel("Fitted energy stddev");
 
 #Fit ea distribution for Vopt, Vopt*100, Vopt/100
 if (param.debug)
@@ -173,7 +177,7 @@ if (~isfield(fitpar,'stds'))
    fitpar.stds{vidx}=std(Efits,0,2);
    
    legendtxt{vidx+1}=sprintf('v=%.1e',fitpar.defits{vidx}.v);
-   figure(getFigIndex("fit_estv_stds"));
+   figure(getFigIndex("fit_estv_stdsde"));
    clf();
    hold on;
    xlabel("Prefactor value");
@@ -188,7 +192,7 @@ else
   fitpar.stds
 endif
   colors={'green','blue','red'}
-  figure(getFigIndex("fit_estv_stds"));
+  figure(getFigIndex("fit_estv_stdsde"));
   clf();
   hold on;
   vs=fitpar.vsfine;

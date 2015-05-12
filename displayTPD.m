@@ -463,8 +463,9 @@ if(getFigIndex("nonsense")>1)
   saveFig('Tramp','Tramp',saveAsc,format);
   
   saveFig('fit_1Efit',"VSearch1Efit",saveAsc,format);
+  saveFig('fit_estv_stds',"VSearch1Estd",saveAsc,format);
   saveFig('fit_dEfit',"VSearchdEfit",saveAsc,format);
-  saveFig('fit_estv_stds',"VSearchEstd",saveAsc,format);
+  saveFig('fit_estv_stdsde',"VSearchEstd",saveAsc,format);
   saveFig('fit_finaldE',"VSearchdE",saveAsc,format);
   
   saveFig('covsites',"dEFitSites",saveAsc,format);
