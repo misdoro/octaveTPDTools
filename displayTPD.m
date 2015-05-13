@@ -345,17 +345,10 @@ endif
 if (index(param.tools,'E'))
   figure(getFigIndex("covsites"));
 	hold on;
-  figure(getFigIndex("covfits"));
-  hold on;
   result=iterateTpd(datindex,param,@fitMultiCoverages);
   figure(getFigIndex("covsites"));
   xlabel("Ea");
   ylabel("Fractional population");
-  figure(getFigIndex("covfits"));
-  xlabel("Temperature, K");
-  ylabel("Desorption signal, a.u.");
-  fitcov=result.fitcov;
-  save("-text","fitcov.par","fitcov");
 endif
 
 #######################################################
@@ -469,7 +462,6 @@ if(getFigIndex("nonsense")>1)
   saveFig('fit_finaldE',"VSearchdE",saveAsc,format);
   
   saveFig('covsites',"dEFitSites",saveAsc,format);
-  saveFig('covfits',"dEFitModel",saveAsc,format);
   
 endif;
 exit(0);

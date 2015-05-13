@@ -1,14 +1,22 @@
 function result=fitMultiCoverages(mytpd,param,result);
-  [f.info, f.err, f.msg]=stat("fitcov.par");
-  if (f.err>=0);
-    load "fitcov.par";
-    printf("Plotting saved fit data\n");
-    fitcov=fitcov{mytpd.idx};
+  if (~isfield(result,"fitcov"))
+    #Load fit data from file on first iteration
+    [f.info, f.err, f.msg]=stat("fitcov.par");
+    if (f.err>=0);
+      load "fitcov.par";
+      printf("Plotting saved fit data\n");
+      result.fitcov=fitcov;
+      fitde=findFileMetadata(result.fitcov,mytpd.filename);
+    endif
   else
+    fitde=findFileMetadata(result.fitcov,mytpd.filename);
+  endif
+      
+  if (~fitde.found)
     if (isfield(result,"fitcov"))
       printf("Using parameters from previous fit iteration\n");
       fitpar=result.fitcov{mytpd.idx-1};
-      fitpar.rate=mytpd.rate
+      fitpar.rate=mytpd.rate;
     else
       fitpar=myInitFitPar(mytpd,param)
     endif
@@ -26,40 +34,58 @@ function result=fitMultiCoverages(mytpd,param,result);
       fod="final"
     endif
     fitopts=optimset("Display",fod,"MaxIter",maxiter,"TolX",1e-5);
-    fitcov=fitPartCoverages(mytpd,fitpar,fitopts);
+    fitde=fitPartCoverages(mytpd,fitpar,fitopts);
+    fitde.filename=mytpd.filename;
   endif
-  np=length(fitcov.thetas);
-  Epts=linspace(fitcov.E0,fitcov.E0+(np-1)*fitcov.dE,np);
+  
+  np=length(fitde.thetas);
+  Epts=linspace(fitde.E0,fitde.E0+(np-1)*fitde.dE,np);
  
   figure(getFigIndex("covsites"));
-  plot(Epts,fitcov.thetas,"linewidth",2,"color",mytpd.color);
+  plot(Epts,fitde.thetas,"linewidth",2,"color",mytpd.color);
   
-  p=modelTPDmc(mytpd.T,fitcov);
-  figure(getFigIndex("covfits"));
-  plot(mytpd.T,mytpd.i,"color",mytpd.color);
+  p=modelTPDmc(mytpd.T,fitde);
+  figure(getFigIndex("disp"))
   plot(mytpd.T,p,"color",mytpd.color,"linestyle","--");
   drawnow();
-  #input("proceed to next figure");
-  result.fitcov{mytpd.idx}=fitcov;
+  
+  if (~findFileMetadata(result.fitcov,mytpd.filename).found)
+    fcl=0;
+    if (isfield(result,"fitcov"))
+      fcl=length(result.fitcov);
+    endif;
+    result.fitcov{fcl+1}=fitde;
+    fitcov=result.fitcov;
+    save("-text","fitcov.par","fitcov");
+  endif;
 endfunction;
 
+function ret=findFileMetadata(cellarr,filename)
+  ret=struct("found",0);
+  for i=1:length(cellarr)
+    if (isfield(cellarr{i},"filename") && cellarr{i}.filename==filename)
+      ret=cellarr{i};
+      ret.found=i;
+      break;
+    endif
+  endfor
+    
+endfunction
 
 function fitpar=myInitFitPar(mytpd,param)
   fit=loadFitFile();
   fitpar=struct();
   if (isfield(fit,"fitdE"))
-    printf("Using best fit prefactor from fit.par\n");
-    %fitpar=initFitParam(mytpd,param,)
-    fitpar=fit.fitdE;
-    fitpar.E0-=2*fitpar.dE;
-    fitpar.dE=estimdE(mytpd,fitpar);
-    fitpar.np=estimNP(mytpd,fitpar);
-    fitpar.thetas=0.01*ones(fitpar.np,1);
+    printf("Using best fit prefactor %.1e from fit.par\n",fit.fitdE.v);
+    fitpar=initFitParam(mytpd,param,fit.fitdE.v);
   else
-    fitpar=initFitParam(mytpd,param)
-    fitpar.E0-=6*fitpar.dE;
-    fitpar.thetas=0.01*ones(fitpar.np+6,1);
-  endif
+    fitpar=initFitParam(mytpd,param);
+  endif;
+  
+  offset=6;
+  fitpar.E0-=offset*fitpar.dE;
+  fitpar.thetas=0.01*ones(fitpar.np+offset,1);
+  
   fitpar.rate=mytpd.rate;
 endfunction
     
