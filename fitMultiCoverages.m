@@ -4,9 +4,10 @@ function result=fitMultiCoverages(mytpd,param,result);
     [f.info, f.err, f.msg]=stat("fitcov.par");
     if (f.err>=0);
       load "fitcov.par";
-      printf("Plotting saved fit data\n");
       result.fitcov=fitcov;
       fitde=findFileMetadata(result.fitcov,mytpd.filename);
+    else
+      fitde.found=0;
     endif
   else
     fitde=findFileMetadata(result.fitcov,mytpd.filename);
@@ -36,6 +37,8 @@ function result=fitMultiCoverages(mytpd,param,result);
     fitopts=optimset("Display",fod,"MaxIter",maxiter,"TolX",1e-5);
     fitde=fitPartCoverages(mytpd,fitpar,fitopts);
     fitde.filename=mytpd.filename;
+  else
+    printf("Plotting saved fit data\n");
   endif
   
   np=length(fitde.thetas);
@@ -49,15 +52,16 @@ function result=fitMultiCoverages(mytpd,param,result);
   plot(mytpd.T,p,"color",mytpd.color,"linestyle","--");
   drawnow();
   
-  if (~findFileMetadata(result.fitcov,mytpd.filename).found)
-    fcl=0;
-    if (isfield(result,"fitcov"))
-      fcl=length(result.fitcov);
+  fcl=1;
+  if (isfield(result,"fitcov"))
+    if (~(fcl=findFileMetadata(result.fitcov,mytpd.filename).found))
+      fcl=length(result.fitcov)+1;
     endif;
-    result.fitcov{fcl+1}=fitde;
-    fitcov=result.fitcov;
-    save("-text","fitcov.par","fitcov");
   endif;
+  result.fitcov{fcl}=fitde;
+  fitcov=result.fitcov;
+  save("-text","fitcov.par","fitcov");
+  
 endfunction;
 
 function ret=findFileMetadata(cellarr,filename)
