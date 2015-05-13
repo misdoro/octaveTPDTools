@@ -43,7 +43,13 @@ function result=fitMultiCoverages(mytpd,param,result);
   
   np=length(fitde.thetas);
   Epts=linspace(fitde.E0,fitde.E0+(np-1)*fitde.dE,np);
- 
+  
+  printf("Total initial coverage %.2f ML\n",sum(fitde.thetas));
+  [wmeanea,efwhm]=getemaxde(Epts,fitde.thetas);
+  printf("Mean weighted Ea=%.3f eV, dE(FWHM)=%.3f eV\n",wmeanea,efwhm);
+  fitrow=[sum(fitde.thetas),wmeanea,efwhm];
+  result=retAppend(result,"fitemaxde",fitrow);
+  
   figure(getFigIndex("covsites"));
   plot(Epts,fitde.thetas,"linewidth",2,"color",mytpd.color);
   
@@ -98,4 +104,18 @@ function fitpar=myInitFitPar(mytpd,param)
   
   fitpar.rate=mytpd.rate;
 endfunction
-    
+
+function [avgx] = wmean(x,weight,wpow=4)
+  wx = x * weight.^wpow;
+  avgx = sum (wx) / sum (weight.^wpow);
+endfunction
+
+function [emean, efwhm]=getemaxde(Epts,thetas)
+  emean=wmean(Epts,thetas);
+  eptsus=linspace(Epts(1),Epts(end),100);
+  covus=interp1(Epts,thetas,eptsus);
+  covmax=covus(min(find(eptsus>emean)));
+  maxe=eptsus(max(find(covus>covmax/2)));
+  mine=eptsus(min(find(covus>covmax/2)));
+  efwhm=maxe-mine;
+endfunction

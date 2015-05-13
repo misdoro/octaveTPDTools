@@ -365,6 +365,11 @@ if (index(param.tools,'E'))
   figure(getFigIndex("covfiterr"));
 	hold on;
   result=iterateTpd(datindex,param,@fitMultiCoverages);
+  if (isfield(result,"fitemaxde"))
+    printf("Adsorption energies summary\n");
+    printf("  θ, ML  ;  Ea, eV;   dEa, eV\n");
+    printf("%3.2f ; %5.3f ; %5.3f \n",result.fitemaxde');
+  endif
   figure(getFigIndex("covsites"));
   xlabel("Ea");
   ylabel("Sites population");
