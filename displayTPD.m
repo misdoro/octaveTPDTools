@@ -135,6 +135,9 @@ if (index(param.tools,'d'))
 		set (h, 'fontsize', 10);
 	endif;
 	xlim([param.displayT.min,param.displayT.max]);
+  lim=ylim();
+  lim(1)=-0.025*abs(lim(2));
+  ylim(lim);
 	
 	#Plot doses
 	if (isfield(ret,"doses"))
@@ -350,7 +353,7 @@ if (index(param.tools,'E'))
   result=iterateTpd(datindex,param,@fitMultiCoverages);
   figure(getFigIndex("covsites"));
   xlabel("Ea");
-  ylabel("Fractional population");
+  ylabel("Sites population");
   figure(getFigIndex("covfiterr"));
   xlabel("T,K");
   ylabel("Desorption fit error, %max");

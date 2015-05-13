@@ -55,7 +55,7 @@ function result=fitMultiCoverages(mytpd,param,result);
   figure(getFigIndex("disp"))
   plot(mytpd.T,p,"color",mytpd.color,"linestyle","--");
   figure(getFigIndex("covfiterr"))
-  plot(mytpd.T,10*mytpd.fileidx+100*(p-mytpd.i)/max(mytpd.i),"color",mytpd.color);
+  plot(mytpd.T,10*(mytpd.fileidx-1)+100*(p-mytpd.i)/max(mytpd.i),"color",mytpd.color);
   drawnow();
   
   fcl=1;
