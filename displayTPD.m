@@ -353,7 +353,7 @@ if (index(param.tools,'E'))
   ylabel("Fractional population");
   figure(getFigIndex("covfiterr"));
   xlabel("T,K");
-  ylabel("Desorption fit error");
+  ylabel("Desorption fit error, %max");
 endif
 
 #######################################################
