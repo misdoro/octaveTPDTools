@@ -71,12 +71,25 @@ function result=plotTPD(mytpd,param,result,press,dose);
     smooth=getOptionValue(param,mytpd.filename,"smooth",0.005);
 		mytpd.i_sm=supsmu(mytpd.T,mytpd.i,'spa',smooth);
 	endif;
+  #default plot style
 	ls="-";
+  lw=2;
+  ms="none";
 	if (isfield(mytpd,"model")&& mytpd.model>0);
+    #Dotted line for model TPD
 		ls=":";
 	endif;
-	
-	plt=plot(mytpd.T,mytpd.i_sm,"linewidth",2,"linestyle",ls,"color",mytpd.color);
+  if (isfield(param,"points"))
+    #Decimated points from par.points=N
+	  ls="none";
+    ms=".";
+    lw=1;
+    ps=param.points
+	  plt=plot(mytpd.T(1:ps:end),mytpd.i_sm(1:ps:end),"linewidth",lw,"linestyle",ls,"marker",ms,"color",mytpd.color);
+  else  
+    #Normal plot
+    plt=plot(mytpd.T,mytpd.i_sm,"linewidth",lw,"linestyle",ls,"marker",ms,"color",mytpd.color);
+  endif
 	
 	[maxi,maxidx]=max(mytpd.i_sm);
 	maxT=mytpd.T(maxidx);
