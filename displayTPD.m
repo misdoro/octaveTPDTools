@@ -75,6 +75,7 @@ function result=plotTPD(mytpd,param,result,press,dose);
 	ls="-";
   lw=2;
   ms="none";
+  
 	if (isfield(mytpd,"model")&& mytpd.model>0);
     #Dotted line for model TPD
 		ls=":";

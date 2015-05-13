@@ -53,6 +53,8 @@ function result=iterateTpd(indata,param,funcName,varargin);
 					else
             cutdat.color=getLineColor(4*(1-counter/plotCount),1,2);
 					endif;
+          #check if we have color in param.m for this file
+          cutdat.color=getOptionValue(param,filename,"color",cutdat.color);
           
           #Check if we are asked to convert the data in ML/K units
           if (index(param.tools,'N'))
