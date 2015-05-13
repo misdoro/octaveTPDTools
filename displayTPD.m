@@ -345,10 +345,15 @@ endif
 if (index(param.tools,'E'))
   figure(getFigIndex("covsites"));
 	hold on;
+  figure(getFigIndex("covfiterr"));
+	hold on;
   result=iterateTpd(datindex,param,@fitMultiCoverages);
   figure(getFigIndex("covsites"));
   xlabel("Ea");
   ylabel("Fractional population");
+  figure(getFigIndex("covfiterr"));
+  xlabel("T,K");
+  ylabel("Desorption fit error");
 endif
 
 #######################################################
@@ -462,7 +467,7 @@ if(getFigIndex("nonsense")>1)
   saveFig('fit_finaldE',"VSearchdE",saveAsc,format);
   
   saveFig('covsites',"dEFitSites",saveAsc,format);
-  
+  saveFig('covfiterr',"dEFitErr",saveAsc,format);
 endif;
 exit(0);
 

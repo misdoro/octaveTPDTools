@@ -48,8 +48,14 @@ function result=fitMultiCoverages(mytpd,param,result);
   plot(Epts,fitde.thetas,"linewidth",2,"color",mytpd.color);
   
   p=modelTPDmc(mytpd.T,fitde);
+  #Check if we are asked to convert the data in ML/K units
+  if (index(param.tools,'N'))
+    p=p./(param.monolayer.*(mytpd.rate));
+  endif
   figure(getFigIndex("disp"))
   plot(mytpd.T,p,"color",mytpd.color,"linestyle","--");
+  figure(getFigIndex("covfiterr"))
+  plot(mytpd.T,(p-mytpd.i)/max(mytpd.i),"color",mytpd.color);
   drawnow();
   
   fcl=1;
