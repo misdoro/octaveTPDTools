@@ -47,7 +47,8 @@ endfor
 p=-sum(parr,2);
 
 #Switch from 1/K to 1/sec.
-p=p*rate*monolay*scale;
+p*=rate*monolay*scale;
+parr*=-rate*monolay*scale;
 
 endfunction;
 
