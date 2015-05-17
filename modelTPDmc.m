@@ -1,4 +1,4 @@
-function [p,theta]=modelTPDmc(T,fitpar)
+function [p,theta,parr]=modelTPDmc(T,fitpar)
 %function [p,theta]=modelTPDmc(T,fitpar)
 %Model first order TPD curve as a sum of sites with coverages fitpar.thetas,
 %fitpar should have following attributes:
@@ -35,11 +35,12 @@ theta=lsode(of,thetas,T);
 
 #Derive desorption rates from coverage values
 numT=length(T);
-p=zeros(numT,1);
+parr=zeros(numT,length(thetas));
 for i=1:numT
   #For each temperature point find desorption flow as a sum of flows defined by remaining coverages
-  p(i)=(-sum(odemlde(theta(i,:)',T(i),odepar)));
+  parr(i,:)=odemlde(theta(i,:)',T(i),odepar);
 endfor
+p=-sum(parr,2);
 
 #Switch from 1/K to 1/sec.
 p=p*rate*monolay*scale;
