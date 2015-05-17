@@ -1,6 +1,6 @@
 #!/usr/bin/octave -q
 #Model a TPD dat file
-printf("Usage: $ modelTPD filename rate");
+printf("Usage: $ modelTPD filename rate\n");
 
 par.bline=0;
 par.scale=1;
@@ -22,7 +22,7 @@ endif
 par=loadParamFile(par);
 
 #Verify all required fields
-fields={'mid','rate','npT','minT','maxT','v','E0','dE','thetas','bline'};
+fields={'ml','mid','rate','npT','minT','maxT','v','E0','dE','thetas','bline'};
 for i=1:length(fields)
   if (~isfield(par,fields(i)))
     printf("Param %s is missing",fields{i});
