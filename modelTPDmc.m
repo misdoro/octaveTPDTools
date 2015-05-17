@@ -30,7 +30,11 @@ if (rows(thetas)!=rows(T))
 	thetas=thetas';
 endif;
 
-of=@(x,t) odemlde(x,t,odepar); #Solve the ODE
+if (max(thetas)<=1)
+  of=@(x,t) odemlde1(x,t,odepar); #Solve the ODE
+else
+  of=@(x,t) odemlde01(x,t,odepar); #Solve the ODE
+endif
 theta=lsode(of,thetas,T);
 
 #Derive desorption rates from coverage values
@@ -38,7 +42,7 @@ numT=length(T);
 parr=zeros(numT,length(thetas));
 for i=1:numT
   #For each temperature point find desorption flow as a sum of flows defined by remaining coverages
-  parr(i,:)=odemlde(theta(i,:)',T(i),odepar);
+  parr(i,:)=of(theta(i,:)',T(i));
 endfor
 p=-sum(parr,2);
 
@@ -48,9 +52,14 @@ p=p*rate*monolay*scale;
 endfunction;
 
 #ODE for first order desorption
-function dthetadT = odemlde(thetavec,T,param)
+function dthetadT = odemlde1(thetavec,T,param)
 	nuovera=param.nuoa;
   Eoverk=param.ek1;
-  #dthetadT = (thetavec>eps)'.*(-nuovera).*thetavec'.*exp(-Eoverk./(T+eps));
+  dthetadT = (thetavec>eps)'.*(-nuovera).*thetavec'.*exp(-Eoverk./(T+eps));
+endfunction;
+
+function dthetadT = odemlde01(thetavec,T,param)
+	nuovera=param.nuoa;
+  Eoverk=param.ek1;
   dthetadT = (thetavec>eps)'.*(-nuovera).*min(thetavec,1)'.*exp(-Eoverk./(T+eps));
 endfunction;
