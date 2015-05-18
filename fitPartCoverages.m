@@ -5,19 +5,20 @@ fitopts=optimset("Display","final","MaxIter",3000,"TolX",1e-5),debug=0)
 printf("Optimising energy distribution\n");
 fh=@(thetavar)fitcovs(tpd,fitpar,thetavar);
 
-[thetao,ssq]=fminsearch(fh,fitpar.thetas,fitopts);
+[thetao,ssq]=fminunc(fh,fitpar.thetas,fitopts);
 fitpar.thetas=abs(thetao);
 endfunction
 
 function ssq=fitcovs(tpd,fitpar,thetas)
   fitpar.thetas=abs(thetas);
-  #dbg=fitpar.thetas
+  dbg=fitpar.thetas
   p=modelTPDmc(tpd.T,fitpar);
 	ssq=sumsq(p-tpd.i);
   ssqi=ssq;
   if (isfield(fitpar,'penalty'))
     ssq+=fitpar.penalty*penalty(fitpar.thetas,fitpar.dE);
   endif
+  ssq*=1e20;
   if isfield(fitpar,'debug')
     printf("SSQ %e (+penalty=%e)\n",ssqi,ssq);
   endif
