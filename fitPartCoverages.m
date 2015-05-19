@@ -2,6 +2,11 @@ function fitpar=fitPartCoverages(tpd,fitpar,\
 fitopts=optimset("Display","final","MaxIter",3000,"TolX",1e-5),debug=0)
 %Fit partial coverages of the energy distribution
 %function fitpar=fitCoverages(tpd,fitpar)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%TODO: For sub-ML coverages use scaling factor instead of resolving PW eqn every time,
+%that should speed-up everything.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 printf("Optimising energy distribution\n");
 fh=@(thetavar)fitcovs(tpd,fitpar,thetavar);
 
