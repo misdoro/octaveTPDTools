@@ -16,7 +16,7 @@ function result=fitMultiCoverages(mytpd,param,result);
   if (~fitde.found)
     if (isfield(result,"fitcov"))
       printf("Using parameters from previous fit iteration\n");
-      fitpar=result.fitcov{mytpd.idx-1};
+      fitpar=result.fitcov{max(mytpd.idx-1,1)};
       fitpar.rate=mytpd.rate;
     else
       fitpar=myInitFitPar(mytpd,param)
