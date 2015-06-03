@@ -371,7 +371,7 @@ if (index(param.tools,'E'))
     printf("%3.2f ; %5.3f ; %5.3f \n",result.fitemaxde');
   endif
   figure(getFigIndex("covsites"));
-  xlabel("Ea");
+  xlabel("Ea, eV");
   ylabel("Sites population");
   figure(getFigIndex("covfiterr"));
   xlabel("T,K");
