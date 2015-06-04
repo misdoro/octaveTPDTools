@@ -21,12 +21,20 @@ tpd.maxtime=mktime(mytpd.time)+max(mytpd.t);
 count=0;
 irplot={};
 
+if isfield(param,"IRTemp")
+  IRTemp=sort(param.IRTemp);
+else
+  IRTemp=[];
+endif
+
 for i=1:irdat.count
   irtime=mktime(irdat.data{i}.time);
   if (irtime>=tpd.mintime && irtime<=tpd.maxtime)
-    count++;
-    irplot{count}=irdat.data{i};
-    irtimes(count)=irtime;
+    if ((length(IRTemp) && checkIRTemp(IRTemp,mytpd,irtime))||~length(IRTemp))
+      count++;
+      irplot{count}=irdat.data{i};
+      irtimes(count)=irtime;
+    endif
   endif
 endfor
 
@@ -48,5 +56,13 @@ if (count>0)
   endfor
 endif
 result=irpoints;
-
 endfunction;
+
+function IRT = getIrTemp(mytpd,irtime)
+  timeidx=min(find(mytpd.t>(irtime-mktime(mytpd.time))));
+  IRT=round(mytpd.T(timeidx));
+endfunction;
+
+function ret=checkIRTemp(IRTemp,mytpd,irtime)
+  ret=find(IRTemp==getIrTemp(mytpd,irtime));
+endfunction
