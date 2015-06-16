@@ -9,10 +9,7 @@ function result = getMassData(tpd,Trange,mass);
 		if (isstruct(Trange) && Trange.max>0)
 			result=cutTemp(result,Trange);
 		endif;
-    mini=min(result.i);
-    #result.i-=mini;
-    result.intg=trapz(result.t,result.i-mini);
-		#result.intg=trapz(result.t,result.i);
+    result.intg=trapz(result.t,result.i);
 		result.mass=mass;
 	else
 		result.T=[];

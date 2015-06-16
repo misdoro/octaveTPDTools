@@ -118,6 +118,9 @@ function result=plotTPD(mytpd,param,result,press,dose);
 	endif
 	result=retAppend(result,"doses",doseintg);
 	result=retAppend(result,"integrals",mytpd.intg);
+  if (mytpd.baseline>0)
+    printf("Corrected ")
+  endif
 	printf("TPD integral: %.3e\n",mytpd.intg);
 	printf("Dose integral: %.3e\n",doseintg);
 	printf("Itpd/Idose: %.3f\n",mytpd.intg/doseintg);

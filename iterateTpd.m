@@ -31,16 +31,22 @@ function result=iterateTpd(indata,param,funcName,varargin);
           if (~isfield(cutdat,"rate"))
             cutdat.rate=0;
           endif
+          
+          cutdat.baseline=0;
           if (index(param.tools,'x'))
-            #cutdat=findBaseLine(cutdat,1);
-            baseline=getOptionValue(param,filename,"bline",0);
-            cutdat.i=cutdat.i-baseline;
+            totintg=trapz(cutdat.t,cutdat.i);
+            if (getOptionValue(param,filename,"autobline",0))
+              [bl,minidx]=min(cutdat.i);
+              imin=max(1,minidx-5);
+              imax=min(minidx+5,length(cutdat.i));
+              cutdat.baseline=mean(cutdat.i(imin:imax));
+              cutdat.i-=cutdat.baseline;
+            else
+              baseline=getOptionValue(param,filename,"bline",0);
+              cutdat.i-=cutdat.baseline;
+            endif
             cutdat.intg=trapz(cutdat.t,cutdat.i);
-            #purintg=trapz(cutdat.t,cutdat.ipur);
-            #intg=trapz(cutdat.t,cutdat.i);
-            #printf("Baseline integral part: %d percent\n",(1-purintg/intg)*100);
-            #cutdat.i=cutdat.ipur;
-            #cutdat.intg=purintg;
+            printf("Baseline contribution to TPD integral: %d %%\n",(1-cutdat.intg/totintg)*100);
           endif 
           cutdat.doseintg=dose.integral;
 				  cutdat.filename=filename;
