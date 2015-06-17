@@ -440,6 +440,7 @@ if (index(param.tools,'R'));
   figure(getFigIndex("IR"));
   ylabel("Absorbance")
 	xlabel("Wavelength (cm-1)")
+  set (gca (), "xdir", "reverse");
 	hold on;
   [f.info, f.err, f.msg]=stat("IR.irdat");
 	if (f.err>=0);
