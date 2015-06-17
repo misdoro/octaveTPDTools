@@ -43,6 +43,13 @@ if (count>0)
   for i=1:count
     color=getLineColor(4*i/count,1,2);
     figure(getFigIndex("IR"));
+    if (isfield(param,"IRShift"))
+      if length(param.IRShift)==1
+        irplot{i}.abs+=param.IRShift*i;
+      else
+        irplot{i}.abs+=param.IRShift(1)+param.IRShift(2)*i;
+      endif
+    endif
     plot(irplot{i}.wl,irplot{i}.abs,'color',color);
     if (getFigIndex("disp",0))
       figure(getFigIndex("disp"));
@@ -60,9 +67,9 @@ endfunction;
 
 function IRT = getIrTemp(mytpd,irtime)
   timeidx=min(find(mytpd.t>(irtime-mktime(mytpd.time))));
-  IRT=round(mytpd.T(timeidx));
+  IRT=mytpd.T(timeidx);
 endfunction;
 
 function ret=checkIRTemp(IRTemp,mytpd,irtime)
-  ret=find(IRTemp==getIrTemp(mytpd,irtime));
+  ret=find(abs(IRTemp-getIrTemp(mytpd,irtime))<2);
 endfunction
