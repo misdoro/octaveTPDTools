@@ -154,7 +154,7 @@ if (index(param.tools,'d'))
 		#legend("boxon","right");
 		h=legend(ret.legend,"location",legloc);
     if (isfield(param,"publish")&& param.publish)
-      set (h, 'fontsize', 12);
+      set (h, 'fontsize', 14);
     endif
 		
 	endif;
