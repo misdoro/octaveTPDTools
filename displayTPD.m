@@ -54,6 +54,10 @@ for midx=1:length(param.mass)
 	,param.displayT.min,param.displayT.max,param.mass(midx));
 end
 
+if (isfield(param,"publish")&& param.publish)
+  setPublishFonts()
+endif
+
 datindex=indexDatFiles(datindex,param);
 
 param.tools=useArgument(argv(),1,"i");
@@ -102,7 +106,7 @@ function result=plotTPD(mytpd,param,result,press,dose);
 	text(maxT,maxi,txt);
 	fn=strrep(mytpd.filename,"_","-");
 	if (isfield(param,"publish"))
-    legendtext=sprintf("%s: %3.2f ML @ %d K/min ",txt,mytpd.intg/param.monolayer,round(mytpd.rate*60));
+    legendtext=sprintf("%s: %4.2f ML @ %d K/min",txt,mytpd.intg/param.monolayer,round(mytpd.rate*60));
   else
     legendtext=sprintf("%s:%s(%3.2f ML)",txt,fn,mytpd.intg/param.monolayer);
   endif
@@ -149,7 +153,10 @@ if (index(param.tools,'d'))
     endif;
 		#legend("boxon","right");
 		h=legend(ret.legend,"location",legloc);
-		set (h, 'fontsize', 10);
+    if (isfield(param,"publish")&& param.publish)
+      set (h, 'fontsize', 12);
+    endif
+		
 	endif;
 	xlim([param.displayT.min,param.displayT.max]);
   lim=ylim();
