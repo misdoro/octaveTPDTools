@@ -14,6 +14,7 @@ if (nargin==0)
   #x = extract the baseline from the data                        #\n\
   #c = use coverage-based colors                                 #\n\
   #N = Normalize to ML/K as y axis for display                   #\n\
+  #M = Normalize to the curve maximum                            #\n\
   #D = plot dose graph                                           #\n\
   #f = plot the temperature fit quality                          #\n\
   #p = plot pressure                                             #\n\
@@ -75,6 +76,10 @@ function result=plotTPD(mytpd,param,result,press,dose);
     smooth=getOptionValue(param,mytpd.filename,"smooth",0.005);
 		mytpd.i_sm=supsmu(mytpd.T,mytpd.i,'spa',smooth);
 	endif;
+  
+  if (index(param.tools,'M'))
+		mytpd.i_sm/=max(mytpd.i_sm);
+  endif
   #default plot style
 	ls="-";
   lw=2;
@@ -99,7 +104,7 @@ function result=plotTPD(mytpd,param,result,press,dose);
 	[maxi,maxidx]=max(mytpd.i_sm);
 	maxT=mytpd.T(maxidx);
 	if (length(param.mass)>1)
-		txt=sprintf("%d:M=",mytpd.idx,mytpd.mass)
+		txt=sprintf("%d:M=%d",mytpd.idx,mytpd.mass)
   else
     txt=sprintf("%d",mytpd.fileidx)
 	endif
@@ -383,6 +388,7 @@ if (index(param.tools,'E'))
   figure(getFigIndex("covsites"));
   xlabel("Ea, eV");
   ylabel("Sites population");
+  legend(result.cslegend);
   figure(getFigIndex("covfiterr"));
   xlabel("T,K");
   ylabel("Desorption fit error, %max");

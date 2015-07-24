@@ -50,8 +50,11 @@ function result=fitMultiCoverages(mytpd,param,result);
   fitrow=[sum(fitde.thetas),wmeanea,efwhm];
   result=retAppend(result,"fitemaxde",fitrow);
   
+  markers="+o*.xsd^v<>ph"
+  
   figure(getFigIndex("covsites"));
-  plot(Epts,fitde.thetas,"linewidth",2,"color",mytpd.color);
+  plot(Epts,fitde.thetas,"linestyle","none","marker",markers(mytpd.idx),"markersize",8,"linewidth",2,"color",mytpd.color);
+  result=retAppend(result,"cslegend",sprintf("%d: %.2f ML",mytpd.idx,sum(fitde.thetas)));
   
   [p,thetas,parr]=modelTPDmc(mytpd.T,fitde);
   #Check if we are asked to convert the data in ML/K units
