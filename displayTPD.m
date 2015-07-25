@@ -387,7 +387,7 @@ if (index(param.tools,'E'))
   endif
   figure(getFigIndex("covsites"));
   xlabel("Ea, eV");
-  ylabel("Sites population");
+  ylabel("Sites population, ML");
   legend(result.cslegend);
   figure(getFigIndex("covfiterr"));
   xlabel("T,K");
