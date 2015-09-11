@@ -42,7 +42,7 @@ function result=iterateTpd(indata,param,funcName,varargin);
               cutdat.baseline=mean(cutdat.i(imin:imax));
               cutdat.i-=cutdat.baseline;
             else
-              baseline=getOptionValue(param,filename,"bline",0);
+              cutdat.baseline=getOptionValue(param,filename,"bline",0);
               cutdat.i-=cutdat.baseline;
             endif
             cutdat.intg=trapz(cutdat.t,cutdat.i);
