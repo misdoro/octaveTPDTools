@@ -53,7 +53,7 @@ function result=fitMultiCoverages(mytpd,param,result);
   markers="+o*.xsd^v<>ph";
   
   figure(getFigIndex("covsites"));
-  plot(Epts,fitde.thetas,"linestyle","none","marker",markers(mytpd.fileidx),"markersize",8,"linewidth",2,"color",mytpd.color);
+  plot(Epts,fitde.thetas,"linestyle","none","marker",markers(mytpd.fileidx),"markersize",12,"linewidth",2,"color",mytpd.color);
   result=retAppend(result,"cslegend",sprintf("%d: %.2f ML",mytpd.fileidx,sum(fitde.thetas)));
   
   [p,thetas,parr]=modelTPDmc(mytpd.T,fitde);

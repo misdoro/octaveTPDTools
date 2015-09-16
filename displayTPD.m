@@ -145,9 +145,9 @@ if (index(param.tools,'d'))
 	hold on;
 	ret=iterateTpd(datindex,param,@plotTPD);
   if (index(param.tools,'N'))
-    ylabel("Desorption flow (ML/K)");
+    ylabel("Desorption flux (ML/K)");
   else
-	  ylabel("Desorption flow (arb.u.)");
+	  ylabel("Desorption flux (arb.u.)");
   endif
 	xlabel("Temperature (K)");
   
